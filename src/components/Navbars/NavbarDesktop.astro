@@ -1,6 +1,12 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../images/shorter_logo.png'
+---
+
+
 <div id="main">
     <div id="logo">
-        <img src="/shorter_logo.png" style="height: 65px; width: auto;">
+        <Image src={logo} alt="logo_img" height="60" />
     </div>
     <div id="Navlinks">
         <a>Strona Glowna</a>
@@ -37,13 +43,13 @@
     }
 
     #logo{
+
         justify-self: start;
-        margin: 0;
-        scale: 125%;
-        transition: all 0.25s ease;
+        margin: auto auto auto 0;
+        transition: all 0.1s ease-in;
     }
-    #logo:hover{
-        scale:110%
+    #logo:active{
+        scale: 105%
     }
 
     #Navlinks {

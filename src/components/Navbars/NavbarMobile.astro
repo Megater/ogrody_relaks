@@ -1,10 +1,16 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../images/shorter_logo.png'
+import more from '../images/more.png'
+---
+
 <div id="main">
     <div id="logo">
-        <img src="/shorter_logo.png" style="height: 65px; width: auto;">
+        <Image src={logo} alt="Logo" height="90" />
     </div>
     <div id="katalog">
         <button class="menu-btn" aria-label="Menu">
-            <img src="/more.png" style="height: 20px; width:auto">
+            <Image src={more} alt="more_button" height="20" />
         </button>
     </div>
 </div>
@@ -29,13 +35,12 @@
         gap: 20px;
     }
     #logo{
-        margin: auto auto auto 50px;
-        scale:170%;
+        margin: 6px auto auto 10px;
         transition: all 0.1s ease;
     }
 
     #logo:active{
-        scale:190%
+        scale:110%
     }
 
     #katalog{
@@ -59,6 +64,7 @@
     }
     #katalog button:active {
         background: rgba(166, 206, 105, 0.535); 
+        scale: 115%;
     }
 
 
