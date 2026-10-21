@@ -1,44 +1,44 @@
 <div id="main">
-    <div id="container">
-        <div id="logo">
-            <img src="/shorter_logo.png" style="height: 65px; width: auto;">
-        </div>
-        <div id="Navlinks">
-            <a>Strona Glowna</a>
-            <span class="dot">•</span>
-            <a>Realizacje</a>
-            <span class="dot">•</span>
-            <a>Jak dzialamy</a>
-            <span class="dot">•</span>
-            <a>O nas</a>
-            <span class="dot">•</span>
-            <a>Opinie</a>
+    <div id="logo">
+        <img src="/shorter_logo.png" style="height: 65px; width: auto;">
+    </div>
+    <div id="Navlinks">
+        <a>Strona Glowna</a>
+        <span class="dot">•</span>
+        <a>Realizacje</a>
+        <span class="dot">•</span>
+        <a>Jak dzialamy</a>
+        <span class="dot">•</span>
+        <a>O nas</a>
+        <span class="dot">•</span>
+        <a>Opinie</a>
 
-        </div>
-        <div id="Wycena">
-            Wycena
-        </div>
+    </div>
+    <div id="Wycena">
+        Wycena
     </div>
 </div>
 
 <style>
     #main {
-        margin-top: 10px;
+        margin: 10px auto 0 auto;
         background: rgba(255, 255, 255, 0.864);
-        width: 70%;
+        width: 75%;
         height: 75px;
         border-radius: 20px;
-        color: #11301e;                /* ciemna, elegancka butelkowa zieleń */
-    }
-    #container{
-        display:flex;
+        color: #11301e;    
+        display:grid;
+        grid-template-columns: 1fr auto 1fr;
         justify-content: space-between;
         align-items: center;
-        margin-top: 4px;
-        
+        min-width: 1024px;
+        padding: 0 25px;
+        box-sizing: border-box;
     }
+
     #logo{
-        margin: 0.5px 0 0 25px;
+        justify-self: start;
+        margin: 0;
         scale: 125%;
         transition: all 0.25s ease;
     }
@@ -47,6 +47,7 @@
     }
 
     #Navlinks {
+        justify-self: center;
         justify-content: flex-start;
         display: flex;
         gap: 20px;
@@ -80,18 +81,18 @@
     }
 
     #Wycena {
+        justify-self: end;
         background: #84cc16;           /* soczysty, naturalny limonkowy odcień */
         color: #11301e;                /* ciemna, elegancka butelkowa zieleń */
         font-weight: 700;
         font-size: 14px;
         text-decoration: none;
-        padding: 12px 22px;
+        padding: 12px;
         border-radius: 50px;           /* zaokrąglona pigułka wygląda nowocześnie */
         display: inline-block;
         transition: all 0.3s ease-in-out;
         box-shadow: 0 4px 12px rgba(132, 204, 22, 0.35); /* subtelny zielony blask */
-        margin-right: 20px;
-        margin-bottom: 3px;
+
     }
 
     #Wycena:hover {
