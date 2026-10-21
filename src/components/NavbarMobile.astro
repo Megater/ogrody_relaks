@@ -2,10 +2,9 @@
     <div id="logo">
         <img src="/shorter_logo.png" style="height: 65px; width: auto;">
     </div>
-    <div id="space"></div>
     <div id="katalog">
         <button class="menu-btn" aria-label="Menu">
-            ☰
+            <img src="/more.png" style="height: 20px; width:auto">
         </button>
     </div>
 </div>
@@ -16,64 +15,50 @@
 
 <style>
     #main{
-        margin: 0 auto 0 auto;
+        margin: auto auto auto auto;
         background: rgba(255, 255, 255, 0.864);
         width: 100%;
         height: 120px;
-        border-radius: 20px;
+        border-radius: 0 0 20px 20px;
         color: #11301e;    
         display:grid;
-        grid-template-columns: 1fr auto 1fr;
+        grid-template-columns: 1fr 1fr;
         justify-content: space-between;
         align-items: center;
         box-sizing: border-box;
         gap: 20px;
     }
     #logo{
-        justify-self: start;
-        margin: auto;
+        margin: auto auto auto 50px;
         scale:170%;
         transition: all 0.1s ease;
     }
 
     #logo:active{
-        scale:180%
+        scale:190%
     }
 
-    #space{
-        justify-self:center;
-        height: 100%;
-        width: auto;
-    }
     #katalog{
-        margin: auto auto auto auto;
+        margin: 0 5px 2px auto;
         display: flex;
         justify-content: center;
-        justify-self: end;
-        margin-right: 20px;
-
     }
 
 
     #katalog button{
         background: transparent;
         border: 0;
-        padding: 10px 25px 10px 25px;      
-        border-radius: 10px;
+        padding: 25px;      
+        border-radius: 25px;
         text-decoration: none;
         color: #143623;           /* głęboka, elegancka butelkowa zieleń */
-        font-size: 40px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.1s ease-in-out;
+        transition: all 0.3s ease-in-out;
         display: flex;
         align-items: center;
 
     }
     #katalog button:active {
         background: rgba(166, 206, 105, 0.535); 
-        font-weight: 700;
-        scale: 120%;
     }
 
 
