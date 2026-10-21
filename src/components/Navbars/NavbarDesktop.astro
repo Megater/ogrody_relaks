@@ -1,0 +1,105 @@
+<div id="main">
+    <div id="container">
+        <div id="logo">
+            <img src="../../../public/shorter_logo.png" style="height: 65px; width: auto;">
+        </div>
+        <div id="Navlinks">
+            <a>Strona Glowna</a>
+            <span class="dot">•</span>
+            <a>Realizacje</a>
+            <span class="dot">•</span>
+            <a>Jak dzialamy</a>
+            <span class="dot">•</span>
+            <a>O nas</a>
+            <span class="dot">•</span>
+            <a>Opinie</a>
+
+        </div>
+        <div id="Wycena">
+            Wycena
+        </div>
+    </div>
+</div>
+
+<style>
+    #main {
+        margin-top: 10px;
+        background: rgba(255, 255, 255, 0.864);
+        width: 70%;
+        height: 75px;
+        border-radius: 20px;
+        color: #11301e;                /* ciemna, elegancka butelkowa zieleń */
+    }
+    #container{
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 4px;
+    }
+    #logo{
+        margin: 0.5px 0 0 25px;
+        scale: 125%;
+        transition: all 0.25s ease;
+    }
+    #logo:hover{
+        scale:110%
+    }
+
+    #Navlinks {
+        justify-content: flex-start;
+        display: flex;
+        gap: 20px;
+        align-items: center;      
+        list-style: none;        
+        margin: 0;
+        padding: 0;
+        margin-bottom: 3px;
+    }
+
+    /* Wygląd samych linków w środku */
+    #Navlinks a {
+        padding: 15px;      
+        border-radius: 10px;
+        text-decoration: none;
+        color: #143623;           /* głęboka, elegancka butelkowa zieleń */
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        gap: 20px;                /* równy odstęp do kropki rozdzielającej */
+    }
+
+    /* Kolor po najechaniu myszką */
+    #Navlinks a:hover {
+        background: rgba(166, 206, 105, 0.535); 
+        scale: 110%;
+    }
+
+    #Wycena {
+        background: #84cc16;           /* soczysty, naturalny limonkowy odcień */
+        color: #11301e;                /* ciemna, elegancka butelkowa zieleń */
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        padding: 12px 22px;
+        border-radius: 50px;           /* zaokrąglona pigułka wygląda nowocześnie */
+        display: inline-block;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 12px rgba(132, 204, 22, 0.35); /* subtelny zielony blask */
+        margin-right: 20px;
+        margin-bottom: 3px;
+    }
+
+    #Wycena:hover {
+        background: #65a30d;           /* lekko ciemniejszy po najechaniu */
+        transform: translateY(-2px);   /* delikatne uniesienie */
+        box-shadow: 0 6px 16px rgba(132, 204, 22, 0.45);
+    }
+    .dot{
+        color: #84cc16;
+        user-select: none;
+    }
+
+</style>
