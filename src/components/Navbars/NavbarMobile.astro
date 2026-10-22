@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import logo from '../images/shorter_logo.png'
 import more from '../images/more.png'
+import MenuRoll from '../NavbarM_menu/menu_roll.astro';
 ---
 
 <div id="main">
@@ -9,23 +10,40 @@ import more from '../images/more.png'
         <Image src={logo} alt="Logo" height="60" />
     </div>
     <div id="katalog">
-        <button class="menu-btn" aria-label="Menu">
+        <button id="menu-btn" class="menu-btn" aria-label="Menu">
             <Image src={more} alt="more_button" height="20" />
         </button>
     </div>
 </div>
+<div id="box" class="box"> <MenuRoll/> </div>
 
+<script>
+    const button = document.getElementById('menu-btn');
+    const box = document.getElementById('box');
 
+    button?.addEventListener('click', () => {
+        box?.classList.toggle('is-open');
+    });
+</script>
 
 
 
 <style>
+    .box{
+        display: none;
+    }
+
+    .box.is-open{
+        display: flex;
+    }
+
+
+
     #main{
         margin: auto auto auto auto;
         background: rgba(255, 255, 255, 0.864);
         width: 100%;
         height: 80px;
-        border-radius: 0 0 20px 20px;
         color: #11301e;    
         display:grid;
         grid-template-columns: 1fr 1fr;
