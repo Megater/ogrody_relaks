@@ -1,30 +1,54 @@
-<main>
-        <a>Strona Glowna</a>
-        <a>Realizacje</a>
-        <a>Jak dzialamy</a>
-        <a>O nas</a>
-        <a>Opinie</a>
+<main class="scroll">
+    <a href="/">Strona Główna</a>
+    <a href="/realizacje">Realizacje</a>
+    <a href="/jak-dzialamy">Jak działamy</a>
+    <a href="/o-nas">O nas</a>
+    <a href="/opinie">Opinie</a>
 </main>
 
 <style>
-    main{
+    main {
+        overflow: hidden;     /* Niezbędne do płynnej animacji rozsuwania */
+        min-height: 0;        /* Zapobiega zacinaniu animacji Grid */
         display: flex;
         flex-direction: column;
-        margin: 0 auto 0 auto;
-        color: white;
         width: 100%;
+        margin: 0;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Lekki cień rzucany na treść pod spodem */
     }
-    main a{
+
+    main a {
         box-sizing: border-box;
         width: 100%;
-        font-size: 30px;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
         text-align: center;
-        padding: 20px 0;
+        text-decoration: none;
+        color: #11301e;
+        
+        padding: 18px 0;
         display: block;
-        background: rgba(166, 206, 105, 0.535);
-        border: 2px solid;
-        border-color: rgba(131, 156, 94, 0.635);
-;
+        
+        /* Twój oryginalny limonkowo-ogrodowy kolor */
+        background: rgba(255, 255, 255, 0.864);
+        
+        /* Cienka, czysta linia oddzielająca kafelki zamiast podwójnych grubych ramek */
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        
+        /* Płynna reakcja na dotyk */
+        transition: background 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
 
+    /* Ostatni kafelek nie potrzebuje dolnej kreski */
+    main a:last-child {
+        border-bottom: none;
+    }
+
+    /* Efekt po dotknięciu palcem na telefonie */
+    main a:active {
+        background: #84cc16; /* Lekkie nasycenie zieleni pod kciukiem */
     }
 </style>
