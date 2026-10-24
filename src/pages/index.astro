@@ -1,16 +1,37 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Garden_moving from '../assets/images/anthony-Apips1tJsXo-unsplash.jpg'
 ---
 
 <Layout>
-	<div id="body">
-	</div>
+	<main id="page" class="page">
+		<div id="Garden_moving">
+		<Image src={Garden_moving}  alt="Garden_moving" width="380"/>
+		</div>
+	</main>
 </Layout>
 
 <style>
-	body{
-		background-color: black;
+	main{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background-color: white;;
+	}
+
+
+	@media(min-width:1024px){
+		main{
+			width: 100%;
+			display:grid;
+			background-color: black;
+		}
+		#Garden_moving{
+			display: flex;
+			margin: 0 auto 0 auto;
+			align-items: center;
+		}
+
 	}
 </style>
