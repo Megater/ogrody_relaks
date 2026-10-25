@@ -8,47 +8,48 @@
 
 <style>
     main {
-        overflow: hidden;     /* Niezbędne do płynnej animacji rozsuwania */
-        min-height: 0;        /* Zapobiega zacinaniu animacji Grid */
+        min-height: 0;        
         display: flex;
         flex-direction: column;
         width: 100%;
         margin: 0;
-        box-shadow: 0 10px 20px hsla(0,0, 0, 0.15); /* Lekki cień rzucany na treść pod spodem */
+        padding: 0px 0; 
+        /* USUNIĘTO box-shadow - to on robił kreskę pod navbarem! */
     }
 
     main a {
         box-sizing: border-box;
         width: 100%;
-        font-size: 22px;
+        font-size: 18px; /* 22px było dość przytłaczające na małych ekranach, 18px wygląda bardziej premium */
         font-weight: 600;
         letter-spacing: 0.5px;
         text-align: center;
         text-decoration: none;
-        color: #11301e;
+        color: #143623;
         
-        padding: 18px 0;
+        padding: 16px 20px;
         display: block;
         
-        /* Twój oryginalny limonkowo-ogrodowy kolor */
-        background: rgba(255, 255, 255, 0.864);
+        /* Tło przezroczyste - efekt tła załatwia zewnętrzny div .box */
+        background: transparent;
         
-        /* Cienka, czysta linia oddzielająca kafelki zamiast podwójnych grubych ramek */
+        /* Subtelna, półprzezroczysta linia oddzielająca */
         border: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        border-bottom: 1px solid rgba(20, 54, 35, 0.08);
         
         /* Płynna reakcja na dotyk */
-        transition: background 0.15s ease;
+        transition: background 0.2s ease, color 0.2s ease;
         -webkit-tap-highlight-color: transparent;
     }
 
-    /* Ostatni kafelek nie potrzebuje dolnej kreski */
     main a:last-child {
         border-bottom: none;
     }
 
     /* Efekt po dotknięciu palcem na telefonie */
-    main a:active {
-        background: #84cc16; /* Lekkie nasycenie zieleni pod kciukiem */
+    main a:active,
+    main a:hover {
+        background: rgba(166, 206, 105, 0.15); /* Subtelne zielonkawe nasycenie */
+        color: #0c2b17;
     }
 </style>
