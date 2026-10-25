@@ -60,9 +60,8 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
         
         background: rgba(255, 255, 255, 0);
         backdrop-filter: blur(12px);
-        border-radius: 24px; /* Zaokrąglony tylko dół jak roleta */
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        border-top: 1px solid rgba(0, 0, 0, 0.03);
+        border-radius: 0 0 24px 24px; /* Zaokrąglony tylko dół jak roleta */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0);
         
         overflow: hidden; /* MEGA WAŻNE: Ukrywa treść, gdy menu jest zwinięte */
         
@@ -72,7 +71,7 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
                     border-radius 0.4s ease-in-out,
                     margin-top 0.4s ease-in-out,
                     box-shadow 0.4s ease-in-out,
-                    background 0.2s ease-in-out;
+                    background 0.3s linear;
     }
 
     /* Zabezpiecza grid przed "wypadaniem" zawartości */
@@ -84,6 +83,7 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
         grid-template-rows: 1fr;
         box-shadow: 0 15px 35px rgba(17, 48, 30, 0.1);
         background: rgba(255, 255, 255, 0.95);
+
     }
 
     /* =========================================
@@ -96,8 +96,8 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
     }
 
     :global(#Mobile.is-scrolled) .box {
-        width: 92%; /* Dopasowuje szerokość do wyspy wyżej */
-        border-radius: 20px;
+        width: 84%; /* Dopasowuje szerokość do wyspy wyżej */
+        border-radius: 0 0 24px 24px; /* Zaokrąglony tylko dół jak roleta */
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12); 
     }
 
