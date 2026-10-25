@@ -13,50 +13,63 @@ import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
         <title>Ogrody Relaks</title>
     </head>
     <body>
-        <!-- Lewitujący kontener nawigacji Desktop -->
         <header id="Desktop">
             <NavbarDesktop />
         </header>
 
-        <!-- Lewitujący kontener nawigacji Mobile -->
         <header id="Mobile">
             <NavbarMobile />
         </header>
 
-        <!-- Główna zawartość strony -->
         <main>
             <slot />
         </main>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const desktop = document.getElementById('Desktop');
+                const mobile = document.getElementById('Mobile');
+                
+                const handleScroll = () => {
+                    if (window.scrollY > 20) {
+                        desktop?.classList.add('is-scrolled');
+                        mobile?.classList.add('is-scrolled');
+                    } else {
+                        desktop?.classList.remove('is-scrolled');
+                        mobile?.classList.remove('is-scrolled');
+                    }
+                };
+
+                window.addEventListener('scroll', handleScroll);
+                handleScroll(); // Inicjalizacja przy ładowaniu
+            });
+        </script>
     </body>
 </html>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-    /* Globalny reset gwarantujący, że paddingi nie psują szerokości strony */
     *, *::before, *::after {
         box-sizing: border-box;
     }
 
     html {
-        scroll-behavior: smooth; /* Mega ważny detal! Płynne zjeżdżanie po kliknięciu w link z menu */
+        scroll-behavior: smooth; 
     }
 
     body {
         font-family: 'Inter', sans-serif;
-        background-color: #fdfdfd; /* Subtelnie ocieplona, elegancka biel (lepsza dla oka niż czyste #fff) */
+        background-color: #fdfdfd; 
         color: #1a1a1a;
         margin: 0;
         padding: 0;
         width: 100%;
         min-height: 100vh;
-        -webkit-font-smoothing: antialiased; /* Wyostrza i odchudza teksty (efekt jak z projektów premium) */
+        -webkit-font-smoothing: antialiased; 
         -moz-osx-font-smoothing: grayscale;
     }
 
-    /* =========================================
-       1. GŁÓWNA STRONA (MAIN)
-       ========================================= */
     main {
         position: relative;
         margin: 0 auto;
@@ -65,31 +78,34 @@ import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
         flex-direction: column;
     }
 
-    /* =========================================
-       2. WSPÓLNE ZASADY LEWITACJI 
-       (Ważne: zastosowane do Desktopu ORAZ Mobile!)
-       ========================================= */
     #Desktop, 
     #Mobile {
         position: fixed;
         left: 0;
         right: 0;
         z-index: 50;
-        pointer-events: none; /* Myszka ignoruje pustą przestrzeń wokół paska */
+        pointer-events: none; 
         width: 100%;
+        transition: top 0.4s ease-in-out; /* Płynne oderwanie od sufitu */
     }
-    #Desktop{
-        top: 1rem;   
-        padding: 0 1rem;
 
-	}
+    #Desktop {
+        top: 0; /* Domyślnie przyklejony do krawędzi */
+    }
 
-	#Mobile{
-		top:0;
-	}
-	
+    #Mobile {
+        top: 0;
+    }
 
-    /* Włączamy klikanie i hover z powrotem TYLKO dla samego środka paska */
+    /* Pozycje po rozpoczęciu przewijania */
+    #Desktop.is-scrolled {
+        top: 1.5rem;
+    }
+
+    #Mobile.is-scrolled {
+        top: 0.5rem;
+    }
+
     #Desktop :global(nav),
     #Desktop :global(div),
     #Mobile :global(nav),
@@ -97,9 +113,6 @@ import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
         pointer-events: auto;
     }
 
-    /* =========================================
-       3. WIDOK MOBILNY (Telefony i tablety do 1024px)
-       ========================================= */
     #Desktop {
         display: none;
     }
@@ -114,14 +127,10 @@ import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
         }
     }
 
-    /* =========================================
-       4. WIDOK DESKTOP (Komputery powyżej 1024px)
-       ========================================= */
     @media (min-width: 1024px) {
         #Desktop {
             display: flex;
-            justify-content: center; /* Zawsze trzyma navbar idealnie na środku */
-            top: 1.5rem; /* Na PC dajemy paskowi więcej "powietrza" od góry */
+            justify-content: center; 
         }
 
         #Mobile {
@@ -129,8 +138,8 @@ import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
         }
 
         main {
-            width: 100%; /* Zostawiona Twoja zasada */
-            max-width: 1440px; /* Zabezpiecza stronę na ogromnych monitorach 4K by się nie rozciągnęła jak guma */
+            width: 100%; 
+            max-width: 1440px; 
         }
     }
 </style>
