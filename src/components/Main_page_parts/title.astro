@@ -1,0 +1,367 @@
+---
+import { Image } from 'astro:assets';
+import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.jpg';
+---
+
+<main class="hero-section">
+    <!-- 1. Zdjęcie w tle -->
+    <Image src={main_photo} class="hero-bg" alt="Tło ogrodu" />
+    
+    <!-- 2. Ciemna nakładka (przyciemnia lewą stronę, aby tekst był czytelny) -->
+    <div class="hero-overlay"></div>
+
+    <!-- 3. Główna zawartość -->
+    <div class="hero-content">
+        
+        <!-- Lewa strona: Tekst i przycisk -->
+        <div class="hero-text-box">
+            <h1>Kompleksowa pielęgnacja i zakładanie ogrodów od A do <span class="highlight">Z.</span></h1>
+            <p>Projektujemy i dbamy o wspaniałe przestrzenie, które wnoszą piękno, wartość i harmonię do Twojego otoczenia każdego dnia.</p>
+            
+            <a href="#kontakt" class="cta-button">
+                Rozpocznij <span class="arrow">→</span>
+            </a>
+
+            <!-- Sekcja zadowolonych klientów pod przyciskiem -->
+            <div class="happy-clients">
+                <div class="avatars">
+                    <div class="avatar bg-gray"></div>
+                    <div class="avatar bg-light"></div>
+                    <div class="avatar bg-gray"></div>
+                    <div class="avatar bg-light"></div>
+                </div>
+                <div class="clients-text">
+                    <strong>120+</strong>
+                    <span>Zadowolonych klientów</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prawa strona: Miejsce na zdjęcie profilowe i "pływające" elementy -->
+        <div class="hero-profile-box">
+            
+            <!-- Zielone koło w tle (baza pod Twoje wycięte zdjęcie) -->
+            <div class="profile-placeholder">
+                <span class="placeholder-text">[Miejsce na Twoje zdjęcie profilowe bez tła]</span>
+            </div>
+
+            <!-- Pływająca odznaka "Gwarancja Satysfakcji" -->
+            <div class="badge-guarantee">
+                <span class="icon">🌱</span>
+                <span>Gwarancja<br>Satysfakcji</span>
+            </div>
+
+            <!-- Pływająca miniatura (kafelek w prawym dolnym rogu) -->
+            <div class="badge-floating-card">
+                <span>[Miniaturka realizacji]</span>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<style>
+    /* Reset i ogólne ustawienia czcionki (jeśli nie masz ich globalnie) */
+    * {
+        box-sizing: border-box;
+    }
+
+    /* 1. SEKCJA GŁÓWNA */
+    .hero-section {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #0c3b2e;
+        font-family: 'Inter', sans-serif; /* Dopasuj do swojej czcionki */
+    }
+
+    /* Zdjęcie rozciągnięte na pełen ekran za pomocą CSS */
+    .hero-bg {
+        position: absolute;
+        inset: 0;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+        z-index: 1;
+    }
+
+    /* Ciemny gradient z lewej do prawej - poprawia czytelność białego tekstu na zdjęciu */
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, rgba(12, 30, 20, 0.85) 0%, rgba(12, 30, 20, 0.4) 50%, rgba(0, 0, 0, 0.1) 100%);
+        z-index: 2;
+    }
+
+    /* 2. KONTENER Z ZAWARTOŚCIĄ */
+    .hero-content {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    /* 3. LEWA STRONA (Tekst) */
+    .hero-text-box {
+        max-width: 550px;
+        color: #ffffff;
+    }
+
+    .hero-text-box h1 {
+        font-size: 3.5rem;
+        line-height: 1.15;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .highlight {
+        color: #c4f07a; /* Jasny, limonkowy zielony ze zdjęcia */
+    }
+
+    .hero-text-box p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #e5e5e5;
+        margin-bottom: 2.5rem;
+    }
+
+    /* Przycisk CTA */
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: #c4f07a;
+        color: #0c3b2e;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-2px);
+        background-color: #d1f593;
+    }
+
+    .arrow {
+        font-size: 1.2rem;
+        transition: transform 0.2s ease;
+    }
+
+    .cta-button:hover .arrow {
+        transform: translateX(4px);
+    }
+
+    /* Sekcja "Zadowoleni klienci" */
+    .happy-clients {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 3rem;
+    }
+
+    .avatars {
+        display: flex;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #0c3b2e;
+        margin-left: -12px; /* Efekt nakładania się kółek */
+    }
+
+    .avatar:first-child { margin-left: 0; }
+    .bg-gray { background-color: #9ca3af; }
+    .bg-light { background-color: #d1d5db; }
+
+    .clients-text {
+        display: flex;
+        flex-col;
+        flex-direction: column;
+        font-size: 0.85rem;
+    }
+
+    .clients-text strong {
+        font-size: 1.1rem;
+        font-weight: 800;
+    }
+
+    .clients-text span {
+        color: #d1d5db;
+    }
+
+    /* 4. PRAWA STRONA (Zdjęcie Profilowe) */
+    .hero-profile-box {
+        position: relative;
+        width: 450px;
+        height: 450px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+    }
+
+    /* Jasnozielone koło - tło pod Twoje zdjęcie */
+    .profile-placeholder {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #c4f07a;
+        border-radius: 50% 50% 10% 10%; /* Spłaszczone na dole, by postać "stała" */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        border: 2px dashed #0c3b2e;
+    }
+
+    .placeholder-text {
+        color: #0c3b2e;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    /* Pływająca odznaka u góry (Gwarancja Satysfakcji) */
+    .badge-guarantee {
+        position: absolute;
+        top: 20px;
+        right: -20px;
+        background-color: #0c3b2e;
+        color: #c4f07a;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border: 4px solid #c4f07a;
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1.2;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        z-index: 4;
+    }
+
+    .badge-guarantee .icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.2rem;
+    }
+
+    /* Pływająca ramka realizacji na dole */
+    .badge-floating-card {
+        position: absolute;
+        bottom: -20px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        background-color: #ffffff;
+        border-radius: 16px;
+        border: 4px solid #e5e5e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: #6b7280;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        z-index: 4;
+    }
+
+/* WIDOK MOBILNY (Telefony i małe tablety) */
+    @media (max-width: 1024px) {
+        
+        /* Zmiana gradientu na pionowy - ściemniamy głównie dół, aby tekst był super czytelny */
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(12, 30, 20, 0.1) 0%, rgba(12, 30, 20, 0.6) 50%, rgba(12, 30, 20, 0.95) 100%);
+        }
+
+        /* Odwrócenie kolejności (Profil na górę, tekst na dół) */
+        .hero-content {
+            flex-direction: column-reverse;
+            justify-content: flex-end;
+            padding: 6rem 1.5rem 3rem 1.5rem; /* Większy odstęp z góry (6rem), aby zrobić miejsce na lewitujący Navbar */
+            gap: 1.5rem;
+        }
+
+        /* 1. SEKCJA PROFILOWA (Teraz na górze) */
+        .hero-profile-box {
+            width: 100%;
+            max-width: 320px; /* Ograniczamy szerokość, by na dużych telefonach nie była za wielka */
+            height: 320px;
+            margin: 0 auto; /* Wyśrodkowanie koła na ekranie */
+        }
+
+        .profile-placeholder {
+            width: 100%;
+            height: 100%;
+            padding: 1rem;
+        }
+
+        .placeholder-text {
+            font-size: 0.9rem;
+        }
+
+        /* Zmniejszona odznaka dla mobile - bliżej krawędzi koła */
+        .badge-guarantee {
+            width: 90px;
+            height: 90px;
+            top: 5px;
+            right: -10px;
+            font-size: 0.65rem;
+            border-width: 3px;
+        }
+
+        .badge-guarantee .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Na telefonie ukrywamy dolną karteczkę, by nie robić bałaganu (jak na wzorze) */
+        .badge-floating-card {
+            display: none;
+        }
+
+        /* 2. SEKCJA TEKSTOWA (Teraz na dole) */
+        .hero-text-box {
+            max-width: 100%;
+            text-align: left; /* Zgodnie ze wzorem, tekst na telefonie zostaje do lewej */
+        }
+
+        .hero-text-box h1 {
+            font-size: 2.2rem; /* Znacznie mniejszy nagłówek dla telefonów */
+            margin-bottom: 1rem;
+        }
+
+        .hero-text-box p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            max-width: 90%; /* Żeby linie nie dotykały samej krawędzi ekranu */
+        }
+
+        .cta-button {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .happy-clients {
+            margin-top: 2rem;
+        }
+    }
+</style>

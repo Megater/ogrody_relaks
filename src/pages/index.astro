@@ -1,37 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import Garden_moving from '../assets/images/anthony-Apips1tJsXo-unsplash.jpg'
+import Title from '../components/Main_page_parts/title.astro';
 ---
 
 <Layout>
 	<main id="page" class="page">
 		<div id="Garden_moving">
-		<Image src={Garden_moving}  alt="Garden_moving" width="380"/>
+			<Title/>
 		</div>
 	</main>
 </Layout>
 
-<style>
-	main{
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		background-color: white;;
-	}
 
-
-	@media(min-width:1024px){
-		main{
-			width: 100%;
-			display:grid;
-			background-color: black;
-		}
-		#Garden_moving{
-			display: flex;
-			margin: 0 auto 0 auto;
-			align-items: center;
-		}
-
-	}
-</style>

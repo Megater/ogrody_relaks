@@ -1,67 +1,136 @@
 ---
 import NavbarDesktop from '../components/Navbars/NavbarDesktop.astro';
 import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
-
 ---
 <!doctype html>
-
-<html lang="en">
-	<head>
-		
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
+<html lang="pl">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Ogrody Relaks</title>
+    </head>
+    <body>
+        <!-- Lewitujący kontener nawigacji Desktop -->
         <header id="Desktop">
             <NavbarDesktop />
         </header>
 
+        <!-- Lewitujący kontener nawigacji Mobile -->
         <header id="Mobile">
             <NavbarMobile />
         </header>
-		<main>
-			<slot />
-		</main>
-		
-	</body>
 
+        <!-- Główna zawartość strony -->
+        <main>
+            <slot />
+        </main>
+    </body>
 </html>
-M.astro
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-	html,
+    /* Globalny reset gwarantujący, że paddingi nie psują szerokości strony */
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth; /* Mega ważny detal! Płynne zjeżdżanie po kliknięciu w link z menu */
+    }
+
     body {
         font-family: 'Inter', sans-serif;
-        background: white;
+        background-color: #fdfdfd; /* Subtelnie ocieplona, elegancka biel (lepsza dla oka niż czyste #fff) */
+        color: #1a1a1a;
         margin: 0;
+        padding: 0;
         width: 100%;
         min-height: 100vh;
+        -webkit-font-smoothing: antialiased; /* Wyostrza i odchudza teksty (efekt jak z projektów premium) */
+        -moz-osx-font-smoothing: grayscale;
     }
-	
-		/* Domyślnie ukryty na telefonach */
-	#Desktop {
-		display: none;
+
+    /* =========================================
+       1. GŁÓWNA STRONA (MAIN)
+       ========================================= */
+    main {
+        position: relative;
+        margin: 0 auto;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* =========================================
+       2. WSPÓLNE ZASADY LEWITACJI 
+       (Ważne: zastosowane do Desktopu ORAZ Mobile!)
+       ========================================= */
+    #Desktop, 
+    #Mobile {
+        position: fixed;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        pointer-events: none; /* Myszka ignoruje pustą przestrzeń wokół paska */
+        width: 100%;
+    }
+    #Desktop{
+        top: 1rem;   
+        padding: 0 1rem;
+
 	}
 
 	#Mobile{
-		display: block;
+		top:0;
 	}
+	
 
-	/* Pokazuje się tylko od 768px w górę */
-	@media (min-width: 1024px) {
-		#Desktop {
-			display: flex;
-			min-width: 1024px;
-		}
+    /* Włączamy klikanie i hover z powrotem TYLKO dla samego środka paska */
+    #Desktop :global(nav),
+    #Desktop :global(div),
+    #Mobile :global(nav),
+    #Mobile :global(div) {
+        pointer-events: auto;
+    }
 
-		#Mobile{
-			display: none;
-		}
-	}
+    /* =========================================
+       3. WIDOK MOBILNY (Telefony i tablety do 1024px)
+       ========================================= */
+    #Desktop {
+        display: none;
+    }
 
+    #Mobile {
+        display: block;
+    }
+
+    @media (max-width: 1024px) {
+        main {
+            width: 100%;
+        }
+    }
+
+    /* =========================================
+       4. WIDOK DESKTOP (Komputery powyżej 1024px)
+       ========================================= */
+    @media (min-width: 1024px) {
+        #Desktop {
+            display: flex;
+            justify-content: center; /* Zawsze trzyma navbar idealnie na środku */
+            top: 1.5rem; /* Na PC dajemy paskowi więcej "powietrza" od góry */
+        }
+
+        #Mobile {
+            display: none;
+        }
+
+        main {
+            width: 100%; /* Zostawiona Twoja zasada */
+            max-width: 1440px; /* Zabezpiecza stronę na ogromnych monitorach 4K by się nie rozciągnęła jak guma */
+        }
+    }
 </style>
