@@ -1,6 +1,9 @@
 ---
 import { Image } from 'astro:assets';
-import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.jpg';
+import main_photo from '../../assets/images/Kamil_title_photo.jpg';
+import profile from '../../assets/images/Kamil_cut.png'
+import sprzet from '../../assets/images/kosiara.jpg'
+
 ---
 
 <main class="hero-section">
@@ -16,7 +19,7 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
         <!-- Lewa strona: Tekst i przycisk -->
         <div class="hero-text-box">
             <h1>Kompleksowa pielęgnacja i zakładanie ogrodów od A do <span class="highlight">Z.</span></h1>
-            <p>Projektujemy i dbamy o wspaniałe przestrzenie, które wnoszą piękno, wartość i harmonię do Twojego otoczenia każdego dnia.</p>
+            <p>Dbamy o wspaniałe przestrzenie, które wnoszą piękno, wartość i harmonię do Twojego otoczenia każdego dnia.</p>
             
             <a href="#kontakt" class="cta-button">
                 Rozpocznij <span class="arrow">→</span>
@@ -40,10 +43,13 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
         <!-- Prawa strona: Miejsce na zdjęcie profilowe i "pływające" elementy -->
         <div class="hero-profile-box">
             
-            <!-- Zielone koło w tle (baza pod Twoje wycięte zdjęcie) -->
-            <div class="profile-placeholder">
-                <span class="placeholder-text"></span>
-            </div>
+        <!-- Zielone koło w tle (baza pod Twoje wycięte zdjęcie) -->
+            <Image 
+            src={profile} 
+            class="profile" 
+            alt="Kamil"
+            format="png" 
+            />
 
             <!-- Pływająca odznaka "Gwarancja Satysfakcji" -->
             <div class="badge-guarantee">
@@ -53,7 +59,11 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
 
             <!-- Pływająca miniatura (kafelek w prawym dolnym rogu) -->
             <div class="badge-floating-card">
-                <span></span>
+                <Image 
+                src={sprzet}
+                class="sprzet"
+                alt="quip"
+                />
             </div>
 
         </div>
@@ -69,10 +79,10 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
     /* 1. SEKCJA GŁÓWNA */
     .hero-section {
         position: relative;
-        width: 100%;
+        min-width: 100vw;
         min-height: 100vh;
         display: flex;
-        align-items: center;
+        align-items:center;
         justify-content: center;
         overflow: hidden;
         background-color: #0c3b2e;
@@ -85,34 +95,46 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
         inset: 0;
         width: 100% !important;
         height: 100% !important;
-        object-fit: cover;
+        object-fit:cover;
         z-index: 1;
     }
 
-    /* Ciemny gradient z lewej do prawej - poprawia czytelność białego tekstu na zdjęciu */
+    /* Wycięte zdjęcie profilowe */
+    .profile {
+        position: absolute;
+        bottom: -20px; /* Lekkie wpuszczenie pod krawędź ekranu */
+        width: auto !important;
+        height: 110% !important;
+        object-fit: contain;
+        object-position: bottom center;
+        display: block;
+        z-index: 4;
+    }
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to right, rgba(12, 30, 20, 0.85) 0%, rgba(12, 30, 20, 0.4) 50%, rgba(0, 0, 0, 0.1) 100%);
-        z-index: 2;
+        background: linear-gradient(to top, rgba(12, 30, 20, 0.85) 35%, rgba(12, 30, 20, 0.4) 75%, rgba(0, 0, 0, 0.1) 100%);
+        z-index: 2; /* Warstwa 2 */
+        pointer-events: none;
     }
 
     /* 2. KONTENER Z ZAWARTOŚCIĄ */
-    .hero-content {
+.hero-content {
         position: relative;
-        z-index: 3;
+        z-index: 10;
         width: 100%;
-        max-width: 1200px;
+        max-width: 1280px;
+        height: 100vh;
+        min-height: 700px;
         padding: 0 2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 2rem;
     }
-
     /* 3. LEWA STRONA (Tekst) */
     .hero-text-box {
-        max-width: 550px;
+        width: auto;
+        max-width: 650px;
         color: #ffffff;
     }
 
@@ -129,7 +151,7 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
     }
 
     .hero-text-box p {
-        font-size: 1.1rem;
+        font-size: 1.5rem;
         line-height: 1.6;
         color: #e5e5e5;
         margin-bottom: 2.5rem;
@@ -204,14 +226,18 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
         color: #d1d5db;
     }
 
-    /* 4. PRAWA STRONA (Zdjęcie Profilowe) */
+    /* 4. PRAWA STRONA (Profil wychodzący zza krawędzi) */
     .hero-profile-box {
-        position: relative;
-        width: 450px;
-        height: 450px;
+        position: absolute;
+        right: 2rem;
+        bottom: 0; /* Przyklejony idealnie do dolnej krawędzi całego ekranu */
+        width: 520px;
+        height: 85vh; /* Postać zajmuje większość pionu sekcji */
+        max-height: 800px;
         display: flex;
         justify-content: center;
         align-items: flex-end;
+        pointer-events: none;
     }
 
     /* Jasnozielone koło - tło pod Twoje zdjęcie */
@@ -220,14 +246,13 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
         bottom: 0;
         width: 100%;
         height: 100%;
-        background-color: #c4f07a;
-        border-radius: 50% 50% 10% 10%; /* Spłaszczone na dole, by postać "stała" */
+        background-color: #c5f07a9b;
+        border-radius: 50% 50% 12% 12%;
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         justify-content: center;
-        text-align: center;
-        padding: 2rem;
         border: 2px dashed #0c3b2e;
+        overflow: hidden; /* Przycina prostokątne krawędzie zdjęcia do kształtu koła */
     }
 
     .placeholder-text {
@@ -239,8 +264,8 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
     /* Pływająca odznaka u góry (Gwarancja Satysfakcji) */
     .badge-guarantee {
         position: absolute;
-        top: 20px;
-        right: -20px;
+        bottom: 120px;
+        right: -90px;
         background-color: #0c3b2e;
         color: #c4f07a;
         width: 120px;
@@ -256,7 +281,7 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
         font-weight: 700;
         line-height: 1.2;
         box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        z-index: 4;
+        z-index: 5;
     }
 
     .badge-guarantee .icon {
@@ -267,7 +292,7 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
     /* Pływająca ramka realizacji na dole */
     .badge-floating-card {
         position: absolute;
-        bottom: -20px;
+        bottom: 10px;
         right: -40px;
         width: 180px;
         height: 180px;
@@ -283,6 +308,16 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
         color: #6b7280;
         box-shadow: 0 15px 30px rgba(0,0,0,0.4);
         z-index: 4;
+        box-sizing:content-box;
+    }
+
+    .sprzet{
+        position: absolute;
+        inset: 0;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit:cover;
+        border-radius: 10%;
     }
 
 /* WIDOK MOBILNY (Telefony i małe tablety) */
@@ -305,7 +340,7 @@ import main_photo from '../../assets/images/claude-laprise-lW2TOQZ_bys-unsplash.
         .hero-profile-box {
             width: 100%;
             max-width: 320px; /* Ograniczamy szerokość, by na dużych telefonach nie była za wielka */
-            height: 320px;
+            height: 600px;
             margin: 0 auto; /* Wyśrodkowanie koła na ekranie */
         }
 
