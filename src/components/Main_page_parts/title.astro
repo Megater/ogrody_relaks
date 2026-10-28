@@ -1,16 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import main_photo from '../../assets/images/Kamil_title_photo.jpg';
-import profile from '../../assets/images/Kamil_cut.png'
-import sprzet from '../../assets/images/kosiara.jpg'
-
+import profile from '../../assets/images/Kamil_cut.png';
+import sprzet from '../../assets/images/kosiara.jpg';
 ---
 
 <main class="hero-section">
     <!-- 1. Zdjęcie w tle -->
     <Image src={main_photo} class="hero-bg" alt="Tło ogrodu" />
     
-    <!-- 2. Ciemna nakładka (przyciemnia lewą stronę, aby tekst był czytelny) -->
+    <!-- 2. Ciemna nakładka -->
     <div class="hero-overlay"></div>
 
     <!-- 3. Główna zawartość -->
@@ -40,15 +39,14 @@ import sprzet from '../../assets/images/kosiara.jpg'
             </div>
         </div>
 
-        <!-- Prawa strona: Miejsce na zdjęcie profilowe i "pływające" elementy -->
+        <!-- Prawa strona: Miejsce na zdjęcie profilowe i elementy pływające -->
         <div class="hero-profile-box">
             
-        <!-- Zielone koło w tle (baza pod Twoje wycięte zdjęcie) -->
             <Image 
-            src={profile} 
-            class="profile" 
-            alt="Kamil"
-            format="png" 
+                src={profile} 
+                class="profile" 
+                alt="Kamil"
+                format="png" 
             />
 
             <!-- Pływająca odznaka "Gwarancja Satysfakcji" -->
@@ -57,12 +55,12 @@ import sprzet from '../../assets/images/kosiara.jpg'
                 <span>Gwarancja<br>Satysfakcji</span>
             </div>
 
-            <!-- Pływająca miniatura (kafelek w prawym dolnym rogu) -->
+            <!-- Pływająca miniatura (kafelek ze sprzętem) -->
             <div class="badge-floating-card">
                 <Image 
-                src={sprzet}
-                class="sprzet"
-                alt="quip"
+                    src={sprzet}
+                    class="sprzet"
+                    alt="Sprzęt"
                 />
             </div>
 
@@ -71,55 +69,43 @@ import sprzet from '../../assets/images/kosiara.jpg'
 </main>
 
 <style>
-    /* Reset i ogólne ustawienia czcionki (jeśli nie masz ich globalnie) */
+    /* Reset i ogólne ustawienia */
     * {
         box-sizing: border-box;
     }
 
-    /* 1. SEKCJA GŁÓWNA */
+    /* 1. SEKCJA GŁÓWNA (DESKTOP BEZ ZMIAN) */
     .hero-section {
         position: relative;
         min-width: 100vw;
         min-height: 100vh;
         display: flex;
-        align-items:center;
+        align-items: center;
         justify-content: center;
         overflow: hidden;
         background-color: #0c3b2e;
-        font-family: 'Inter', sans-serif; /* Dopasuj do swojej czcionki */
+        font-family: 'Inter', sans-serif;
     }
 
-    /* Zdjęcie rozciągnięte na pełen ekran za pomocą CSS */
     .hero-bg {
         position: absolute;
         inset: 0;
         width: 100% !important;
         height: 100% !important;
-        object-fit:cover;
+        object-fit: cover;
         z-index: 1;
     }
 
-    /* Wycięte zdjęcie profilowe */
-    .profile {
-        position: absolute;
-        bottom: -20px; /* Lekkie wpuszczenie pod krawędź ekranu */
-        width: auto !important;
-        height: 110% !important;
-        object-fit: contain;
-        object-position: bottom center;
-        display: block;
-        z-index: 4;
-    }
     .hero-overlay {
         position: absolute;
         inset: 0;
         background: linear-gradient(to top, rgba(12, 30, 20, 0.85) 35%, rgba(12, 30, 20, 0.4) 75%, rgba(0, 0, 0, 0.1) 100%);
-        z-index: 2; /* Warstwa 2 */
+        z-index: 2;
         pointer-events: none;
     }
 
-    /* 2. KONTENER Z ZAWARTOŚCIĄ */
-.hero-content {
+    /* 2. KONTENER Z ZAWARTOŚCIĄ (DESKTOP BEZ ZMIAN) */
+    .hero-content {
         position: relative;
         z-index: 10;
         width: 100%;
@@ -131,7 +117,8 @@ import sprzet from '../../assets/images/kosiara.jpg'
         justify-content: space-between;
         align-items: center;
     }
-    /* 3. LEWA STRONA (Tekst) */
+
+    /* 3. LEWA STRONA - TEKST (DESKTOP BEZ ZMIAN) */
     .hero-text-box {
         width: auto;
         max-width: 650px;
@@ -147,7 +134,7 @@ import sprzet from '../../assets/images/kosiara.jpg'
     }
 
     .highlight {
-        color: #c4f07a; /* Jasny, limonkowy zielony ze zdjęcia */
+        color: #c4f07a;
     }
 
     .hero-text-box p {
@@ -157,7 +144,6 @@ import sprzet from '../../assets/images/kosiara.jpg'
         margin-bottom: 2.5rem;
     }
 
-    /* Przycisk CTA */
     .cta-button {
         display: inline-flex;
         align-items: center;
@@ -186,7 +172,6 @@ import sprzet from '../../assets/images/kosiara.jpg'
         transform: translateX(4px);
     }
 
-    /* Sekcja "Zadowoleni klienci" */
     .happy-clients {
         display: flex;
         align-items: center;
@@ -203,7 +188,7 @@ import sprzet from '../../assets/images/kosiara.jpg'
         height: 40px;
         border-radius: 50%;
         border: 2px solid #0c3b2e;
-        margin-left: -12px; /* Efekt nakładania się kółek */
+        margin-left: -12px;
     }
 
     .avatar:first-child { margin-left: 0; }
@@ -212,7 +197,6 @@ import sprzet from '../../assets/images/kosiara.jpg'
 
     .clients-text {
         display: flex;
-        flex-col;
         flex-direction: column;
         font-size: 0.85rem;
     }
@@ -226,13 +210,13 @@ import sprzet from '../../assets/images/kosiara.jpg'
         color: #d1d5db;
     }
 
-    /* 4. PRAWA STRONA (Profil wychodzący zza krawędzi) */
+    /* 4. PRAWA STRONA - PROFIL (DESKTOP BEZ ZMIAN) */
     .hero-profile-box {
         position: absolute;
         right: 2rem;
-        bottom: 0; /* Przyklejony idealnie do dolnej krawędzi całego ekranu */
+        bottom: 0;
         width: 520px;
-        height: 85vh; /* Postać zajmuje większość pionu sekcji */
+        height: 85vh;
         max-height: 800px;
         display: flex;
         justify-content: center;
@@ -240,28 +224,17 @@ import sprzet from '../../assets/images/kosiara.jpg'
         pointer-events: none;
     }
 
-    /* Jasnozielone koło - tło pod Twoje zdjęcie */
-    .profile-placeholder {
+    .profile {
         position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #c5f07a9b;
-        border-radius: 50% 50% 12% 12%;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        border: 2px dashed #0c3b2e;
-        overflow: hidden; /* Przycina prostokątne krawędzie zdjęcia do kształtu koła */
+        bottom: -20px;
+        width: auto !important;
+        height: 110% !important;
+        object-fit: contain;
+        object-position: bottom center;
+        display: block;
+        z-index: 4;
     }
 
-    .placeholder-text {
-        color: #0c3b2e;
-        font-weight: 700;
-        font-size: 1.2rem;
-    }
-
-    /* Pływająca odznaka u góry (Gwarancja Satysfakcji) */
     .badge-guarantee {
         position: absolute;
         bottom: 120px;
@@ -289,7 +262,6 @@ import sprzet from '../../assets/images/kosiara.jpg'
         margin-bottom: 0.2rem;
     }
 
-    /* Pływająca ramka realizacji na dole */
     .badge-floating-card {
         position: absolute;
         bottom: 10px;
@@ -308,95 +280,141 @@ import sprzet from '../../assets/images/kosiara.jpg'
         color: #6b7280;
         box-shadow: 0 15px 30px rgba(0,0,0,0.4);
         z-index: 4;
-        box-sizing:content-box;
+        box-sizing: content-box;
     }
 
-    .sprzet{
+    .sprzet {
         position: absolute;
         inset: 0;
         width: 100% !important;
         height: 100% !important;
-        object-fit:cover;
+        object-fit: cover;
         border-radius: 10%;
     }
 
-/* WIDOK MOBILNY (Telefony i małe tablety) */
+    /* =======================================================
+       TYLKO WIDOK MOBILNY (Telefony i małe ekrany)
+       ======================================================= */
     @media (max-width: 1024px) {
         
-        /* Zmiana gradientu na pionowy - ściemniamy głównie dół, aby tekst był super czytelny */
+        /* 1. NAKŁADKA (z-index: 3)
+           - Zakrywa tło ogrodu ORAZ dolną część postaci Kamila
+           - 'pointer-events: none' przepuszcza kliknięcia pod spód */
         .hero-overlay {
-            background: linear-gradient(to bottom, rgba(12, 30, 20, 0.1) 0%, rgba(12, 30, 20, 0.6) 50%, rgba(12, 30, 20, 0.95) 100%);
+            z-index: 3;
+            pointer-events: none;
+            background: linear-gradient(
+                to bottom,
+                rgba(12, 30, 20, 0) 0%,
+                rgba(12, 30, 20, 0.1) 30%,
+                rgba(12, 30, 20, 1) 50%,
+                rgba(12, 30, 20, 1) 100%,
+                rgba(12, 30, 20, 1) 100%
+            );
         }
 
-        /* Odwrócenie kolejności (Profil na górę, tekst na dół) */
+        /* 2. GŁÓWNY KONTENER
+           - Usuwamy wymuszony z-index, żeby elementy w środku mogły mieć własne warstwy */
         .hero-content {
-            flex-direction: column-reverse;
+            height: auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             justify-content: flex-end;
-            padding: 6rem 1.5rem 3rem 1.5rem; /* Większy odstęp z góry (6rem), aby zrobić miejsce na lewitujący Navbar */
-            gap: 1.5rem;
+            padding: 8rem 1.5rem 3.5rem 1.5rem;
+            position: relative;
+            z-index: auto; /* Kluczowe! */
         }
 
-        /* 1. SEKCJA PROFILOWA (Teraz na górze) */
+        /* 3. POSTAĆ KAMILA (z-index: 2)
+           - Leży POD .hero-overlay (który ma 3)
+           - Dzięki temu gradient wchodzi na postać i płynnie gasi ją ku dołowi */
         .hero-profile-box {
+            position: absolute;
+            top:auto;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 38%;
+            right: auto;
             width: 100%;
-            max-width: 320px; /* Ograniczamy szerokość, by na dużych telefonach nie była za wielka */
-            height: 600px;
-            margin: 0 auto; /* Wyśrodkowanie koła na ekranie */
+            max-width: 320px;
+            height: 480px;
+            margin: 0;
+            z-index: 2; /* PONIŻEJ nakładki (3) */
+            pointer-events: none;
         }
 
-        .profile-placeholder {
-            width: 100%;
-            height: 100%;
-            padding: 1rem;
+        .profile {
+            position: absolute;
+            bottom: -40;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto !important;
+            height: 100% !important;
+            max-width: 100%;
+            object-fit: contain;
+            object-position: top center;
+            display: block;
+            z-index: 2; /* Spójne z boksem */
         }
 
-        .placeholder-text {
-            font-size: 0.9rem;
-        }
-
-        /* Zmniejszona odznaka dla mobile - bliżej krawędzi koła */
+        /* 4. ODZNAKA SATYSFAKCJI (z-index: 5)
+           - Na wierzchu, żeby była ostra i wyrazista obok ramienia */
         .badge-guarantee {
-            width: 90px;
-            height: 90px;
-            top: 5px;
-            right: -10px;
-            font-size: 0.65rem;
-            border-width: 3px;
+            position: absolute;
+            top: 35px;
+            right: 5px;
+            bottom: auto;
+            left: auto;
+            width: 82px;
+            height: 82px;
+            font-size: 0.6rem;
+            border-width: 2.5px;
+            z-index: 5;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
         }
 
         .badge-guarantee .icon {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
-        /* Na telefonie ukrywamy dolną karteczkę, by nie robić bałaganu (jak na wzorze) */
+        /* 5. UKRYCIE KAFELKA ZE SPRZĘTEM NA MOBILE */
         .badge-floating-card {
             display: none;
         }
 
-        /* 2. SEKCJA TEKSTOWA (Teraz na dole) */
+        /* 6. TEKST I PRZYCISK (z-index: 10)
+           - ZAWSZE na samej górze ponad ciemnym gradientem */
         .hero-text-box {
+            position: relative;
+            z-index: 10; /* NAJWYSZA warstwa */
             max-width: 100%;
-            text-align: left; /* Zgodnie ze wzorem, tekst na telefonie zostaje do lewej */
+            text-align: left;
+            margin-top: 240px; /* Przestrzeń u góry, by odsłonić twarz i ramiona */
         }
 
         .hero-text-box h1 {
-            font-size: 2.2rem; /* Znacznie mniejszy nagłówek dla telefonów */
-            margin-bottom: 1rem;
+            font-size: 2.1rem;
+            line-height: 1.15;
+            margin-bottom: 0.8rem;
         }
 
         .hero-text-box p {
-            font-size: 1rem;
-            margin-bottom: 2rem;
-            max-width: 90%; /* Żeby linie nie dotykały samej krawędzi ekranu */
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            color: #d1d5db;
+            max-width: 100%;
         }
 
         .cta-button {
-            padding: 0.8rem 1.5rem;
+            padding: 0.85rem 1.8rem;
             font-size: 0.95rem;
         }
 
         .happy-clients {
-            margin-top: 2rem;
+            margin-top: 1.8rem;
+            gap: 0.75rem;
         }
     }
 </style>
