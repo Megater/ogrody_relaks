@@ -336,22 +336,20 @@ import sprzet from '../../assets/images/kosiara.jpg';
             transform: translateX(-50%);
             bottom: 38%;
             right: auto;
-            width: 100%;
-            max-width: 320px;
-            height: 480px;
             margin: 0;
             z-index: 2; /* PONIŻEJ nakładki (3) */
             pointer-events: none;
+            width: auto;
+            height: 55vh;
         }
 
         .profile {
             position: absolute;
+            height: auto;
+            width: auto;
             bottom: -40;
             left: 50%;
             transform: translateX(-50%);
-            width: auto !important;
-            height: 100% !important;
-            max-width: 100%;
             object-fit: contain;
             object-position: top center;
             display: block;
@@ -362,20 +360,21 @@ import sprzet from '../../assets/images/kosiara.jpg';
            - Na wierzchu, żeby była ostra i wyrazista obok ramienia */
         .badge-guarantee {
             position: absolute;
-            top: 35px;
-            right: 5px;
+            top: 20vh;
+            left: 20vw;
+            right: auto;
+            
             bottom: auto;
-            left: auto;
-            width: 82px;
-            height: 82px;
-            font-size: 0.6rem;
+            width: 11vh;
+            height: 11vh;
+            font-size: 1.4vh;
             border-width: 2.5px;
             z-index: 5;
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
         }
 
         .badge-guarantee .icon {
-            font-size: 1.1rem;
+            font-size: 2vh;
         }
 
         /* 5. UKRYCIE KAFELKA ZE SPRZĘTEM NA MOBILE */
@@ -390,17 +389,19 @@ import sprzet from '../../assets/images/kosiara.jpg';
             z-index: 10; /* NAJWYSZA warstwa */
             max-width: 100%;
             text-align: left;
-            margin-top: 240px; /* Przestrzeń u góry, by odsłonić twarz i ramiona */
+            margin-top: 70vw; /* Przestrzeń u góry, by odsłonić twarz i ramiona */
+            margin-bottom: auto;
+            
         }
 
         .hero-text-box h1 {
-            font-size: 2.1rem;
+            font-size: 7vw;
             line-height: 1.15;
             margin-bottom: 0.8rem;
         }
 
         .hero-text-box p {
-            font-size: 0.95rem;
+            font-size: 5vw;
             line-height: 1.5;
             margin-bottom: 1.8rem;
             color: #d1d5db;
@@ -409,7 +410,7 @@ import sprzet from '../../assets/images/kosiara.jpg';
 
         .cta-button {
             padding: 0.85rem 1.8rem;
-            font-size: 0.95rem;
+            font-size: 4vw;
         }
 
         .happy-clients {
