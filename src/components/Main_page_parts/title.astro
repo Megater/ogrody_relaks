@@ -69,18 +69,20 @@ import sprzet from '../../assets/images/kosiara.jpg';
 </main>
 
 <style>
-    /* Reset i ogólne ustawienia */
-    * {
+/* Reset i ogólne ustawienia */
+    *, *::before, *::after {
         box-sizing: border-box;
     }
 
-    /* 1. SEKCJA GŁÓWNA (DESKTOP BEZ ZMIAN) */
+    /* 1. SEKCJA GŁÓWNA (DESKTOP) */
     .hero-section {
         position: relative;
-        min-width: 100vw;
-        height: 100svh;
+        width: 100%;
+        min-height: 100vh;
+        /* Zmiana: flex start żeby zawartość była przyklejona od góry, 
+           a profil sam ułożył się na dole */
         display: flex;
-        align-items: center;
+        align-items: stretch; 
         justify-content: center;
         overflow: hidden;
         background-color: #0c3b2e;
@@ -90,8 +92,8 @@ import sprzet from '../../assets/images/kosiara.jpg';
     .hero-bg {
         position: absolute;
         inset: 0;
-        width: 100% !important;
-        height: 100% !important;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
         z-index: 1;
     }
@@ -104,29 +106,30 @@ import sprzet from '../../assets/images/kosiara.jpg';
         pointer-events: none;
     }
 
-    /* 2. KONTENER Z ZAWARTOŚCIĄ (DESKTOP BEZ ZMIAN) */
+    /* 2. KONTENER Z ZAWARTOŚCIĄ (DESKTOP) */
     .hero-content {
         position: relative;
         z-index: 10;
         width: 100%;
-        max-width: 1280px;
-        height: 100vh;
-        min-height: 700px;
-        padding: 0 2rem;
+        max-width: 1580px;
+        min-height: 100vh; /* Zmienione z height: 100vh na min-height */
+        padding: 0 1rem;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: center; /* Tekst na środku ekranu w pionie */
     }
 
-    /* 3. LEWA STRONA - TEKST (DESKTOP BEZ ZMIAN) */
+    /* 3. LEWA STRONA - TEKST (DESKTOP) */
     .hero-text-box {
-        width: auto;
-        max-width: 650px;
+        position: relative;
+        z-index: 11;
+        width: 100%;
+        max-width: 780px;
         color: #ffffff;
     }
 
     .hero-text-box h1 {
-        font-size: 3.5rem;
+        font-size: 4rem;
         line-height: 1.15;
         font-weight: 800;
         margin-bottom: 1.5rem;
@@ -138,7 +141,7 @@ import sprzet from '../../assets/images/kosiara.jpg';
     }
 
     .hero-text-box p {
-        font-size: 1.5rem;
+        font-size: 2rem;
         line-height: 1.6;
         color: #e5e5e5;
         margin-bottom: 2.5rem;
@@ -147,7 +150,7 @@ import sprzet from '../../assets/images/kosiara.jpg';
     .cta-button {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 1rem;
         background-color: #c4f07a;
         color: #0c3b2e;
         text-decoration: none;
@@ -210,25 +213,26 @@ import sprzet from '../../assets/images/kosiara.jpg';
         color: #d1d5db;
     }
 
-    /* 4. PRAWA STRONA - PROFIL (DESKTOP BEZ ZMIAN) */
+    /* 4. PRAWA STRONA - PROFIL (DESKTOP) */
     .hero-profile-box {
         position: absolute;
         right: 2rem;
-        bottom: 0;
-        width: 520px;
-        height: 85vh;
-        max-height: 800px;
+        bottom: 0; /* ZAWSZE przyklejone do dolnej krawędzi hero-section */
+        width: 320px;
+        height: 100vh; /* Rozmiar dopasowany do ekranu, bez przeskakiwania */
+        max-height: 1000px;
         display: flex;
         justify-content: center;
-        align-items: flex-end;
+        align-items: flex-end; /* Elementy wewnątrz lądują na dole */
         pointer-events: none;
+        z-index: 10;
     }
 
     .profile {
-        position: absolute;
-        bottom: -20px;
-        width: auto !important;
-        height: 110% !important;
+        position: relative; /* Zmienione na relative */
+        bottom: 0px; /* Minimalne schowanie ucięcia z dołu */
+        width: auto;
+        height: 100%; /* Dopasowuje się do rodzica hero-profile-box */
         object-fit: contain;
         object-position: bottom center;
         display: block;
@@ -237,8 +241,8 @@ import sprzet from '../../assets/images/kosiara.jpg';
 
     .badge-guarantee {
         position: absolute;
-        bottom: 120px;
-        right: -90px;
+        bottom:290px;
+        right: 440px; /* Przesunięto nieco bliżej środka, by nie wystawało za prawy brzeg ekranu na mniejszych laptopach */
         background-color: #0c3b2e;
         color: #c4f07a;
         width: 120px;
@@ -264,10 +268,10 @@ import sprzet from '../../assets/images/kosiara.jpg';
 
     .badge-floating-card {
         position: absolute;
-        bottom: 10px;
-        right: -40px;
-        width: 180px;
-        height: 180px;
+        bottom: 150px; /* Lekko podniesione nad krawędź */
+        right: 300px; /* Zbliżone do środka, podobnie jak badge wyżej */
+        width: 200px; /* Delikatnie pomniejszone, żeby lepiej komponowało się z sylwetką */
+        height:200px;
         background-color: #ffffff;
         border-radius: 16px;
         border: 4px solid #e5e5e5;
@@ -281,38 +285,36 @@ import sprzet from '../../assets/images/kosiara.jpg';
         box-shadow: 0 15px 30px rgba(0,0,0,0.4);
         z-index: 4;
         box-sizing: content-box;
+        overflow: hidden; /* Zapewnia, że border-radius dotyczy też obrazka wewnątrz */
     }
 
     .sprzet {
-        position: absolute;
-        inset: 0;
-        width: 100% !important;
-        height: 100% !important;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
-        border-radius: 10%;
     }
 
-    /* =======================================================
+/* =======================================================
        TYLKO WIDOK MOBILNY (Telefony i małe ekrany)
        ======================================================= */
     @media (max-width: 1024px) {
         
-        /* KLUCZOWA ZMIANA: Zezwalamy kontenerowi rosnąć na małych ekranach, by nie ucinało dołu */
         .hero-section {
-            height: auto;
-            min-height: 100svh;
+            /* Powrót do svh - stabilna wysokość */
+            height: 200vw;
+            min-height: 100vh;
         }
 
-        /* 1. NAKŁADKA (z-index: 3) */
+        /* 1. NAKŁADKA (WARSTWA 3 - pomiędzy Kamilem a tekstem) */
         .hero-overlay {
             z-index: 3;
             pointer-events: none;
             background: linear-gradient(
                 to bottom,
                 rgba(12, 30, 20, 0) 0%,
-                rgba(12, 30, 20, 0.1) 30%,
-                rgba(12, 30, 20, 1) 50%,
-                rgba(12, 30, 20, 1) 100%,
+                rgba(12, 30, 20, 0) 0%,    /* Przezroczyste na twarzy i górze */
+                rgba(12, 30, 20, 0.95) 50%, /* Zaczyna mocno ciemnieć na wysokości klatki (pod tekstem) */
+                rgba(12, 30, 20, 1) 60%,    /* Pełne ciemne tło */
                 rgba(12, 30, 20, 1) 100%
             );
         }
@@ -320,62 +322,57 @@ import sprzet from '../../assets/images/kosiara.jpg';
         /* 2. GŁÓWNY KONTENER */
         .hero-content {
             height: auto;
-            min-height: 100vh;
+            min-height: 100svw;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 8rem 1.5rem 3.5rem 1.5rem;
-            position: relative;
-            z-index: auto;
+            padding: 6rem 1.5rem 3.5rem 1.5rem;
+            z-index: auto; 
         }
 
-        /* 3. POSTAĆ KAMILA (z-index: 2) */
+        /* 3. KONTENER PROFILU */
         .hero-profile-box {
             position: absolute;
-            top: auto;
-            left: 50%;
-            transform: translateX(-50%);
-            bottom: 38%;
-            right: auto;
-            margin: 0;
-            z-index: 2;
-            pointer-events: none;
-            width: auto;
-            height: 120vw;
+            top: 20px; /* Sztywny, bezpieczny odstęp od górnego menu. Głowa nie wjedzie wyżej. */
+            left: 0;
+            right: 0;
+            bottom: auto; /* Kasujemy pozycjonowanie od dołu */
+            width: 100%;
+            height: 120svw; /* Kontener zajmuje stałą część ekranu */
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: auto; 
         }
 
+        /* SAMO ZDJĘCIE KAMILA */
         .profile {
-            position: absolute;
-            height: auto;
-            width: auto;
-            bottom: -40px;
-            left: 50%;
-            transform: translateX(-50%);
+            position: relative;
+            bottom: 0; /* Przestajemy podnosić zdjęcie pikselami */
+            width: 100%;
+            height: 100%;
             object-fit: contain;
-            object-position: top center;
+            object-position: bottom center;
             display: block;
-            z-index: 2;
+            z-index: 2; 
         }
 
-        /* 4. ODZNAKA SATYSFAKCJI (z-index: 5) */
+        /* 4. ODZNAKA SATYSFAKCJI */
         .badge-guarantee {
             position: absolute;
-            top: 160px;
-            left: 90px;
-            right: auto;
-            bottom: auto;
-            width: 25vw;
-            height: 25vw;
-            max-width: 160px;
-            max-height: 160px;
-            font-size: 2.5vw;
-            border-width: 2.5px;
+            top: 1svw;
+            bottom: auto; /* Trzyma się dolnej krawędzi kontenera profilu, a nie całego ekranu */
+            left: auto;
+            right: 20px;
+            width: 110px;
+            height: 110px;
+            font-size: 0.7rem;
+            border-width: 3px;
             z-index: 5;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
         }
 
         .badge-guarantee .icon {
-            font-size: 5vw;
+            font-size: 1.5rem;
         }
 
         /* 5. UKRYCIE KAFELKA ZE SPRZĘTEM NA MOBILE */
@@ -383,33 +380,32 @@ import sprzet from '../../assets/images/kosiara.jpg';
             display: none;
         }
 
-        /* 6. TEKST I PRZYCISK (z-index: 10) */
+        /* 6. TEKST I PRZYCISK (WARSTWA 10 - najwyżej, wyraźnie czytelny na gradiencie) */
         .hero-text-box {
             position: relative;
             z-index: 10;
             max-width: 100%;
             text-align: left;
-            margin-top: 80vw;
-            margin-bottom: auto;
+            padding-top: 0;
+            margin-top: 0;
         }
 
         .hero-text-box h1 {
-            font-size: 7vw;
-            line-height: 1.15;
+            font-size: 7svw;
+            line-height: 1.2;
             margin-bottom: 0.8rem;
         }
 
         .hero-text-box p {
-            font-size: 5vw;
+            font-size: 1.1rem;
             line-height: 1.5;
             margin-bottom: 1.8rem;
             color: #d1d5db;
-            max-width: 100%;
         }
 
         .cta-button {
             padding: 0.85rem 1.8rem;
-            font-size: 4vw;
+            font-size: 1rem;
         }
 
         .happy-clients {

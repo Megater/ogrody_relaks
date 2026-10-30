@@ -76,9 +76,15 @@ import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
         padding: 0;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
+        /* ZMUSZAMY ELEMENTY DO ZACZYNANIA SIĘ OD GÓRY I ZAJMOWANIA PEŁNEJ SZEROKOŚCI */
+        justify-content: flex-start;
+        align-items: stretch;
+        width: 100%;
+        
+        /* Dodaj padding na górze, aby zawartość nie chowała się pod przyklejonym (fixed) menu. 
+        Wartość dostosuj do wysokości swojego menu mobilnego */
+        padding-top: 80px; 
+        }
 
     #Desktop, 
     #Mobile {
@@ -141,7 +147,6 @@ import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
 
         main {
             width: 100%; 
-            max-width: 1440px; 
         }
     }
 </style>
