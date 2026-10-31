@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
-import garden from "../assets/Images/garden2.jpg"
+import garden from "../assets/Images/garden.jpg"
+import satis from "../assets/Images/satisfaction.png"
 ---
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -8,81 +9,203 @@ import garden from "../assets/Images/garden2.jpg"
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Lugrasimo&family=Yesteryear&display=swap" rel="stylesheet">
 </head>
 <main>
-
+    <div class="sticker">
+        <Image src={satis} alt="sticker_photo" class="sticker_png" height={200}/ >
+    </div>
 
     <div class="text">
-        <li class="info">Grójec i okolice</li>
-        <h1>Stwórzmy przestrzeń, w której odetchniesz. 🏖️</h1>
+        <h1>Kompleksowa pielęgnacja i zakładanie ogrodów od A do <span class="z_letter">Z</span>.</h1>
+        <h2>Dbamy o wspaniałe przestrzenie, które wnoszą piękno, wartość i harmonię do Twojego otoczenia każdego dnia.</h2>
+        <div class="lower_comp">
+
+            <div class="customers-widget">
+                <!-- Sekcja z nachodzącymi na siebie kółkami -->
+                <div class="avatars-group">
+                    <!-- Możesz tu wrzucić tagi <img> lub użyć background-image w CSS -->
+                    <div class="avatar dark-gray"></div>
+                    <div class="avatar light-gray"></div>
+                    <div class="avatar dark-gray"></div>
+                    <div class="avatar light-gray"></div>
+                </div>
+                
+                <!-- Sekcja z tekstem -->
+                <div class="customers-text">
+                    <span class="customers-number">120+</span>
+                    <span class="customers-label">Zadowolonych klientów</span>
+                </div>
+            </div>
+
+            <button>Rozpocznij ➜</button>
+        </div>
     </div>
 
-    <div class="bg_cover"></div>
-    <div class="bg_img">
-        <Image 
-        src={garden} 
-        alt="garden_photo" 
-        class="garden_img"
-        />
+    <div class="bg_complet">
+        <div class="bg_cover"></div>
+        <div class="garden">
+            <Image src={garden} alt="garden_img" class="garden_photo"/>
+        </div>
     </div>
-
-
-
 </main>
 
 <style>
     main{
         display: flex;
-        width: 100%;
-        margin: auto;
-    }
-    .bg_img{
-        display: block;
-        width: auto;
-        height: 88svh;
-        margin: auto;
-        margin-right: 0;
-        z-index: 1;
+        justify-content: center;
+        justify-items: center;
     }
 
+    .garden_photo{
+        width: 100vw;
+        height: auto;
+        margin: 0;
+    }
 
-    .garden_img{
+    .garden{
         position: relative;
         z-index: 1;
-        height: 100%;
-        width: 1300px;
-    }
-
-    .bg_cover{
-        position:absolute;
+        margin:auto;
+        display: flex;
+        justify-content: center;
         width: 100%;
-        height: 88svh;
+        height: 92vh;
+    }
+    .bg_cover{
+        position: absolute;
         z-index: 2;
-        background: linear-gradient(to right, rgb(231, 231, 231) 45%, rgba(231, 231, 231, 0.2), rgba(231, 231, 231, 0));
+        background: radial-gradient(circle at center, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.4) 90%, rgba(0, 0, 0, 0.3) 100%);
+        width: 100%;
+        height: 92vh;
+        margin: auto;
+
     }
 
     .text{
-        position:absolute;
-        color: rgb(20, 90, 53);
-        z-index: 3;
-        width: 40%;
-        margin: 30px;
-        text-align: left;
+        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        color: whitesmoke;
         justify-content: center;
+        position: absolute;
+        z-index: 3;
+        margin: 15vh;
+        padding: 15px 30px;
+        background: rgba(24, 91, 56, 0.6);
+        border-radius: 20px;
+        width: 55vw;
+        height: auto;
+        text-align: center;
+        border: 5px solid rgb(20, 90, 53);
 
     }
-
     .text h1{
-        font-family: "Lugrasimo", cursive;
-        font-weight: 400;
-        font-style: normal;
-        font-size:60px;
-        text-shadow: 10px 1px 30px rgba(0, 0, 0, 0.6);
-        margin: auto;
+        font-weight: 900;
+        font-size: 4rem;
     }
 
-    .text li{
-        font-size: 25px;
-        margin: auto;
-
-        margin-bottom: 80px;
+    .text h2{
+        font-size: 2rem;
+        font-weight: 500;
     }
+
+    .text .z_letter{
+        color:rgb(134, 185, 66);
+    }
+
+    .lower_comp{
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .text button{
+        background: rgb(134, 185, 66, 0.8);
+        border: black;
+        border-radius: 20px;
+        color: white;
+        padding: 20px 30px;
+        font-weight: 900;
+        font-size: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s;
+        justify-self: start;
+    }
+
+    .text button:hover{
+        scale:105%;
+    }
+    
+    .sticker{
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        z-index: 4;
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        left: auto;
+        bottom: auto;
+        right: 330px;
+        top: 140px;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+    }
+
+        /* Główny kontener układający elementy w jednym rzędzie */
+    .customers-widget {
+        margin: auto 0 auto auto;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Odstęp między kółkami a tekstem */
+    font-family: Arial, sans-serif; /* Zmień na czcionkę używaną na stronie */
+    }
+
+    /* Kontener na awatary */
+    .avatars-group {
+    display: flex;
+    }
+
+    /* Pojedyncze kółko (awatar) */
+    .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%; /* Tworzy idealne koło */
+    border: 3px solid #0f291e; /* Ciemnozielona ramka z obrazka */
+    margin-left: -15px; /* Ujemny margines sprawia, że kółka na siebie nachodzą */
+    
+    /* Przydatne jeśli wstawisz tam zdjęcia przez background-image */
+    background-size: cover;
+    background-position: center;
+    }
+
+    /* Zerujemy margines dla pierwszego kółka, żeby nie uciekało w lewo */
+    .avatar:first-child {
+    margin-left: 0;
+    }
+
+    /* Kolory zastępcze z Twojego obrazka (do podmiany na zdjęcia) */
+    .dark-gray { background-color: #a0a6aa; }
+    .light-gray { background-color: #d1d5db; }
+
+    /* Kontener na tekst układający napisy jeden pod drugim */
+    .customers-text {
+    display: flex;
+    flex-direction: column;
+    }
+
+    /* Styl dla "120+" */
+    .customers-number {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    line-height: 1.1;
+    }
+
+    /* Styl dla "Zadowolonych klientów" */
+    .customers-label {
+    color: #dcdcdc; /* Jasnoszary kolor tekstu */
+    font-size: 0.95rem;
+    }
+
+
+    
+
 </style>
