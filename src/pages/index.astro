@@ -3,12 +3,20 @@ import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Title from '../components/Main_page_parts/title.astro';
 import Realizacje from '../components/Main_page_parts/realizacje.astro'
+import Process from '../components/Main_page_parts/process.astro'
+import Testimonials from '../components/Main_page_parts/Testimonials.astro'
+import Booking from '../components/Main_page_parts/booking.astro'
+
+
 ---
 
 <Layout>
 	<main id="page" class="page">
 			<Title/>
 			<Realizacje/>
+			<Process/>
+			<Testimonials/>
+			<Booking/>
 	</main>
 </Layout>
 

@@ -1,0 +1,387 @@
+---
+// Footer.astro
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <!-- Opcjonalne tło ze zdjęciem (podobnie jak na projekcie, gdzie w tle majaczy sprzęt ogrodniczy) -->
+  <div class="footer-bg-image"></div>
+  
+  <div class="container">
+    <div class="footer-grid">
+      
+      <!-- KOLUMNA 1: O firmie -->
+      <div class="footer-col brand-col">
+        <div class="logo">
+          Ogrody <span>Relaks</span>
+        </div>
+        <p class="company-desc">
+          Zapewniamy profesjonalną pielęgnację trawników, projektowanie i kompleksowe usługi ogrodnicze dla domów i firm. Piękny ogród przez cały sezon.
+        </p>
+        <p class="owner-name">Właściciel: Kamil Salmonowicz</p>
+      </div>
+
+      <!-- KOLUMNA 2: Nawigacja po komponentach z Twojego edytora -->
+      <div class="footer-col nav-col">
+        <h3>Na skróty</h3>
+        <ul class="footer-links">
+          <li><a href="#start">Strona główna</a></li> <!-- title.astro -->
+          <li><a href="#realizacje">Nasze realizacje</a></li> <!-- realizacje.astro -->
+          <li><a href="#proces">Jak działamy</a></li> <!-- process.astro -->
+          <li><a href="#opinie">Opinie klientów</a></li> <!-- Testimonials.astro -->
+          <li><a href="#rezerwacja">Zarezerwuj spotkanie</a></li> <!-- booking.astro -->
+        </ul>
+      </div>
+
+      <!-- KOLUMNA 3: Kontakt -->
+      <div class="footer-col contact-col">
+        <h3>Kontakt</h3>
+        <ul class="contact-list">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <a href="mailto:kontakt@ogrodyrelaks.pl">kontakt@ogrodyrelaks.pl</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <a href="tel:+48516753132">+48 516 753 132</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span>Grójec i okolice</span>
+          </li>
+        </ul>
+        
+        <div class="social-links">
+          <!-- Ikona Instagram -->
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          </a>
+          <!-- Ikona Facebook -->
+          <a href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- KOLUMNA 4: Obszary działania w stylu "pastylek" -->
+      <div class="footer-col areas-col">
+        <h3>Gdzie działamy</h3>
+        <div class="pills-container">
+          <span class="area-pill">Grójec</span>
+          <span class="area-pill">Belsk Duży</span>
+          <span class="area-pill">Tarczyn</span>
+          <span class="area-pill">Mogielnica</span>
+          <span class="area-pill">Chynów</span>
+          <span class="area-pill">Goszczyn</span>
+          <span class="area-pill">Jasieniec</span>
+          <span class="area-pill">Błędów</span>
+        </div>
+        
+        <!-- Opcjonalna mała mapka ilustracyjna -->
+        <div class="map-placeholder">
+          <!-- Wstaw tu mały screen mapy (z Google Maps) w skali szarości, albo zostaw ten wektorowy wzorek -->
+          <svg width="100%" height="100%" viewBox="0 0 200 80" preserveAspectRatio="none">
+             <path d="M0,40 Q50,0 100,40 T200,40 L200,80 L0,80 Z" fill="rgba(255,255,255,0.05)"/>
+             <path d="M0,60 Q50,20 100,60 T200,60 L200,80 L0,80 Z" fill="rgba(255,255,255,0.05)"/>
+          </svg>
+          <span class="map-text">Rejon Grójecki</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OGROMNY NAPIS W TLE -->
+    <div class="giant-text">
+      OGRODY RELAKS
+    </div>
+
+    <!-- STOPKA DOLNA -->
+    <div class="footer-bottom">
+      <div class="copyright">
+        &copy; {currentYear} Ogrody Relaks. Wszelkie prawa zastrzeżone.
+      </div>
+      <div class="developer">
+        Zaprojektowane i wdrożone przez <a href="#" class="dev-link">Mateusz Zolcik</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  /* Główne style stopki */
+  .site-footer {
+    position: relative;
+    background-color: #121e14; /* Bardzo ciemna zieleń, wchodząca w czerń, inspirowana projektem */
+    color: #e5e7eb;
+    padding: 80px 0 30px 0;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    border-radius: 40px 40px 0 0; /* Zaokrąglone rogi góry stopki */
+    margin-top: 60px;
+  }
+
+  /* Rozmyte tło symulujące fotografię jak w oryginalnym designie */
+  .footer-bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Tu możesz wstawić ścieżkę do ciemnego zdjęcia trawy/sprzętu: */
+    /* background-image: url('../assets/images/dark-grass-bg.jpg'); */
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    z-index: 0;
+    mix-blend-mode: luminosity;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Siatka kolumn */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  .footer-col h3 {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+  }
+
+  /* Kolumna 1: Brand */
+  .logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #86b942; /* Jasnozielony akcent */
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span {
+    color: #ffffff;
+  }
+
+  .company-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #9ca3af;
+    margin-bottom: 16px;
+    max-width: 90%;
+  }
+
+  .owner-name {
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  /* Kolumna 2: Nawigacja */
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease, padding-left 0.3s ease;
+  }
+
+  .footer-links a:hover {
+    color: #86b942;
+    padding-left: 5px;
+  }
+
+  /* Kolumna 3: Kontakt */
+  .contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #9ca3af;
+    font-size: 0.95rem;
+  }
+
+  .contact-list svg {
+    width: 18px;
+    height: 18px;
+    color: #86b942;
+    flex-shrink: 0;
+  }
+
+  .contact-list a {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .contact-list a:hover {
+    color: #ffffff;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 16px;
+  }
+
+  .social-links a {
+    color: #86b942;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .social-links svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .social-links a:hover {
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  /* Kolumna 4: Obszary (Pastylki) */
+  .pills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .area-pill {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #d1d5db;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .area-pill:hover {
+    background-color: rgba(134, 185, 66, 0.2);
+    border-color: #86b942;
+    color: #ffffff;
+  }
+
+  .map-placeholder {
+    width: 100%;
+    height: 80px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .map-text {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* OGROMNY NAPIS (LAWNBUSTER style) */
+  .giant-text {
+    font-size: clamp(4rem, 12vw, 11rem);
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.03); /* Bardzo przezroczysty */
+    text-align: center;
+    line-height: 1;
+    margin: 40px 0;
+    user-select: none;
+    letter-spacing: -2px;
+    
+    /* Efekt zanikania dołu napisu, jak na designie */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Dolny pasek */
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+
+  .dev-link {
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+
+  .dev-link:hover {
+    color: #86b942;
+  }
+
+  /* Responsywność */
+  @media (max-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 50px;
+    }
+    .giant-text {
+      margin: 20px 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .site-footer {
+      padding: 60px 0 20px 0;
+      border-radius: 20px 20px 0 0;
+    }
+    .container {
+      padding: 0 24px;
+    }
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+      gap: 16px;
+    }
+    .giant-text {
+      /* Na bardzo wąskich ekranach wyłączamy ten wielki napis lub go drastycznie pomniejszamy */
+      font-size: 2.5rem; 
+      letter-spacing: 0;
+      margin: 30px 0;
+    }
+  }
+</style>

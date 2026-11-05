@@ -1,6 +1,7 @@
 ---
 import NavbarDesktop from '../components/Navbars/NavbarDesktop.astro';
 import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
+import Footer  from '../components/footer.astro';
 ---
 <!doctype html>
 <html lang="pl">
@@ -24,6 +25,9 @@ import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
         <main>
             <slot />
         </main>
+        <footer>
+            <Footer/>
+        </footer>
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {

@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import trawnik from '../../assets/images/Realizacje/trawnik.jpg'
 
+// Zewnętrzne linki (np. z Sanity, AWS S3, Cloudinary, Unsplash) będą działać automatycznie
 const realizacje = [
   {
     title: "Pielęgnacja trawników",
@@ -52,53 +53,60 @@ const realizacje = [
   <div class="container">
     <div class="section-header">
       <div class="header-text">
+        <span class="kicker">Nasza praca</span>
         <h2>NASZE REALIZACJE</h2>
       </div>
       <a href="/realizacje" class="view-all">Zobacz wszystkie realizacje &rarr;</a>
     </div>
   </div>
 
-  <!-- Główny kontener slidera -->
   <div class="slider-wrapper">
-    
     <!-- Wagonik 1 -->
     <div class="slider-track">
       {realizacje.map((item) => (
         <a href={item.href} class="card">
-            <div class="card-image-wrapper">
+          <div class="card-image-wrapper">
             {typeof item.image === 'string' ? (
-                <img src={item.image} alt={item.title} class="card-img" loading="lazy" />
+              <img src={item.image} alt={item.title} class="card-img" loading="lazy" />
             ) : (
-                <Image src={item.image} alt={item.title} class="card-img" />
+              <Image src={item.image} alt={item.title} class="card-img" />
             )}
             <div class="card-icon">{item.icon}</div>
-            </div>
+          </div>
+          <!-- DODANO: Tego brakowało w Twoim kodzie! -->
+          <div class="card-content">
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
         </a>
       ))}
     </div>
 
-    <!-- Wagonik 2 (Kopia zapewniająca płynne przejście) -->
+    <!-- Wagonik 2 (Kopia do nieskończonej pętli) -->
     <div class="slider-track" aria-hidden="true">
       {realizacje.map((item) => (
         <a href={item.href} class="card">
-            <div class="card-image-wrapper">
+          <div class="card-image-wrapper">
             {typeof item.image === 'string' ? (
-                <img src={item.image} alt={item.title} class="card-img" loading="lazy" />
+              <img src={item.image} alt={item.title} class="card-img" loading="lazy" />
             ) : (
-                <Image src={item.image} alt={item.title} class="card-img" />
+              <Image src={item.image} alt={item.title} class="card-img" />
             )}
             <div class="card-icon">{item.icon}</div>
-            </div>
+          </div>
+          <div class="card-content">
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
         </a>
       ))}
     </div>
-
   </div>
 </section>
 
 <style>
   .realizacje-section {
-    padding: 60px 0;
+    padding: 80px 0;
     background-color: #fafafa;
     overflow: hidden;
   }
@@ -114,7 +122,7 @@ const realizacje = [
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
     flex-wrap: wrap;
     gap: 20px;
   }
@@ -124,143 +132,164 @@ const realizacje = [
     font-weight: 700;
     color: #86b942;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     display: block;
     margin-bottom: 8px;
   }
 
   .header-text h2 {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     color: #153c24;
     margin: 0;
+    font-weight: 800;
   }
 
   .view-all {
     color: #153c24;
     text-decoration: none;
     font-weight: 700;
-    font-size: 0.95rem;
-    transition: color 0.3s ease;
+    font-size: 1rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: inline-block;
   }
 
   .view-all:hover {
     color: #86b942;
+    transform: translateX(5px);
   }
 
-  /* --- PERFEKCYJNE ZAPĘTLENIE --- */
+  /* --- SLIDER / WAGONIKI --- */
   .slider-wrapper {
-    display: flex; /* Ustawia oba wagoniki w jednym rzędzie */
-    gap: 25px; /* Odstęp między wagonikami */
+    display: flex;
+    gap: 25px;
     width: 100%;
     overflow: hidden;
-    padding: 20px 0; /* Miejsce na cienie kart */
+    padding: 20px 0 40px 0; /* Miejsce na cienie przy hoverze */
   }
 
-.slider-track {
+  .slider-track {
     display: flex;
-    gap: 25px; /* Odstęp między kartami */
-    flex-shrink: 0; /* Zapobiega ściskaniu się wagoników */
-    
-    /* KLUCZOWA ZMIANA: Zmusza wagonik do utrzymania pełnej szerokości */
+    gap: 25px;
+    flex-shrink: 0;
     width: max-content; 
-    
     animation: scroll 35s linear infinite;
+    will-change: transform; /* Optymalizacja wydajności animacji */
   }
 
-
-
-  /* Pauza przy najechaniu na dowolny fragment slidera */
   .slider-wrapper:hover .slider-track {
     animation-play-state: paused;
   }
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
+
+  /* NAPRAWIONY BŁĄD SKŁADNI: odjęcie gap'u (25px) od -100% */
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-100% - 25px)); }
   }
-  100% {
-    transform: translateX(calc(-100% - 25px));
-  }
-}
 
   /* --- KARTY --- */
   .card {
-    /* Ubezpieczenie szerokości karty */
-    width: 320px;
-    flex: 0 0 320px; 
-    
+    width: 340px;
+    flex: 0 0 340px; 
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: 16px;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Zapobiega "wylewaniu" się elementów z karty */
+    height: 100%;
   }
 
   .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
   }
 
   .card-image-wrapper {
     position: relative;
-    height: 220px;
-    border-radius: 12px 12px 0 0;
+    height: 240px;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden; /* Kluczowe dla efektu zoomu zdjęcia */
   }
 
   .card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 12px 12px 0 0;
+    transition: transform 0.6s ease; /* Płynny zoom */
+  }
+
+  /* Efekt zoom przy najechaniu na całą kartę */
+  .card:hover .card-img {
+    transform: scale(1.08);
+  }
+
+  /* Subtelny gradient pod ikoną, żeby była bardziej czytelna */
+  .card-image-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.15), transparent);
+    pointer-events: none;
   }
 
   .card-icon {
     position: absolute;
-    bottom: -25px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
+    bottom: 10px;
+    left: 24px;
+    width: 56px;
+    height: 56px;
     background: #ffffff;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-size: 1.6rem;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     z-index: 2;
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover .card-icon {
+    transform: scale(1.1);
   }
 
   .card-content {
-    padding: 40px 20px 25px 20px; 
+    padding: 40px 24px 30px 24px; 
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
   }
 
   .card-content h3 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     color: #153c24;
-    margin: 0 0 10px 0;
+    margin: 0 0 12px 0;
+    font-weight: 700;
   }
 
   .card-content p {
-    font-size: 0.95rem;
-    color: #666666;
+    font-size: 1rem;
+    color: #555555;
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   /* Responsywność */
   @media (max-width: 768px) {
     .card {
+      width: 280px;
       flex: 0 0 280px; 
     }
     .header-text h2 {
-      font-size: 1.8rem;
+      font-size: 2rem;
+    }
+    .card-image-wrapper {
+      height: 200px;
     }
   }
 </style>
