@@ -328,14 +328,14 @@ import sprzet from '../../assets/images/kosiara.jpg';
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 6rem 1.5rem 3.5rem 1.5rem;
+            padding: 6rem 0rem 1rem 0rem;
             z-index: auto; 
         }
 
         /* 3. KONTENER PROFILU */
         .hero-profile-box {
             position: absolute;
-            top: 20px; /* Sztywny, bezpieczny odstęp od górnego menu. Głowa nie wjedzie wyżej. */
+            top: 0px; /* Sztywny, bezpieczny odstęp od górnego menu. Głowa nie wjedzie wyżej. */
             left: 0;
             right: 0;
             bottom: auto; /* Kasujemy pozycjonowanie od dołu */
@@ -366,15 +366,15 @@ import sprzet from '../../assets/images/kosiara.jpg';
             bottom: auto; /* Trzyma się dolnej krawędzi kontenera profilu, a nie całego ekranu */
             left: auto;
             right: 20px;
-            width: 110px;
-            height: 110px;
-            font-size: 0.7rem;
+            width: 25vw;
+            height: 25vw;
+            font-size: 3vw;
             border-width: 3px;
             z-index: 5;
         }
 
         .badge-guarantee .icon {
-            font-size: 1.5rem;
+            font-size: 100%;
         }
 
         /* 5. UKRYCIE KAFELKA ZE SPRZĘTEM NA MOBILE */
@@ -386,6 +386,7 @@ import sprzet from '../../assets/images/kosiara.jpg';
         .hero-text-box {
             position: relative;
             z-index: 10;
+            width: 85vw;
             max-width: 100%;
             text-align: left;
             padding-top: 0;
