@@ -64,105 +64,203 @@ const googleReviews = [
   </div>
 
   <!-- SLIDER (WAGONIKI) -->
-  <div class="slider-wrapper">
-    <!-- Wagonik 1 -->
-    <div class="slider-track">
-      {googleReviews.map((review) => (
-        <div class="review-card">
-          
-          <div class="card-top">
-            <div class="author-info">
-              <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" />
-              <div class="author-text">
-                <span class="author-name">{review.name}</span>
-                <span class="author-role">{review.role}</span>
+  <div class="slider-wrapper" id="testimonialsSlider">
+    <div class="slider-inner" id="testimonialsInner">
+      <!-- Wagonik 1 -->
+      <div class="slider-track" data-track="1">
+        {googleReviews.map((review) => (
+          <div class="review-card">
+            
+            <div class="card-top">
+              <div class="author-info">
+                <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
+                <div class="author-text">
+                  <span class="author-name">{review.name}</span>
+                  <span class="author-role">{review.role}</span>
+                </div>
+              </div>
+              <div class="rating-number">{review.rating}</div>
+            </div>
+
+            <div class="card-middle">
+              <!-- Ikona cudzysłowu -->
+              <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
+              </svg>
+              <p class="review-text">{review.text}</p>
+            </div>
+
+            <div class="card-bottom">
+              <!-- Logo Google (G) -->
+              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+
+              <!-- Gwiazdki -->
+              <div class="stars-container">
+                {[1, 2, 3, 4, 5].map(() => (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+                ))}
+                <!-- Ikonka zweryfikowane -->
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
+                  <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
+                  <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
               </div>
             </div>
-            <div class="rating-number">{review.rating}</div>
+            
           </div>
+        ))}
+      </div>
 
-          <div class="card-middle">
-            <!-- Ikona cudzysłowu -->
-            <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
-            </svg>
-            <p class="review-text">{review.text}</p>
-          </div>
-
-          <div class="card-bottom">
-            <!-- Logo Google (G) -->
-            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
-
-            <!-- Gwiazdki -->
-            <div class="stars-container">
-              {[1, 2, 3, 4, 5].map(() => (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                </svg>
-              ))}
-              <!-- Ikonka zweryfikowane -->
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
-                <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
-                <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+      <!-- Wagonik 2 (Klon do nieskończonej pętli) -->
+      <div class="slider-track" aria-hidden="true" data-track="2">
+        {googleReviews.map((review) => (
+          <div class="review-card">
+            
+            <div class="card-top">
+              <div class="author-info">
+                <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
+                <div class="author-text">
+                  <span class="author-name">{review.name}</span>
+                  <span class="author-role">{review.role}</span>
+                </div>
+              </div>
+              <div class="rating-number">{review.rating}</div>
             </div>
-          </div>
-          
-        </div>
-      ))}
-    </div>
 
-    <!-- Wagonik 2 (Klon do nieskończonej pętli) -->
-    <div class="slider-track" aria-hidden="true">
-      {googleReviews.map((review) => (
-        <div class="review-card">
-          
-          <div class="card-top">
-            <div class="author-info">
-              <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" />
-              <div class="author-text">
-                <span class="author-name">{review.name}</span>
-                <span class="author-role">{review.role}</span>
+            <div class="card-middle">
+              <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
+              </svg>
+              <p class="review-text">{review.text}</p>
+            </div>
+
+            <div class="card-bottom">
+              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+
+              <div class="stars-container">
+                {[1, 2, 3, 4, 5].map(() => (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+                ))}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
+                  <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
+                  <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
               </div>
             </div>
-            <div class="rating-number">{review.rating}</div>
+            
           </div>
+        ))}
+      </div>
 
-          <div class="card-middle">
-            <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
-            </svg>
-            <p class="review-text">{review.text}</p>
-          </div>
-
-          <div class="card-bottom">
-            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
-
-            <div class="stars-container">
-              {[1, 2, 3, 4, 5].map(() => (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                </svg>
-              ))}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
-                <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
-                <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+      <!-- Wagonik 3 (Kopia do płynnego przewijania) -->
+      <div class="slider-track" aria-hidden="true" data-track="3">
+        {googleReviews.map((review) => (
+          <div class="review-card">
+            
+            <div class="card-top">
+              <div class="author-info">
+                <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
+                <div class="author-text">
+                  <span class="author-name">{review.name}</span>
+                  <span class="author-role">{review.role}</span>
+                </div>
+              </div>
+              <div class="rating-number">{review.rating}</div>
             </div>
+
+            <div class="card-middle">
+              <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
+              </svg>
+              <p class="review-text">{review.text}</p>
+            </div>
+
+            <div class="card-bottom">
+              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+
+              <div class="stars-container">
+                {[1, 2, 3, 4, 5].map(() => (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+                ))}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
+                  <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
+                  <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            
           </div>
-          
-        </div>
-      ))}
+        ))}
+      </div>
+
+      <!-- Wagonik 4 (Kopia dla ultra-szerokich ekranów) -->
+      <div class="slider-track" aria-hidden="true" data-track="4">
+        {googleReviews.map((review) => (
+          <div class="review-card">
+            
+            <div class="card-top">
+              <div class="author-info">
+                <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
+                <div class="author-text">
+                  <span class="author-name">{review.name}</span>
+                  <span class="author-role">{review.role}</span>
+                </div>
+              </div>
+              <div class="rating-number">{review.rating}</div>
+            </div>
+
+            <div class="card-middle">
+              <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
+              </svg>
+              <p class="review-text">{review.text}</p>
+            </div>
+
+            <div class="card-bottom">
+              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+
+              <div class="stars-container">
+                {[1, 2, 3, 4, 5].map(() => (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+                ))}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
+                  <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
+                  <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </section>
@@ -280,29 +378,36 @@ const googleReviews = [
 
   /* --- SLIDER WAGONIKI --- */
   .slider-wrapper {
-    display: flex;
-    gap: 24px;
+    position: relative;
     width: 100%;
     overflow: hidden;
     padding: 20px 0 40px 0;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+  }
+
+  .slider-wrapper.is-dragging {
+    cursor: grabbing;
+  }
+
+  .slider-wrapper.is-dragging .review-card {
+    pointer-events: none;
+  }
+
+  .slider-inner {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    will-change: transform;
   }
 
   .slider-track {
     display: flex;
     gap: 24px;
     flex-shrink: 0;
-    width: max-content; 
-    animation: scroll-reviews 40s linear infinite; /* Animacja przewijania */
-    will-change: transform;
-  }
-
-  .slider-wrapper:hover .slider-track {
-    animation-play-state: paused;
-  }
-
-  @keyframes scroll-reviews {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-100% - 24px)); }
+    width: max-content;
   }
 
   /* --- KARTY OPINII --- */
@@ -318,20 +423,14 @@ const googleReviews = [
     flex-direction: column;
     justify-content: space-between;
     min-height: 320px;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  /* GÓRA KARTY (Awatar + Ocena) */
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-  }
-
-  .author-info {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  .review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(0,0,0,0.07);
   }
 
   .avatar {
@@ -339,6 +438,9 @@ const googleReviews = [
     height: 48px;
     border-radius: 50%;
     object-fit: cover;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-drag: none;
   }
 
   .author-text {
@@ -437,3 +539,255 @@ const googleReviews = [
     }
   }
 </style>
+
+<script>
+  function initTestimonialsSlider() {
+    const sliderWrapper = document.getElementById('testimonialsSlider');
+    const sliderInner = document.getElementById('testimonialsInner');
+    if (!sliderWrapper || !sliderInner) return;
+
+    // Unikamy podwójnej inicjalizacji przy Astro page transitions
+    if ((sliderWrapper as any)._sliderInitialized) return;
+    (sliderWrapper as any)._sliderInitialized = true;
+
+    const tracks = sliderInner.querySelectorAll('.slider-track');
+    if (tracks.length < 2) return;
+
+    const track1 = tracks[0] as HTMLElement;
+    const track2 = tracks[1] as HTMLElement;
+
+    let singleTrackWidth = 0;
+    function updateTrackWidth() {
+      const r1 = track1.getBoundingClientRect();
+      const r2 = track2.getBoundingClientRect();
+      const dist = r2.left - r1.left;
+      if (dist > 0) {
+        singleTrackWidth = dist;
+      }
+    }
+    updateTrackWidth();
+
+    window.addEventListener('resize', updateTrackWidth);
+    window.addEventListener('load', updateTrackWidth);
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(() => updateTrackWidth());
+      ro.observe(sliderInner);
+    }
+
+    let currentX = 0;
+    let isDragging = false;
+    let isWheeling = false;
+    let isCardHovered = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let dragStartCurrentX = 0;
+    let lastDragX = 0;
+    let lastDragTime = performance.now();
+    let dragVelocity = 0;
+    let inertiaVelocity = 0;
+    let isHorizontalDrag: boolean | null = null;
+    let wheelTimeout: any = null;
+
+    // Prędkość domyślna: pełny obieg w 40s (zgodnie z oryginalną animacją scroll-reviews)
+    const BASE_LOOP_SECONDS = 40;
+
+    // Wykrywanie hover tylko dla precyzyjnego wskaźnika (mysz komputerowa, nie telefon)
+    const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    if (isFinePointer) {
+      // Zatrzymujemy auto-przesuwanie tylko wtedy, gdy kursor najeżdża bezpośrednio na konkretną kartę
+      const cards = sliderInner.querySelectorAll('.review-card');
+      cards.forEach((card) => {
+        card.addEventListener('mouseenter', () => {
+          isCardHovered = true;
+        });
+        card.addEventListener('mouseleave', () => {
+          isCardHovered = false;
+        });
+      });
+    }
+
+    function normalizeCurrentX() {
+      if (singleTrackWidth <= 0) return;
+      while (currentX > 0) currentX -= singleTrackWidth;
+      while (currentX <= -singleTrackWidth) currentX += singleTrackWidth;
+    }
+
+    function applyTransform() {
+      sliderInner.style.transform = `translate3d(${currentX}px, 0, 0)`;
+    }
+
+    // 1. OBSŁUGA DOTYKU NA TELEFONIE (SWIPE / DRAG PALCEM LEWO-PRAWO)
+    sliderWrapper.addEventListener('touchstart', (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      isDragging = true;
+      isHorizontalDrag = null;
+      dragStartX = e.touches[0].clientX;
+      dragStartY = e.touches[0].clientY;
+      dragStartCurrentX = currentX;
+      lastDragX = dragStartX;
+      lastDragTime = performance.now();
+      dragVelocity = 0;
+      inertiaVelocity = 0;
+    }, { passive: true });
+
+    sliderWrapper.addEventListener('touchmove', (e: TouchEvent) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      const clientX = e.touches[0].clientX;
+      const clientY = e.touches[0].clientY;
+      const dx = clientX - dragStartX;
+      const dy = clientY - dragStartY;
+
+      // Rozpoznajemy intencję: scroll pionowy strony vs przesunięcie poziome wagoników
+      if (isHorizontalDrag === null) {
+        if (Math.hypot(dx, dy) > 7) {
+          isHorizontalDrag = Math.abs(dx) >= Math.abs(dy);
+          if (!isHorizontalDrag) {
+            isDragging = false;
+            return;
+          }
+        } else {
+          return;
+        }
+      }
+
+      if (isHorizontalDrag) {
+        // Blokujemy pionowy scroll strony, gdy użytkownik przesuwa wagoniki poziomo
+        if (e.cancelable) e.preventDefault();
+
+        const now = performance.now();
+        const dt = now - lastDragTime;
+        if (dt > 10) {
+          dragVelocity = (clientX - lastDragX) / (dt / 1000);
+          lastDragX = clientX;
+          lastDragTime = now;
+        }
+
+        currentX = dragStartCurrentX + dx;
+        normalizeCurrentX();
+        applyTransform();
+      }
+    }, { passive: false });
+
+    function handleTouchEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      if (isHorizontalDrag) {
+        if (Math.abs(dragVelocity) > 60) {
+          inertiaVelocity = dragVelocity;
+        } else {
+          inertiaVelocity = 0;
+        }
+      }
+      isHorizontalDrag = null;
+    }
+
+    sliderWrapper.addEventListener('touchend', handleTouchEnd);
+    sliderWrapper.addEventListener('touchcancel', handleTouchEnd);
+
+    // 2. PRZECIĄGANIE MYSZKĄ NA KOMPUTERZE
+    sliderWrapper.addEventListener('mousedown', (e: MouseEvent) => {
+      if (e.button !== 0) return;
+      isDragging = true;
+      isHorizontalDrag = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      dragStartCurrentX = currentX;
+      lastDragX = dragStartX;
+      lastDragTime = performance.now();
+      dragVelocity = 0;
+      inertiaVelocity = 0;
+      sliderWrapper.classList.add('is-dragging');
+    });
+
+    window.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+
+      const now = performance.now();
+      const dt = now - lastDragTime;
+      if (dt > 10) {
+        dragVelocity = (e.clientX - lastDragX) / (dt / 1000);
+        lastDragX = e.clientX;
+        lastDragTime = now;
+      }
+
+      currentX = dragStartCurrentX + dx;
+      normalizeCurrentX();
+      applyTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      sliderWrapper.classList.remove('is-dragging');
+      if (Math.abs(dragVelocity) > 60) {
+        inertiaVelocity = dragVelocity;
+      } else {
+        inertiaVelocity = 0;
+      }
+    });
+
+    // 3. OBSŁUGA NA KOMPUTERZE: SHIFT + SCROLL KÓŁKIEM MYSZKI
+    sliderWrapper.addEventListener('wheel', (e: WheelEvent) => {
+      // Reagujemy, gdy wciśnięty jest Shift LUB gdy kółko/trackpad przekazuje scroll poziomy deltaX
+      if (e.shiftKey || Math.abs(e.deltaX) > 0) {
+        e.preventDefault();
+
+        // Kółko pionowe z Shiftem może być przekazywane jako deltaY lub deltaX w zależności od systemu
+        const delta = Math.abs(e.deltaX) > 0 ? e.deltaX : e.deltaY;
+
+        // Przesuwamy wagoniki zgodnie z ruchem kółka
+        currentX -= delta * 1.15;
+        normalizeCurrentX();
+        applyTransform();
+
+        // Podczas aktywnego scrollowania wstrzymujemy automatyczny ruch
+        isWheeling = true;
+        clearTimeout(wheelTimeout);
+        wheelTimeout = setTimeout(() => {
+          isWheeling = false;
+        }, 400);
+      }
+    }, { passive: false });
+
+    // 4. GŁÓWNA PĘTLA ANIMACJI (REQUEST ANIMATION FRAME)
+    let lastFrameTime = performance.now();
+
+    function animate(now: number) {
+      const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
+      lastFrameTime = now;
+
+      if (!isDragging && !isWheeling) {
+        // Płynna inercja po dynamicznym puszczeniu palca
+        if (Math.abs(inertiaVelocity) > 20) {
+          currentX += inertiaVelocity * dt;
+          inertiaVelocity *= Math.pow(0.08, dt); // Płynne tłumienie
+          normalizeCurrentX();
+          applyTransform();
+        } else {
+          inertiaVelocity = 0;
+          // Automatyczny ruch wagoników, gdy użytkownik nie wchodzi w interakcję
+          if (!isCardHovered) {
+            const speed = singleTrackWidth > 0 ? singleTrackWidth / BASE_LOOP_SECONDS : 45;
+            currentX -= speed * dt;
+            normalizeCurrentX();
+            applyTransform();
+          }
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // Uruchomienie przy załadowaniu strony oraz przy przejściach Astro View Transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTestimonialsSlider);
+  } else {
+    initTestimonialsSlider();
+  }
+  document.addEventListener('astro:page-load', initTestimonialsSlider);
+</script>

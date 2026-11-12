@@ -112,45 +112,67 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     </div>
   </div>
 
-  <div class="slider-wrapper">
-    <!-- Wagonik 1 -->
-    <div class="slider-track">
-      {realizacje.map((item) => (
-        <a href={item.href} class="card">
-          <div class="card-image-wrapper">
-            {typeof item.image === 'string' ? (
-              <img src={item.image} alt={item.title} class="card-img" loading="lazy" />
-            ) : (
-              <Image src={item.image} alt={item.title} class="card-img" />
-            )}
-            <div class="card-icon">{item.icon}</div>
-          </div>
-          <div class="card-content">
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </div>
-        </a>
-      ))}
-    </div>
+  <div class="slider-wrapper" id="realizacjeSlider">
+    <div class="slider-inner" id="sliderInner">
+      <!-- Wagonik 1 -->
+      <div class="slider-track" data-track="1">
+        {realizacje.map((item) => (
+          <a href={item.href} class="card">
+            <div class="card-image-wrapper">
+              {typeof item.image === 'string' ? (
+                <img src={item.image} alt={item.title} class="card-img" loading="lazy" draggable="false" />
+              ) : (
+                <Image src={item.image} alt={item.title} class="card-img" draggable="false" />
+              )}
+              <div class="card-icon">{item.icon}</div>
+            </div>
+            <div class="card-content">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
 
-    <!-- Wagonik 2 (Kopia do nieskończonej pętli) -->
-    <div class="slider-track" aria-hidden="true">
-      {realizacje.map((item) => (
-        <a href={item.href} class="card" tabindex="-1">
-          <div class="card-image-wrapper">
-            {typeof item.image === 'string' ? (
-              <img src={item.image} alt={item.title} class="card-img" loading="lazy" />
-            ) : (
-              <Image src={item.image} alt={item.title} class="card-img" />
-            )}
-            <div class="card-icon">{item.icon}</div>
-          </div>
-          <div class="card-content">
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </div>
-        </a>
-      ))}
+      <!-- Wagonik 2 (Kopia do nieskończonej pętli) -->
+      <div class="slider-track" aria-hidden="true" data-track="2">
+        {realizacje.map((item) => (
+          <a href={item.href} class="card" tabindex="-1">
+            <div class="card-image-wrapper">
+              {typeof item.image === 'string' ? (
+                <img src={item.image} alt={item.title} class="card-img" loading="lazy" draggable="false" />
+              ) : (
+                <Image src={item.image} alt={item.title} class="card-img" draggable="false" />
+              )}
+              <div class="card-icon">{item.icon}</div>
+            </div>
+            <div class="card-content">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- Wagonik 3 (Kopia do płynnego przewijania w obie strony na każdym ekranie) -->
+      <div class="slider-track" aria-hidden="true" data-track="3">
+        {realizacje.map((item) => (
+          <a href={item.href} class="card" tabindex="-1">
+            <div class="card-image-wrapper">
+              {typeof item.image === 'string' ? (
+                <img src={item.image} alt={item.title} class="card-img" loading="lazy" draggable="false" />
+              ) : (
+                <Image src={item.image} alt={item.title} class="card-img" draggable="false" />
+              )}
+              <div class="card-icon">{item.icon}</div>
+            </div>
+            <div class="card-content">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   </div>
 </section>
@@ -210,29 +232,36 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
   }
 
   .slider-wrapper {
-    display: flex;
-    gap: 25px;
+    position: relative;
     width: 100%;
     overflow: hidden;
     padding: 20px 0 40px 0;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+  }
+
+  .slider-wrapper.is-dragging {
+    cursor: grabbing;
+  }
+
+  .slider-wrapper.is-dragging .card {
+    pointer-events: none;
+  }
+
+  .slider-inner {
+    display: flex;
+    gap: 25px;
+    width: max-content;
+    will-change: transform;
   }
 
   .slider-track {
     display: flex;
     gap: 25px;
     flex-shrink: 0;
-    width: max-content; 
-    animation: scroll 35s linear infinite;
-    will-change: transform;
-  }
-
-  .slider-wrapper:hover .slider-track {
-    animation-play-state: paused;
-  }
-
-  @keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-100% - 25px)); }
+    width: max-content;
   }
 
   .card {
@@ -247,6 +276,9 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     display: flex;
     flex-direction: column;
     height: 100%;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
   }
 
   .card:hover {
@@ -266,6 +298,9 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s ease;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-drag: none;
   }
 
   .card:hover .card-img {
@@ -298,6 +333,7 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     z-index: 2;
     transition: transform 0.3s ease;
+    pointer-events: none;
   }
 
   .card:hover .card-icon {
@@ -338,3 +374,282 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     }
   }
 </style>
+
+<script>
+  function initRealizacjeSlider() {
+    const sliderWrapper = document.getElementById('realizacjeSlider');
+    const sliderInner = document.getElementById('sliderInner');
+    if (!sliderWrapper || !sliderInner) return;
+
+    // Unikamy podwójnej inicjalizacji przy Astro page transitions
+    if ((sliderWrapper as any)._sliderInitialized) return;
+    (sliderWrapper as any)._sliderInitialized = true;
+
+    const tracks = sliderInner.querySelectorAll('.slider-track');
+    if (tracks.length < 2) return;
+
+    const track1 = tracks[0] as HTMLElement;
+    const track2 = tracks[1] as HTMLElement;
+
+    let singleTrackWidth = 0;
+    function updateTrackWidth() {
+      const r1 = track1.getBoundingClientRect();
+      const r2 = track2.getBoundingClientRect();
+      const dist = r2.left - r1.left;
+      if (dist > 0) {
+        singleTrackWidth = dist;
+      }
+    }
+    updateTrackWidth();
+
+    window.addEventListener('resize', updateTrackWidth);
+    window.addEventListener('load', updateTrackWidth);
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(() => updateTrackWidth());
+      ro.observe(sliderInner);
+    }
+
+    let currentX = 0;
+    let isDragging = false;
+    let isWheeling = false;
+    let isCardHovered = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let dragStartCurrentX = 0;
+    let lastDragX = 0;
+    let lastDragTime = performance.now();
+    let dragVelocity = 0;
+    let inertiaVelocity = 0;
+    let isHorizontalDrag: boolean | null = null;
+    let preventNextClick = false;
+    let wheelTimeout: any = null;
+
+    // Prędkość domyślna: pełny obieg w 35s (zgodnie z oryginalną animacją)
+    const BASE_LOOP_SECONDS = 35;
+
+    // Wykrywanie hover tylko dla precyzyjnego wskaźnika (mysz komputerowa, nie telefon)
+    const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    if (isFinePointer) {
+      // Zatrzymujemy auto-przesuwanie tylko wtedy, gdy kursor najeżdża bezpośrednio na konkretną kartę
+      const cards = sliderInner.querySelectorAll('.card');
+      cards.forEach((card) => {
+        card.addEventListener('mouseenter', () => {
+          isCardHovered = true;
+        });
+        card.addEventListener('mouseleave', () => {
+          isCardHovered = false;
+        });
+      });
+    }
+
+    function normalizeCurrentX() {
+      if (singleTrackWidth <= 0) return;
+      while (currentX > 0) currentX -= singleTrackWidth;
+      while (currentX <= -singleTrackWidth) currentX += singleTrackWidth;
+    }
+
+    function applyTransform() {
+      sliderInner.style.transform = `translate3d(${currentX}px, 0, 0)`;
+    }
+
+    // 1. OBSŁUGA DOTYKU NA TELEFONIE (SWIPE / DRAG PALCEM LEWO-PRAWO)
+    sliderWrapper.addEventListener('touchstart', (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      isDragging = true;
+      isHorizontalDrag = null;
+      dragStartX = e.touches[0].clientX;
+      dragStartY = e.touches[0].clientY;
+      dragStartCurrentX = currentX;
+      lastDragX = dragStartX;
+      lastDragTime = performance.now();
+      dragVelocity = 0;
+      inertiaVelocity = 0;
+    }, { passive: true });
+
+    sliderWrapper.addEventListener('touchmove', (e: TouchEvent) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      const clientX = e.touches[0].clientX;
+      const clientY = e.touches[0].clientY;
+      const dx = clientX - dragStartX;
+      const dy = clientY - dragStartY;
+
+      // Rozpoznajemy intencję: scroll pionowy strony vs przesunięcie poziome wagoników
+      if (isHorizontalDrag === null) {
+        if (Math.hypot(dx, dy) > 7) {
+          isHorizontalDrag = Math.abs(dx) >= Math.abs(dy);
+          if (!isHorizontalDrag) {
+            isDragging = false;
+            return;
+          }
+        } else {
+          return;
+        }
+      }
+
+      if (isHorizontalDrag) {
+        // Blokujemy pionowy scroll strony, gdy użytkownik przesuwa wagoniki poziomo
+        if (e.cancelable) e.preventDefault();
+
+        if (Math.abs(dx) > 6) {
+          preventNextClick = true;
+        }
+
+        const now = performance.now();
+        const dt = now - lastDragTime;
+        if (dt > 10) {
+          dragVelocity = (clientX - lastDragX) / (dt / 1000);
+          lastDragX = clientX;
+          lastDragTime = now;
+        }
+
+        currentX = dragStartCurrentX + dx;
+        normalizeCurrentX();
+        applyTransform();
+      }
+    }, { passive: false });
+
+    function handleTouchEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      if (isHorizontalDrag) {
+        if (Math.abs(dragVelocity) > 60) {
+          inertiaVelocity = dragVelocity;
+        } else {
+          inertiaVelocity = 0;
+        }
+      }
+      isHorizontalDrag = null;
+      if (preventNextClick) {
+        setTimeout(() => {
+          preventNextClick = false;
+        }, 300);
+      }
+    }
+
+    sliderWrapper.addEventListener('touchend', handleTouchEnd);
+    sliderWrapper.addEventListener('touchcancel', handleTouchEnd);
+
+    // 2. PRZECIĄGANIE MYSZKĄ NA KOMPUTERZE
+    sliderWrapper.addEventListener('mousedown', (e: MouseEvent) => {
+      if (e.button !== 0) return;
+      isDragging = true;
+      isHorizontalDrag = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      dragStartCurrentX = currentX;
+      lastDragX = dragStartX;
+      lastDragTime = performance.now();
+      dragVelocity = 0;
+      inertiaVelocity = 0;
+      sliderWrapper.classList.add('is-dragging');
+    });
+
+    window.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+      if (Math.abs(dx) > 6) {
+        preventNextClick = true;
+      }
+
+      const now = performance.now();
+      const dt = now - lastDragTime;
+      if (dt > 10) {
+        dragVelocity = (e.clientX - lastDragX) / (dt / 1000);
+        lastDragX = e.clientX;
+        lastDragTime = now;
+      }
+
+      currentX = dragStartCurrentX + dx;
+      normalizeCurrentX();
+      applyTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      sliderWrapper.classList.remove('is-dragging');
+      if (Math.abs(dragVelocity) > 60) {
+        inertiaVelocity = dragVelocity;
+      } else {
+        inertiaVelocity = 0;
+      }
+      if (preventNextClick) {
+        setTimeout(() => {
+          preventNextClick = false;
+        }, 200);
+      }
+    });
+
+    // 3. OBSŁUGA NA KOMPUTERZE: SHIFT + SCROLL KÓŁKIEM MYSZKI
+    sliderWrapper.addEventListener('wheel', (e: WheelEvent) => {
+      // Reagujemy, gdy wciśnięty jest Shift LUB gdy kółko/trackpad przekazuje scroll poziomy deltaX
+      if (e.shiftKey || Math.abs(e.deltaX) > 0) {
+        e.preventDefault();
+
+        // Kółko pionowe z Shiftem może być przekazywane jako deltaY lub deltaX w zależności od systemu
+        const delta = Math.abs(e.deltaX) > 0 ? e.deltaX : e.deltaY;
+
+        // Przesuwamy wagoniki zgodnie z ruchem kółka
+        currentX -= delta * 1.15;
+        normalizeCurrentX();
+        applyTransform();
+
+        // Podczas aktywnego scrollowania wstrzymujemy automatyczny ruch
+        isWheeling = true;
+        clearTimeout(wheelTimeout);
+        wheelTimeout = setTimeout(() => {
+          isWheeling = false;
+        }, 400);
+      }
+    }, { passive: false });
+
+    // Blokujemy przypadkowe kliknięcie w link po przeciągnięciu
+    sliderWrapper.addEventListener('click', (e: MouseEvent) => {
+      if (preventNextClick) {
+        e.preventDefault();
+        e.stopPropagation();
+        preventNextClick = false;
+      }
+    }, true);
+
+    // 4. GŁÓWNA PĘTLA ANIMACJI (REQUEST ANIMATION FRAME)
+    let lastFrameTime = performance.now();
+
+    function animate(now: number) {
+      const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
+      lastFrameTime = now;
+
+      if (!isDragging && !isWheeling) {
+        // Płynna inercja po dynamicznym puszczeniu palca
+        if (Math.abs(inertiaVelocity) > 20) {
+          currentX += inertiaVelocity * dt;
+          inertiaVelocity *= Math.pow(0.08, dt); // Płynne tłumienie
+          normalizeCurrentX();
+          applyTransform();
+        } else {
+          inertiaVelocity = 0;
+          // Automatyczny ruch wagoników, gdy użytkownik nie wchodzi w interakcję
+          if (!isCardHovered) {
+            const speed = singleTrackWidth > 0 ? singleTrackWidth / BASE_LOOP_SECONDS : 55;
+            currentX -= speed * dt;
+            normalizeCurrentX();
+            applyTransform();
+          }
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // Uruchomienie przy załadowaniu strony oraz przy przejściach Astro View Transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRealizacjeSlider);
+  } else {
+    initRealizacjeSlider();
+  }
+  document.addEventListener('astro:page-load', initRealizacjeSlider);
+</script>
