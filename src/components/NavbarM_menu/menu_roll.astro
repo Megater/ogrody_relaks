@@ -1,49 +1,158 @@
-<nav class="scroll" aria-label="Nawigacja mobilna">
-    <a href="/">Strona Główna</a>
-    <a href="/realizacje">Realizacje</a>
-    <a href="/jak-dzialamy">Jak działamy</a>
-    <a href="/o-nas">O nas</a>
-    <a href="/opinie">Opinie</a>
+---
+// Menu rozwijane na smartfonach
+---
+
+<nav class="mobile-menu-nav" aria-label="Nawigacja mobilna">
+    <div class="menu-links">
+        <a href="/#start" class="menu-item">
+            <span>Strona Główna</span>
+            <span class="chevron" aria-hidden="true">›</span>
+        </a>
+        <a href="/#realizacje" class="menu-item">
+            <span>Realizacje</span>
+            <span class="chevron" aria-hidden="true">›</span>
+        </a>
+        <a href="/#proces" class="menu-item">
+            <span>Jak działamy</span>
+            <span class="chevron" aria-hidden="true">›</span>
+        </a>
+        <a href="/#opinie" class="menu-item">
+            <span>Opinie klientów</span>
+            <span class="chevron" aria-hidden="true">›</span>
+        </a>
+    </div>
+
+    <div class="menu-actions">
+        <a href="/#rezerwacja" class="menu-cta-primary">
+            <span>Umów bezpłatną wycenę</span>
+            <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        
+        <a href="tel:+48516753132" class="menu-cta-phone">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span>+48 516 753 132</span>
+        </a>
+    </div>
 </nav>
 
 <style>
-    nav.scroll {
+    .mobile-menu-nav {
         min-height: 0;        
         display: flex;
         flex-direction: column;
         width: 100%;
         margin: 0;
-        padding: 0px 0; 
+        padding: 8px 12px 18px 12px;
+        box-sizing: border-box;
     }
 
-    nav.scroll a {
+    .menu-links {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 14px;
+    }
+
+    .menu-item {
         box-sizing: border-box;
         width: 100%;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
-        letter-spacing: 0.5px;
-        text-align: center;
+        letter-spacing: 0.3px;
         text-decoration: none;
         color: #143623;
-        
-        padding: 16px 20px;
-        display: block;
-        
-        background: rgba(166, 206, 105, 0.15);
-        border: none;
-        border-bottom: 1px solid rgba(20, 54, 35, 0.08);
-        
-        transition: background 0.2s ease, color 0.2s ease;
+        padding: 13px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 12px;
+        background: transparent;
+        border-bottom: 1px solid rgba(20, 54, 35, 0.06);
+        transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
         -webkit-tap-highlight-color: transparent;
     }
 
-    nav.scroll a:last-child {
+    .menu-item:last-child {
         border-bottom: none;
     }
 
-    nav.scroll a:active,
-    nav.scroll a:hover {
-        background: rgba(166, 206, 105, 0.35);
+    .menu-item .chevron {
+        font-size: 18px;
+        color: #86b942;
+        transition: transform 0.2s ease;
+    }
+
+    .menu-item:hover,
+    .menu-item:active {
+        background: rgba(134, 185, 66, 0.12);
+        color: #0c2b17;
+        transform: translateX(3px);
+    }
+
+    .menu-item:hover .chevron,
+    .menu-item:active .chevron {
+        transform: translateX(2px);
+    }
+
+    /* Sekcja akcji w menu mobilnym */
+    .menu-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(20, 54, 35, 0.08);
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .menu-cta-primary {
+        background-color: #86b942;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 13px 18px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 14px rgba(134, 185, 66, 0.28);
+        transition: background 0.2s ease, transform 0.15s ease;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .menu-cta-primary:hover,
+    .menu-cta-primary:active {
+        background-color: #76a537;
+        transform: translateY(-1px);
+    }
+
+    .menu-cta-phone {
+        background: rgba(20, 54, 35, 0.06);
+        color: #143623;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 11px 18px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.2s ease;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .menu-cta-phone:hover,
+    .menu-cta-phone:active {
+        background: rgba(20, 54, 35, 0.12);
         color: #0c2b17;
     }
 </style>

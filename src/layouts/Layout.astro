@@ -58,23 +58,34 @@ const {
         <Footer />
 
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
+            const setupNavbarScroll = () => {
                 const desktop = document.getElementById('Desktop');
                 const mobile = document.getElementById('Mobile');
+                let isScrolled = false;
                 
                 const handleScroll = () => {
-                    if (window.scrollY > 25) {
+                    const scrollY = window.scrollY;
+                    if (!isScrolled && scrollY > 35) {
+                        isScrolled = true;
                         desktop?.classList.add('is-scrolled');
                         mobile?.classList.add('is-scrolled');
-                    } else {
+                    } else if (isScrolled && scrollY < 12) {
+                        isScrolled = false;
                         desktop?.classList.remove('is-scrolled');
                         mobile?.classList.remove('is-scrolled');
                     }
                 };
 
                 window.addEventListener('scroll', handleScroll, { passive: true });
+                window.addEventListener('resize', handleScroll, { passive: true });
                 handleScroll(); // Initial check on load
-            });
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupNavbarScroll);
+            } else {
+                setupNavbarScroll();
+            }
         </script>
     </body>
 </html>
@@ -144,33 +155,19 @@ const {
         position: fixed;
         left: 0;
         right: 0;
+        top: 0;
         z-index: 50;
         pointer-events: none; 
         width: 100%;
-        transition: top 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    #Desktop {
-        top: 0;
-    }
-
-    #Mobile {
-        top: 0;
-    }
-
-    /* Pozycje po rozpoczęciu przewijania */
-    #Desktop.is-scrolled {
-        top: 1.25rem;
-    }
-
-    #Mobile.is-scrolled {
-        top: 0.5rem;
     }
 
     #Desktop :global(nav),
     #Desktop :global(div),
-    #Mobile :global(nav),
-    #Mobile :global(div) {
+    #Desktop :global(a),
+    #Mobile :global(#main),
+    #Mobile :global(#main *),
+    #Mobile :global(.box.is-open),
+    #Mobile :global(.box.is-open *) {
         pointer-events: auto;
     }
 

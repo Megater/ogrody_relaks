@@ -1,121 +1,184 @@
 ---
 import { Image } from 'astro:assets';
-import logo from '../../assets/images/shorter_logo.png'
+import logo from '../../assets/images/shorter_logo.png';
 ---
 
-<div id="main">
-    <div id="logo">
-        <Image src={logo} alt="logo_img" height="60" />
-    </div>
-    <div id="Navlinks">
-        <a>Strona Glowna</a>
-        <span class="dot">•</span>
-        <a>Realizacje</a>
-        <span class="dot">•</span>
-        <a>Jak dzialamy</a>
-        <span class="dot">•</span>
-        <a>O nas</a>
-        <span class="dot">•</span>
-        <a>Opinie</a>
+<div id="main" class="navbar-desktop-container">
+    <a href="/#start" id="logo" aria-label="Ogrody Relaks - Strona Główna">
+        <Image src={logo} alt="Ogrody Relaks" height="54" loading="eager" />
+    </a>
 
-    </div>
-    <div id="Wycena">
-        Wycena
+    <nav id="Navlinks" aria-label="Nawigacja główna">
+        <a href="/#start">Strona Główna</a>
+        <span class="dot" aria-hidden="true">•</span>
+        <a href="/#realizacje">Realizacje</a>
+        <span class="dot" aria-hidden="true">•</span>
+        <a href="/#proces">Jak działamy</a>
+        <span class="dot" aria-hidden="true">•</span>
+        <a href="/#opinie">Opinie</a>
+    </nav>
+
+    <div class="nav-action">
+        <a href="/#rezerwacja" id="Wycena">
+            <span>Darmowa Wycena</span>
+        </a>
     </div>
 </div>
 
 <style>
-    /* STAN DOMYŚLNY: Zadokowany (szerokość 100%, ostre rogi) */
+    /* =========================================================
+       1. STAN DOMYŚLNY: Zadokowany na samej górze
+       ========================================================= */
     #main {
-        margin: 0px auto 0 auto;
-        background: rgba(255, 255, 255, 1);
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         width: 100%;
+        transform: translateY(0);
         height: 75px;
-        border-radius: 0px;
+        border-radius: 0;
+        border: 1px solid transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
         color: #11301e;    
         display: grid;
         grid-template-columns: 1fr auto 1fr;
         justify-content: space-between;
         align-items: center;
-        min-width: 1024px;
-        padding: 0 25px;
+        min-width: 0;
+        padding: 0 2rem;
         box-sizing: border-box;
-        transition: all 0.4s ease-in-out; /* Animacja zmiany szerokości i zaokrągleń */
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtelny cień startowy */
+        transition: 
+            transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            width 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            border-radius 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 0.85s ease,
+            border-color 0.85s ease,
+            height 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            padding 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        will-change: transform, width, border-radius;
     }
 
-    /* STAN LEWITACJI: Wyzwolony z zewnętrznego layoutu */
+    /* =========================================================
+       2. STAN LEWITACJI: Pływająca elegancka pigułka po scrollu
+       (Płynny, kinowy morphing oparty na transform i % - bez skoków w Firefoxie)
+       ========================================================= */
     :global(#Desktop.is-scrolled) #main {
-        width: 75%;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        background: rgba(255, 255, 255, 0.95);
-        
+        transform: translateY(18px);
+        width: 78%;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.96);
+        padding: 0 1.75rem;
+        height: 70px;
     }
 
-    #logo{
+    @media (min-width: 1700px) {
+        :global(#Desktop.is-scrolled) #main {
+            width: 68%;
+        }
+    }
+
+    @media (min-width: 2200px) {
+        :global(#Desktop.is-scrolled) #main {
+            width: 56%;
+        }
+    }
+
+    /* =========================================================
+       3. LOGO
+       ========================================================= */
+    #logo {
         justify-self: start;
-        margin: auto auto auto 0;
-        transition: all 0.1s ease-in;
-    }
-    #logo:active{
-        scale: 105%
+        display: inline-flex;
+        align-items: center;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+        text-decoration: none;
     }
 
+    #logo:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
+    }
+
+    #logo:active {
+        transform: scale(0.98);
+    }
+
+    /* =========================================================
+       4. LINKI NAWIGACJI
+       ========================================================= */
     #Navlinks {
         justify-self: center;
-        justify-content: flex-start;
         display: flex;
-        gap: 20px;
+        gap: 6px;
         align-items: center;      
         list-style: none;        
         margin: 0;
         padding: 0;
-        margin-bottom: 3px;
     }
 
     #Navlinks a {
-        padding: 15px;      
-        border-radius: 10px;
+        padding: 10px 16px;      
+        border-radius: 12px;
         text-decoration: none;
         color: #143623;           
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease-in-out;
+        letter-spacing: 0.2px;
+        transition: all 0.2s ease;
         display: flex;
         align-items: center;
-        gap: 20px;                
     }
 
+    /* Spokojny, naturalny hover bez skakania układu */
     #Navlinks a:hover {
-        background: rgba(166, 206, 105, 0.535); 
-        font-weight: 700;
-        scale: 115%;
+        background: rgba(134, 185, 66, 0.14); 
+        color: #0c2b17;
+    }
+
+    .dot {
+        color: #86b942;
+        user-select: none;
+        font-size: 12px;
+        opacity: 0.8;
+        padding: 0 4px;
+    }
+
+    /* =========================================================
+       5. PRZYCISK WYCENY (Ciepły zielony dopasowany do title)
+       ========================================================= */
+    .nav-action {
+        justify-self: end;
+        display: flex;
+        align-items: center;
     }
 
     #Wycena {
-        justify-self: end;
-        background: #84cc16;           
-        color: #11301e;                
+        background: #86b942; /* Ciepła zieleń firmowa, jak w sekcji hero */
+        color: #ffffff;                
         font-weight: 700;
         font-size: 14px;
         text-decoration: none;
-        padding: 12px;
+        padding: 11px 22px;
         border-radius: 50px;           
-        display: inline-block;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 4px 12px rgba(132, 204, 22, 0.35); 
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 14px rgba(134, 185, 66, 0.25);
     }
 
     #Wycena:hover {
-        background: #65a30d;           
+        background: #75a337;           
         transform: translateY(-2px);   
-        box-shadow: 0 6px 16px rgba(132, 204, 22, 0.45);
+        box-shadow: 0 6px 18px rgba(134, 185, 66, 0.35);
     }
-    
-    .dot{
-        color: #84cc16;
-        user-select: none;
+
+    #Wycena:active {
+        transform: translateY(0);
     }
 </style>

@@ -1,158 +1,280 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../../assets/images/shorter_logo.png';
-import more from '../../assets/images/more.png';
 import MenuRoll from '../NavbarM_menu/menu_roll.astro';
 ---
 
-<div id="main">
-    <div id="logo">
-        <Image src={logo} alt="Logo" class="Logo_photo" />
-    </div>
+<div id="main" class="navbar-mobile-bar">
+    <a href="/#start" id="logo" aria-label="Ogrody Relaks - Strona Główna">
+        <Image src={logo} alt="Ogrody Relaks Logo" class="Logo_photo" loading="eager" />
+    </a>
+
     <div id="katalog">
-        <button id="menu-btn" class="menu-btn" aria-label="Menu">
-            <Image src={more} alt="more_button" class="more_icon" />
+        <button id="menu-btn" class="menu-btn" aria-label="Przełącz menu" aria-expanded="false">
+            <span class="hamburger-box" aria-hidden="true">
+                <span class="hamburger-line line-1"></span>
+                <span class="hamburger-line line-2"></span>
+                <span class="hamburger-line line-3"></span>
+            </span>
         </button>
     </div>
 </div>
 
-<div id="box" class="box"> 
-    <MenuRoll/> 
+<div id="box" class="box" aria-hidden="true"> 
+    <div class="box-inner">
+        <MenuRoll /> 
+    </div>
 </div>
 
 <script>
-    const button = document.getElementById('menu-btn');
-    const box = document.getElementById('box');
+    document.addEventListener('DOMContentLoaded', () => {
+        const button = document.getElementById('menu-btn');
+        const box = document.getElementById('box');
+        const mainBar = document.getElementById('main');
 
-    button?.addEventListener('click', () => {
-        box?.classList.toggle('is-open');
-        button?.classList.toggle('clicked');
+        const toggleMenu = () => {
+            const isOpen = box?.classList.toggle('is-open');
+            button?.classList.toggle('clicked');
+            mainBar?.classList.toggle('menu-open', isOpen);
+            button?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            box?.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        };
+
+        const closeMenu = () => {
+            box?.classList.remove('is-open');
+            button?.classList.remove('clicked');
+            mainBar?.classList.remove('menu-open');
+            button?.setAttribute('aria-expanded', 'false');
+            box?.setAttribute('aria-hidden', 'true');
+        };
+
+        button?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMenu();
+        });
+
+        // Automatyczne zamykanie menu po kliknięciu w dowolny odnośnik wewnątrz
+        box?.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => {
+                closeMenu();
+            });
+        });
+
+        // Zamknięcie po kliknięciu poza obszarem menu
+        document.addEventListener('click', (e) => {
+            if (box?.classList.contains('is-open') && !box.contains(e.target as Node) && !button?.contains(e.target as Node)) {
+                closeMenu();
+            }
+        });
     });
 </script>
 
 <style>
-    .Logo_photo{
-        height: 100%;
-        width: auto;
-    }
-
-    .more_icon{
-        height: 100%;
-        width: auto;
-    }
-    /* =========================================
-       1. STAN ZADOKOWANY (Domyślny)
-       ========================================= */
+    /* =========================================================
+       1. STAN DOMYŚLNY (Zadokowany)
+       ========================================================= */
     #main {
         margin: auto;
         background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
         width: 100%;
-        height: 80px;
-        border-radius: 0px; /* Płasko do krawędzi */
+        transform: translateY(0);
+        height: 74px;
+        border-radius: 0;
+        border: 1px solid transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
         color: #11301e;    
         display: grid;
         grid-template-columns: 1fr auto; 
         justify-content: space-between;
         align-items: center;
         box-sizing: border-box;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        transition: 
+            transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            width 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            height 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            border-radius 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 0.85s ease;
+        z-index: 10;
+        position: relative;
+        will-change: transform, width, border-radius;
     }
 
-/* Płynnie rozsuwany kontener na menu (100% na starcie) */
+    /* Płynnie rozsuwana roleta menu - domyślnie w 100% ukryta i zwinięta do 0 */
     .box {
         display: grid;
         grid-template-rows: 0fr;
         width: 100%;
         margin: 0 auto;
-        
-        background: rgba(255, 255, 255, 0);
-        backdrop-filter: blur(12px);
-        border-radius: 0 0 24px 24px; /* Zaokrąglony tylko dół jak roleta */
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0);
-        
-        overflow: hidden; /* MEGA WAŻNE: Ukrywa treść, gdy menu jest zwinięte */
-        
-        /* DODANO: background 0.6s ease-in-out dla powolnego przenikania koloru */
-        transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
-                    width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                    border-radius 0.4s ease-in-out,
-                    margin-top 0.4s ease-in-out,
-                    box-shadow 0.4s ease-in-out,
-                    background 0.3s linear;
-    }
-
-    /* Zabezpiecza grid przed "wypadaniem" zawartości */
-    .box > :global(*) {
+        transform: translateY(0);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
         overflow: hidden;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        transition: 
+            grid-template-rows 0.38s cubic-bezier(0.25, 1, 0.35, 1),
+            opacity 0.25s ease,
+            visibility 0.25s ease,
+            transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            width 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+            margin-top 0.35s ease,
+            border-radius 0.35s ease;
+        position: relative;
+        z-index: 9;
     }
 
+    /* Wewnętrzny kontener bez paddingu, dzięki czemu grid-template-rows: 0fr zwija się do absolutnego 0px */
+    .box-inner {
+        min-height: 0;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    /* W stanie zadokowanym: roleta rozwija się bezpośrednio pod paskiem */
     .box.is-open {
         grid-template-rows: 1fr;
-        box-shadow: 0 15px 35px rgba(17, 48, 30, 0.1);
-        background: rgba(255, 255, 255, 0.95);
-
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 0 0 24px 24px;
+        box-shadow: 0 16px 36px rgba(17, 48, 30, 0.14);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-top: none;
     }
 
-    /* =========================================
-       2. STAN LEWITACJI (Wyspa po scrollu)
-       ========================================= */
-    :global(#Mobile.is-scrolled) #main {
-        width: 92%; /* Zostawia równy margines na telefonach */
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        background: rgba(255, 255, 255, 0.8);
+    /* Spłaszczenie dolnych rogów TYLKO w stanie zadokowanym (gdy nie jest wyspą) */
+    :global(#Mobile:not(.is-scrolled)) #main.menu-open {
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
 
+    /* =========================================================
+       2. STAN LEWITACJI (Pływająca wyspa po scrollu)
+       ========================================================= */
+    :global(#Mobile.is-scrolled) #main {
+        transform: translateY(10px);
+        width: 92%;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        height: 68px;
     }
 
     :global(#Mobile.is-scrolled) .box {
-        width: 84%; /* Dopasowuje szerokość do wyspy wyżej */
-        border-radius: 0 0 24px 24px; /* Zaokrąglony tylko dół jak roleta */
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12); 
-        background: rgba(255, 255, 255, 0.8);
+        transform: translateY(10px);
+        width: 92%;
     }
 
-    /* =========================================
-       3. WNĘTRZE NAVBARA (Logo i hamburger)
-       ========================================= */
-    #logo {
-        margin: auto 0 13px 16px;
-        display: flex;
-        align-items: center;
-        transition: transform 0.15s ease;
-        height: 63px;
-        width: auto;
+    /* Gdy navbar jest wyspą: całe roll menu ma pełny border-radius (wszystkie 4 narożniki zaokrąglone) i pływa jako niezależna wyspa z odstępem */
+    :global(#Mobile.is-scrolled) .box.is-open {
+        margin-top: 10px;
+        border-radius: 24px !important;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 16px 40px rgba(17, 48, 30, 0.18);
+    }
 
+    /* =========================================================
+       3. WNĘTRZE NAVBARA (Logo & Przycisk Menu)
+       ========================================================= */
+    #logo {
+        margin: auto 0 auto 16px;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        height: 48px;
+    }
+
+    .Logo_photo {
+        height: 100%;
+        width: auto;
+        object-fit: contain;
     }
 
     #logo:active {
-        transform: scale(1.05);
+        transform: scale(0.97);
     }
 
     #katalog {
-        margin: 0 16px 0 0;
+        margin: 0 12px 0 0;
         display: flex;
-        justify-content: flex-end;
+        align-items: center;
     }
 
+    /* Przycisk Hamburger z animacją przejścia w X */
     .menu-btn {
         background-color: transparent;
         border: 0;
-        padding: 16px;      
-        border-radius: 16px;
+        padding: 10px;      
+        border-radius: 14px;
         color: #143623;
         transition: background 0.2s ease, transform 0.15s ease;
         display: flex;
         align-items: center;
+        justify-content: center;
         cursor: pointer;
-        height: 62px;
-        width: 62px;
+        height: 48px;
+        width: 48px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .menu-btn:hover {
+        background: rgba(134, 185, 66, 0.12);
+    }
+
+    .menu-btn:active {
+        transform: scale(0.94);
     }
 
     .menu-btn.clicked {
-        background: rgba(166, 206, 105, 0.3); 
-        transform: scale(0.95);
+        background: rgba(134, 185, 66, 0.2); 
+    }
+
+    /* Stylowy animowany hamburger 3-liniowy */
+    .hamburger-box {
+        width: 22px;
+        height: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    .hamburger-line {
+        display: block;
+        height: 2.2px;
+        width: 100%;
+        background-color: #143623;
+        border-radius: 2px;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+        transform-origin: center;
+    }
+
+    /* Animacja w krzyżyk (X) po otwarciu */
+    .menu-btn.clicked .line-1 {
+        transform: translateY(7px) rotate(45deg);
+        background-color: #0c2b17;
+    }
+
+    .menu-btn.clicked .line-2 {
+        opacity: 0;
+        transform: scaleX(0);
+    }
+
+    .menu-btn.clicked .line-3 {
+        transform: translateY(-7px) rotate(-45deg);
+        background-color: #0c2b17;
     }
 </style>
