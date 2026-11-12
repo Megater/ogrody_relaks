@@ -1,26 +1,25 @@
-<main class="scroll">
+<nav class="scroll" aria-label="Nawigacja mobilna">
     <a href="/">Strona Główna</a>
     <a href="/realizacje">Realizacje</a>
     <a href="/jak-dzialamy">Jak działamy</a>
     <a href="/o-nas">O nas</a>
     <a href="/opinie">Opinie</a>
-</main>
+</nav>
 
 <style>
-    main {
+    nav.scroll {
         min-height: 0;        
         display: flex;
         flex-direction: column;
         width: 100%;
         margin: 0;
         padding: 0px 0; 
-        /* USUNIĘTO box-shadow - to on robił kreskę pod navbarem! */
     }
 
-    main a {
+    nav.scroll a {
         box-sizing: border-box;
         width: 100%;
-        font-size: 18px; /* 22px było dość przytłaczające na małych ekranach, 18px wygląda bardziej premium */
+        font-size: 18px;
         font-weight: 600;
         letter-spacing: 0.5px;
         text-align: center;
@@ -30,27 +29,21 @@
         padding: 16px 20px;
         display: block;
         
-        /* Tło przezroczyste - efekt tła załatwia zewnętrzny div .box */
-        background: rgba(166, 206, 105, 0.15); /* Subtelne zielonkawe nasycenie */
-
-        
-        /* Subtelna, półprzezroczysta linia oddzielająca */
+        background: rgba(166, 206, 105, 0.15);
         border: none;
         border-bottom: 1px solid rgba(20, 54, 35, 0.08);
         
-        /* Płynna reakcja na dotyk */
         transition: background 0.2s ease, color 0.2s ease;
         -webkit-tap-highlight-color: transparent;
     }
 
-    main a:last-child {
+    nav.scroll a:last-child {
         border-bottom: none;
     }
 
-    /* Efekt po dotknięciu palcem na telefonie */
-    main a:active,
-    main a:hover {
-        background: rgba(166, 206, 105, 0.35); /* Subtelne zielonkawe nasycenie */
+    nav.scroll a:active,
+    nav.scroll a:hover {
+        background: rgba(166, 206, 105, 0.35);
         color: #0c2b17;
     }
 </style>

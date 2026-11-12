@@ -3,417 +3,1058 @@ import { Image } from 'astro:assets';
 import main_photo from '../../assets/images/Kamil_title_photo.jpg';
 import profile from '../../assets/images/Kamil_cut.png';
 import sprzet from '../../assets/images/kosiara.jpg';
+
+// Starannie dobrane portrety zadowolonych klientów
+const clientAvatars = [
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=120&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=120&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=120&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=120&auto=format&fit=crop"
+];
 ---
 
-<main class="hero-section">
-    <!-- 1. Zdjęcie w tle -->
-    <Image src={main_photo} class="hero-bg" alt="Tło ogrodu" />
+<section class="hero-section" id="start" aria-label="Sekcja powitalna Ogrody Relaks">
+    <!-- 1. Zdjęcie w tle o wysokim priorytecie (LCP) -->
+    <Image 
+        src={main_photo} 
+        class="hero-bg" 
+        alt="Zadbany, zielony ogród - tło sekcji" 
+        loading="eager"
+        fetchpriority="high"
+    />
     
-    <!-- 2. Ciemna nakładka -->
-    <div class="hero-overlay"></div>
+    <!-- 2. Stonowane, ciepłe warstwy nasycenia, głębi i winiety (z-index 2 i 3) -->
+    <div class="hero-overlay-dark" aria-hidden="true"></div>
+    <div class="hero-overlay-radial" aria-hidden="true"></div>
+    <div class="hero-overlay-bottom" aria-hidden="true"></div>
 
-    <!-- 3. Główna zawartość -->
-    <div class="hero-content">
+    <!-- 3. Główna zawartość w responsywnej siatce -->
+    <div class="hero-container">
         
-        <!-- Lewa strona: Tekst i przycisk -->
+        <!-- KOLUMNA 1: Treść (Na desktopie po lewej, na mobile wsuwa się pod Kamila od łokci) -->
         <div class="hero-text-box">
-            <h1>Kompleksowa pielęgnacja i zakładanie ogrodów od A do <span class="highlight">Z.</span></h1>
-            <p>Dbamy o wspaniałe przestrzenie, które wnoszą piękno, wartość i harmonię do Twojego otoczenia każdego dnia.</p>
             
-            <a href="#kontakt" class="cta-button">
-                Rozpocznij <span class="arrow">→</span>
-            </a>
+            <!-- Kicker / Subtelna pastylka informacyjna -->
+            <div class="kicker-pill">
+                <span class="pulsing-dot" aria-hidden="true"></span>
+                <span class="kicker-text">Profesjonalne Usługi Ogrodnicze • Grójec i okolice</span>
+            </div>
 
-            <!-- Sekcja zadowolonych klientów pod przyciskiem -->
+            <!-- Nagłówek H1 - stonowany, bez neonowego świecenia -->
+            <h1 class="hero-title">
+                Kompleksowa pielęgnacja i&nbsp;zakładanie ogrodów <span class="highlight">od&nbsp;A do&nbsp;Z.</span>
+            </h1>
+
+            <!-- Opis oferty -->
+            <p class="hero-description">
+                Dbamy o wspaniałe przestrzenie, które wnoszą piękno, wartość i spokój do Twojego otoczenia każdego dnia. Od regularnego koszenia i aeracji po zaawansowane systemy nawadniania i pełne aranżacje.
+            </p>
+            
+            <!-- Grupa przycisków akcji CTA -->
+            <div class="cta-group">
+                <a href="#rezerwacja" class="cta-button primary">
+                    <span>Rozpocznij projekt</span>
+                    <span class="arrow" aria-hidden="true">→</span>
+                </a>
+
+                <a href="tel:+48516753132" class="cta-button secondary" aria-label="Zadzwoń: +48 516 753 132">
+                    <span class="phone-icon-box" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                    </span>
+                    <div class="phone-info">
+                        <span class="phone-tag">Zadzwoń do nas</span>
+                        <span class="phone-num">+48 516 753 132</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Sekcja zadowolonych klientów i opinie -->
             <div class="happy-clients">
-                <div class="avatars">
-                    <div class="avatar bg-gray"></div>
-                    <div class="avatar bg-light"></div>
-                    <div class="avatar bg-gray"></div>
-                    <div class="avatar bg-light"></div>
+                <div class="avatars-cluster" aria-hidden="true">
+                    {clientAvatars.map((src, i) => (
+                        <img 
+                            src={src} 
+                            alt={`Klient ${i + 1}`} 
+                            class="avatar-img" 
+                            width="44" 
+                            height="44" 
+                            loading="lazy" 
+                        />
+                    ))}
+                    <div class="avatar-badge">+120</div>
                 </div>
-                <div class="clients-text">
-                    <strong>120+</strong>
-                    <span>Zadowolonych klientów</span>
+
+                <div class="clients-meta">
+                    <div class="stars-row">
+                        <span class="stars" aria-label="5 gwiazdek">★★★★★</span>
+                        <strong class="rating-grade">5.0</strong>
+                    </div>
+                    <span class="clients-label">Ponad 120 zadowolonych klientów</span>
                 </div>
             </div>
+
+            <!-- Mikro-lista kluczowych atutów i gwarancji -->
+            <div class="hero-features">
+                <div class="feature-item highlight-feature">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#86b942" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <polyline points="9 12 11 14 15 10"></polyline>
+                    </svg>
+                    <span><strong>100% Gwarancji</strong> satysfakcji</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-emoji" aria-hidden="true">🌱</span>
+                    <span><strong>10+ lat</strong> doświadczenia</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-emoji" aria-hidden="true">🚜</span>
+                    <span>Własny park maszyn</span>
+                </div>
+                <div class="feature-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#86b942" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Darmowa wycena i dojazd</span>
+                </div>
+            </div>
+
         </div>
 
-        <!-- Prawa strona: Miejsce na zdjęcie profilowe i elementy pływające -->
-        <div class="hero-profile-box">
+        <!-- KOLUMNA 2: Sylwetka Kamila (Na desktopie duża i okazała z odznakami, na mobile powiększona i wygaszająca się na wysokości łokci) -->
+        <div class="hero-visual-column">
             
-            <Image 
-                src={profile} 
-                class="profile" 
-                alt="Kamil"
-                format="png" 
-            />
+            <div class="profile-stage">
+                
+                <!-- Ciepła, stonowana poświata za sylwetką -->
+                <div class="stage-ambient-glow" aria-hidden="true"></div>
 
-            <!-- Pływająca odznaka "Gwarancja Satysfakcji" -->
-            <div class="badge-guarantee">
-                <span class="icon">🌱</span>
-                <span>Gwarancja<br>Satysfakcji</span>
-            </div>
-
-            <!-- Pływająca miniatura (kafelek ze sprzętem) -->
-            <div class="badge-floating-card">
+                <!-- Zdjęcie Kamila -->
                 <Image 
-                    src={sprzet}
-                    class="sprzet"
-                    alt="Sprzęt"
+                    src={profile} 
+                    class="profile-cutout" 
+                    alt="Kamil Salmonowicz - Właściciel Ogrody Relaks"
+                    loading="eager"
+                    format="png" 
                 />
+
+                <!-- Pływające odznaki - widoczne WYŁĄCZNIE na ekranach desktopowych -->
+                <div class="floating-badge badge-guarantee">
+                    <div class="badge-icon-circle">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                    </div>
+                    <div class="badge-text-box">
+                        <span class="badge-headline">Gwarancja 100%</span>
+                        <span class="badge-subline">Satysfakcji z usługi</span>
+                    </div>
+                </div>
+
+                <div class="floating-badge badge-experience">
+                    <span class="exp-icon">🌱</span>
+                    <span class="exp-text"><strong>10+ lat</strong> doświadczenia</span>
+                </div>
+
+                <div class="floating-badge badge-equipment">
+                    <div class="equip-image-wrap">
+                        <Image 
+                            src={sprzet}
+                            class="equip-image"
+                            alt="Profesjonalny sprzęt ogrodniczy"
+                            width={130}
+                            height={130}
+                        />
+                    </div>
+                    <div class="equip-text-box">
+                        <span class="equip-tag">Sprzęt PRO</span>
+                        <strong class="equip-name">Własny park maszyn</strong>
+                        <span class="equip-desc">Kosiarki, aeratory i traktory</span>
+                    </div>
+                </div>
+
             </div>
 
         </div>
+
     </div>
-</main>
+</section>
 
 <style>
-/* Reset i ogólne ustawienia */
+    /* =========================================================
+       0. RESET I PODSTAWA BOX-SIZING
+       ========================================================= */
     *, *::before, *::after {
         box-sizing: border-box;
     }
 
-    /* 1. SEKCJA GŁÓWNA (DESKTOP) */
+    /* =========================================================
+       1. BAZA SEKCJI HERO
+       ========================================================= */
     .hero-section {
         position: relative;
         width: 100%;
         min-height: 100vh;
-        /* Zmiana: flex start żeby zawartość była przyklejona od góry, 
-           a profil sam ułożył się na dole */
+        min-height: 100dvh;
         display: flex;
-        align-items: stretch; 
+        align-items: stretch;
         justify-content: center;
-        overflow: hidden;
-        background-color: #0c3b2e;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        background-color: #0c2b20;
         font-family: 'Inter', sans-serif;
+        padding-top: clamp(75px, 9vh, 95px);
+        padding-bottom: 0;
+        box-sizing: border-box;
     }
 
+    /* Zdjęcie w tle */
     .hero-bg {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: center;
         z-index: 1;
+        filter: brightness(0.72) saturate(1.05);
+        transform: scale(1.02);
     }
 
-    .hero-overlay {
+    /* Przytulne warstwy nasycenia i winiety */
+    .hero-overlay-dark {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(12, 30, 20, 0.85) 35%, rgba(12, 30, 20, 0.4) 75%, rgba(0, 0, 0, 0.1) 100%);
         z-index: 2;
         pointer-events: none;
+        background: linear-gradient(
+            135deg,
+            rgba(10, 32, 24, 0.94) 0%,
+            rgba(12, 42, 31, 0.86) 45%,
+            rgba(8, 24, 18, 0.93) 100%
+        );
     }
 
-    /* 2. KONTENER Z ZAWARTOŚCIĄ (DESKTOP) */
-    .hero-content {
-        margin:0 50px 0 50px;
+    .hero-overlay-radial {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+        background: radial-gradient(
+            ellipse at 75% 65%,
+            rgba(134, 185, 66, 0.08) 0%,
+            transparent 65%
+        );
+    }
+
+    /* Przejście do kolejnej sekcji */
+    .hero-overlay-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 90px;
+        z-index: 2;
+        pointer-events: none;
+        background: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(12, 43, 32, 0.75) 65%,
+            #fafafa 100%
+        );
+    }
+
+    /* =========================================================
+       2. GŁÓWNY KONTENER I SIATKA (DESKTOP)
+       ========================================================= */
+    .hero-container {
         position: relative;
         z-index: 10;
         width: 100%;
-        max-width: 1580px;
-        min-height: 100vh; /* Zmienione z height: 100vh na min-height */
-        padding: 0 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center; /* Tekst na środku ekranu w pionie */
+        max-width: 1640px; /* Zwiększona szerokość dająca przestrzeń na dużą postać */
+        margin: 0 auto;
+        padding: 0 clamp(1.5rem, 3vw, 3.5rem);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: clamp(1.5rem, 3vw, 3.5rem);
+        align-items: end;
+        min-height: calc(100dvh - 85px);
+        box-sizing: border-box;
     }
 
-    /* 3. LEWA STRONA - TEKST (DESKTOP) */
+    /* =========================================================
+       3. LEWA KOLUMNA: TEKST I KONTENT
+       ========================================================= */
     .hero-text-box {
         position: relative;
-        z-index: 11;
+        z-index: 12;
         width: 100%;
-        max-width: 780px;
+        max-width: 740px;
         color: #ffffff;
-        bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-self: center;
+        padding: 2.5rem 0 3.5rem 0;
+        box-sizing: border-box;
     }
 
-    .hero-text-box h1 {
-        font-size: 4rem;
-        line-height: 1.15;
+    /* Pastylka / Kicker */
+    .kicker-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #c5ded1;
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        width: fit-content;
+        max-width: 100%;
+        margin-bottom: 1.25rem;
+        box-sizing: border-box;
+    }
+
+    .pulsing-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: #86b942;
+        flex-shrink: 0;
+    }
+
+    /* Tytuł H1 */
+    .hero-title {
+        font-size: clamp(2.35rem, 4.3vw, 4.1rem);
+        line-height: 1.14;
         font-weight: 800;
-        margin-bottom: 1.5rem;
-        letter-spacing: -0.02em;
+        margin: 0 0 1.25rem 0;
+        letter-spacing: -0.025em;
+        color: #ffffff;
+        text-wrap: balance;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .highlight {
-        color: #c4f07a;
+        color: #9ecc5e;
+        display: inline-block;
     }
 
-    .hero-text-box p {
-        font-size: 2rem;
-        line-height: 1.6;
-        color: #e5e5e5;
+    /* Opis */
+    .hero-description {
+        font-size: clamp(1.05rem, 1.4vw, 1.22rem);
+        line-height: 1.62;
+        color: #d8e4dc;
+        margin: 0 0 2.25rem 0;
+        max-width: 620px;
+        overflow-wrap: break-word;
+    }
+
+    /* Grupa przycisków CTA */
+    .cta-group {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
         margin-bottom: 2.5rem;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .cta-button {
+        text-decoration: none;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         display: inline-flex;
         align-items: center;
-        gap: 1rem;
-        background-color: #c4f07a;
-        color: #0c3b2e;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 1rem;
-        padding: 1rem 2rem;
         border-radius: 50px;
-        transition: transform 0.2s ease, background-color 0.2s ease;
+        cursor: pointer;
+        box-sizing: border-box;
+        max-width: 100%;
     }
 
-    .cta-button:hover {
+    .cta-button.primary {
+        gap: 0.85rem;
+        background-color: #86b942;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.05rem;
+        padding: 1.05rem 2.25rem;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+    }
+
+    .cta-button.primary:hover {
+        background-color: #76a537;
         transform: translateY(-2px);
-        background-color: #d1f593;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32);
     }
 
-    .arrow {
-        font-size: 1.2rem;
+    .cta-button.primary .arrow {
+        font-size: 1.25rem;
         transition: transform 0.2s ease;
+        line-height: 1;
     }
 
-    .cta-button:hover .arrow {
+    .cta-button.primary:hover .arrow {
         transform: translateX(4px);
     }
 
+    .cta-button.secondary {
+        gap: 0.85rem;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #ffffff;
+        padding: 0.75rem 1.6rem;
+    }
+
+    .cta-button.secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.28);
+        transform: translateY(-2px);
+    }
+
+    .phone-icon-box {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(134, 185, 66, 0.22);
+        color: #a0ce62;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .phone-info {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .phone-tag {
+        font-size: 0.72rem;
+        color: #b5c7bd;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .phone-num {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 0.02em;
+    }
+
+    /* Social proof: Zadowoleni klienci */
     .happy-clients {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        margin-top: 3rem;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    .avatars {
+    .avatars-cluster {
         display: flex;
+        align-items: center;
     }
 
-    .avatar {
-        width: 40px;
-        height: 40px;
+    .avatar-img {
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
-        border: 2px solid #0c3b2e;
+        border: 2.5px solid #0c2b20;
         margin-left: -12px;
+        object-fit: cover;
+        background-color: #244b3c;
     }
 
-    .avatar:first-child { margin-left: 0; }
-    .bg-gray { background-color: #9ca3af; }
-    .bg-light { background-color: #d1d5db; }
+    .avatar-img:first-child {
+        margin-left: 0;
+    }
 
-    .clients-text {
+    .avatar-badge {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 2.5px solid #0c2b20;
+        margin-left: -12px;
+        background-color: #86b942;
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .clients-meta {
         display: flex;
         flex-direction: column;
-        font-size: 0.85rem;
+        gap: 2px;
     }
 
-    .clients-text strong {
-        font-size: 1.1rem;
+    .stars-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .stars {
+        color: #f59e0b;
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+
+    .rating-grade {
+        font-size: 0.95rem;
         font-weight: 800;
+        color: #ffffff;
     }
 
-    .clients-text span {
-        color: #d1d5db;
+    .clients-label {
+        font-size: 0.85rem;
+        color: #b8ccbf;
+        font-weight: 500;
     }
 
-    /* 4. PRAWA STRONA - PROFIL (DESKTOP) */
-    .hero-profile-box {
-        position: absolute;
-        right: 2rem;
-        bottom: 0; /* ZAWSZE przyklejone do dolnej krawędzi hero-section */
-        width: 320px;
-        height: 100vh; /* Rozmiar dopasowany do ekranu, bez przeskakiwania */
-        max-height: 1000px;
+    /* Cechy z ptaszkami pod spodem */
+    .hero-features {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.86rem;
+        font-weight: 600;
+        color: #d1ded6;
+    }
+
+    .feature-item strong {
+        color: #a0ce62;
+    }
+
+    .feature-emoji {
+        font-size: 1.1rem;
+        line-height: 1;
+    }
+
+    /* =========================================================
+       4. PRAWA KOLUMNA (DESKTOP): DUŻA SYLWETKA KAMILA I PŁYWAJĄCE KARTY
+       ========================================================= */
+    .hero-visual-column {
+        position: relative;
+        width: 100%;
+        height: 100%;
         display: flex;
         justify-content: center;
-        align-items: flex-end; /* Elementy wewnątrz lądują na dole */
-        pointer-events: none;
-        z-index: 10;
+        align-items: flex-end;
+        align-self: end;
+        box-sizing: border-box;
     }
 
-    .profile {
-        position: relative; /* Zmienione na relative */
-        bottom: 0px; /* Minimalne schowanie ucięcia z dołu */
+    .profile-stage {
+        position: relative;
+        width: 100%;
+        max-width: 760px; /* Zwiększona szerokość sceny na dużą sylwetkę */
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin-bottom: 0;
+        box-sizing: border-box;
+    }
+
+    /* Ciepła, subtelna poświata za Kamilem */
+    .stage-ambient-glow {
+        position: absolute;
+        bottom: 15%;
+        width: 520px;
+        height: 520px;
+        background: radial-gradient(circle, rgba(134, 185, 66, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(65px);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* Zdjęcie Kamila - powiększone, okazałe, zajmuje 92vh */
+    .profile-cutout {
+        position: relative;
+        z-index: 3;
         width: auto;
-        height: 100%; /* Dopasowuje się do rodzica hero-profile-box */
+        max-width: 100%;
+        height: clamp(680px, 92vh, 980px); /* Powiększony Kamil na monitorze */
         object-fit: contain;
         object-position: bottom center;
         display: block;
-        z-index: 4;
+        margin: 0 auto;
+        filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.55));
+        mask-image: linear-gradient(to top, transparent 0%, black 4%, black 100%);
+        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 4%, black 100%);
     }
 
-    .badge-guarantee {
+    /* Wspólne style pływających odznak (WYŁĄCZNIE NA DESKTOP) */
+    .floating-badge {
         position: absolute;
-        bottom:290px;
-        right: 440px; /* Przesunięto nieco bliżej środka, by nie wystawało za prawy brzeg ekranu na mniejszych laptopach */
-        background-color: #0c3b2e;
-        color: #c4f07a;
-        width: 120px;
-        height: 120px;
+        z-index: 5;
+        border-radius: 20px;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+        pointer-events: auto;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    .floating-badge:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.38);
+    }
+
+    /* 1. Gwarancja Satysfakcji (Góra-Lewo przy ramieniu powiększonego Kamila) */
+    .badge-guarantee {
+        top: 28%;
+        left: clamp(-65px, -4.5vw, -25px);
+        background: rgba(14, 44, 34, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        animation: floatBadge1 5.5s ease-in-out infinite alternate;
+    }
+
+    .badge-icon-circle {
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
+        background: #86b942;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge-text-box {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        border: 4px solid #c4f07a;
-        font-size: 0.75rem;
-        font-weight: 700;
-        line-height: 1.2;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        z-index: 5;
     }
 
-    .badge-guarantee .icon {
-        font-size: 1.5rem;
-        margin-bottom: 0.2rem;
+    .badge-headline {
+        font-size: 0.94rem;
+        font-weight: 800;
+        color: #ffffff;
     }
 
-    .badge-floating-card {
-        position: absolute;
-        bottom: 150px; /* Lekko podniesione nad krawędź */
-        right: 300px; /* Zbliżone do środka, podobnie jak badge wyżej */
-        width: 200px; /* Delikatnie pomniejszone, żeby lepiej komponowało się z sylwetką */
-        height:200px;
-        background-color: #ffffff;
-        border-radius: 16px;
-        border: 4px solid #e5e5e5;
+    .badge-subline {
+        font-size: 0.78rem;
+        color: #a0ce62;
+        font-weight: 600;
+    }
+
+    /* 2. Chip Doświadczenia (Dół-Lewo) */
+    .badge-experience {
+        bottom: 14%;
+        left: clamp(-50px, -3.5vw, -20px);
+        background: rgba(14, 44, 34, 0.94);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 10px 18px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        text-align: center;
-        font-size: 0.85rem;
-        font-weight: bold;
-        color: #6b7280;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-        z-index: 4;
-        box-sizing: content-box;
-        overflow: hidden; /* Zapewnia, że border-radius dotyczy też obrazka wewnątrz */
+        gap: 10px;
+        font-size: 0.88rem;
+        color: #ffffff;
+        border-radius: 50px;
+        animation: floatBadge2 7s ease-in-out infinite alternate;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);
     }
 
-    .sprzet {
+    .exp-icon {
+        font-size: 1.15rem;
+    }
+
+    .exp-text strong {
+        color: #a0ce62;
+        font-weight: 800;
+    }
+
+    /* 3. Karta Sprzętu (Dół-Prawo) */
+    .badge-equipment {
+        bottom: 20%;
+        right: clamp(-60px, -4vw, -20px);
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        padding: 11px 16px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        animation: floatBadge1 6.5s ease-in-out infinite alternate;
+    }
+
+    .equip-image-wrap {
+        width: 66px;
+        height: 66px;
+        border-radius: 12px;
+        overflow: hidden;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .equip-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-/* =======================================================
-       TYLKO WIDOK MOBILNY (Telefony i małe ekrany)
-       ======================================================= */
-    @media (max-width: 1024px) {
-        
-        .hero-section {
-            /* Powrót do svh - stabilna wysokość */
-            height: 200vw;
-            min-height: 100vh;
+    .equip-text-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .equip-tag {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #15803d;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .equip-name {
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: #11301e;
+        line-height: 1.25;
+    }
+
+    .equip-desc {
+        font-size: 0.74rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* Animacje lewitacji */
+    @keyframes floatBadge1 {
+        0% {
+            transform: translateY(0px);
+        }
+        100% {
+            transform: translateY(-9px);
+        }
+    }
+
+    @keyframes floatBadge2 {
+        0% {
+            transform: translateY(0px);
+        }
+        100% {
+            transform: translateY(9px);
+        }
+    }
+
+    /* =========================================================
+       5. RESPONSYWNOŚĆ (TABLETY I LAPTOPY 1025px - 1366px)
+       ========================================================= */
+    @media (min-width: 1025px) and (max-width: 1366px) {
+        .profile-stage {
+            max-width: 640px;
         }
 
-        /* 1. NAKŁADKA (WARSTWA 3 - pomiędzy Kamilem a tekstem) */
-        .hero-overlay {
-            z-index: 3;
-            pointer-events: none;
-            background: linear-gradient(
+        .profile-cutout {
+            height: clamp(580px, 86vh, 820px);
+        }
+
+        .badge-guarantee {
+            left: -25px;
+            top: 26%;
+        }
+
+        .badge-equipment {
+            right: -25px;
+            bottom: 18%;
+        }
+
+        .badge-experience {
+            left: -15px;
+            bottom: 12%;
+        }
+    }
+
+    /* =========================================================
+       6. WIDOK MOBILNY I TABLETOWY (<= 1024px)
+          - KAMIL JEST WIĘKSZY
+          - CHOWA SIĘ W NAPISACH JUŻ NA WYSOKOŚCI ŁOKCI
+          - BEZ ZASŁANIANIA TWARZY
+       ========================================================= */
+    @media (max-width: 1024px) {
+        .hero-section {
+            height: auto;
+            min-height: 100dvh;
+            padding-top: 85px;
+            padding-bottom: 3.5rem;
+            align-items: flex-start;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: auto;
+            padding: 0 1.25rem;
+            gap: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* 1. Sylwetka Kamila NAD tekstem (order: 1) */
+        .hero-visual-column {
+            order: 1;
+            width: 100%;
+            max-width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            align-self: center;
+            padding-top: 0.25rem;
+            /* Głęboki ujemny margines: napisy wchodzą dokładnie na wysokość łokci */
+            margin-bottom: -90px;
+            z-index: 5;
+            overflow: visible;
+        }
+
+        .profile-stage {
+            width: 100%;
+            max-width: 440px;
+            height: clamp(350px, 48vh, 460px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        /* Sylwetka na mobile: powiększona, a na wysokości łokci gaśnie w 100% niewidzialność */
+        .profile-cutout {
+            width: auto;
+            height: 100%;
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            object-position: top center;
+            transform: scale(1.12); /* Większa, wyraźniejsza postać */
+            transform-origin: top center;
+            filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.45));
+            /* Cieniowanie kończy się na wysokości łokci (ok. 65-72%) */
+            mask-image: linear-gradient(
                 to bottom,
-                rgba(12, 30, 20, 0) 0%,
-                rgba(12, 30, 20, 0) 0%,    /* Przezroczyste na twarzy i górze */
-                rgba(12, 30, 20, 0.95) 50%, /* Zaczyna mocno ciemnieć na wysokości klatki (pod tekstem) */
-                rgba(12, 30, 20, 1) 60%,    /* Pełne ciemne tło */
-                rgba(12, 30, 20, 1) 100%
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 1) 32%,
+                rgba(0, 0, 0, 0.82) 46%,
+                rgba(0, 0, 0, 0.4) 58%,
+                rgba(0, 0, 0, 0.1) 68%,
+                rgba(0, 0, 0, 0) 75%,
+                rgba(0, 0, 0, 0) 100%
+            );
+            -webkit-mask-image: linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 1) 32%,
+                rgba(0, 0, 0, 0.82) 46%,
+                rgba(0, 0, 0, 0.4) 58%,
+                rgba(0, 0, 0, 0.1) 68%,
+                rgba(0, 0, 0, 0) 75%,
+                rgba(0, 0, 0, 0) 100%
             );
         }
 
-        /* 2. GŁÓWNY KONTENER */
-        .hero-content {
-            height: auto;
-            min-height: 100svw;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 6rem 0rem 1rem 0rem;
-            z-index: auto; 
+        .stage-ambient-glow {
+            width: 340px;
+            height: 340px;
+            top: 10%;
+            bottom: auto;
+            filter: blur(50px);
         }
 
-        /* 3. KONTENER PROFILU */
-        .hero-profile-box {
-            position: absolute;
-            top: 30px; /* Sztywny, bezpieczny odstęp od górnego menu. Głowa nie wjedzie wyżej. */
-            left: 0;
-            right: 0;
-            bottom: auto; /* Kasujemy pozycjonowanie od dołu */
-            width: 100%;
-            height: 120svw; /* Kontener zajmuje stałą część ekranu */
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            z-index: auto; 
+        /* Odznaki ukryte na mobile */
+        .floating-badge {
+            display: none !important;
         }
 
-        /* SAMO ZDJĘCIE KAMILA */
-        .profile {
-            position: relative;
-            bottom: 0; /* Przestajemy podnosić zdjęcie pikselami */
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            object-position: bottom center;
-            display: block;
-            z-index: 2; 
-        }
-
-        /* 4. ODZNAKA SATYSFAKCJI */
-        .badge-guarantee {
-            position: absolute;
-            top: 1svw;
-            bottom: auto; /* Trzyma się dolnej krawędzi kontenera profilu, a nie całego ekranu */
-            left: auto;
-            right: 20px;
-            width: 25vw;
-            height: 25vw;
-            font-size: 3lvw;
-            border-width: 3px;
-            z-index: 5;
-        }
-
-        .badge-guarantee .icon {
-            font-size: 100%;
-        }
-
-        /* 5. UKRYCIE KAFELKA ZE SPRZĘTEM NA MOBILE */
-        .badge-floating-card {
-            display: none;
-        }
-
-        /* 6. TEKST I PRZYCISK (WARSTWA 10 - najwyżej, wyraźnie czytelny na gradiencie) */
+        /* 2. Tekst i przyciski PONIŻEJ zdjęcia Kamila (order: 2), zaczynają się na wysokości łokci */
         .hero-text-box {
-            position: relative;
-            z-index: 10;
-            width: 85vw;
+            order: 2;
+            width: 100%;
             max-width: 100%;
             text-align: left;
-            padding-top: 0;
-            margin-top: 0;
+            padding: 0;
+            position: relative;
+            z-index: 10;
+            overflow-x: hidden;
         }
 
-        .hero-text-box h1 {
-            font-size: 7svw;
-            line-height: 1.2;
-            margin-bottom: 0.8rem;
+        .hero-title {
+            font-size: clamp(2.1rem, 6.2vw, 3rem);
         }
 
-        .hero-text-box p {
-            font-size: 1.1rem;
-            line-height: 1.5;
-            margin-bottom: 1.8rem;
-            color: #d1d5db;
+        .hero-description {
+            font-size: 1.05rem;
+            max-width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        /* Przyciski na mobile */
+        .cta-group {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.85rem;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 2rem;
         }
 
         .cta-button {
-            padding: 0.85rem 1.8rem;
-            font-size: 1rem;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .cta-button.primary {
+            padding: 1rem 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .cta-button.secondary {
+            padding: 0.85rem 1.25rem;
+            justify-content: center;
         }
 
         .happy-clients {
-            margin-top: 1.8rem;
+            flex-direction: column;
+            align-items: flex-start;
             gap: 0.75rem;
+        }
+
+        .hero-features {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+        }
+    }
+
+    /* =========================================================
+       7. MAŁE EKRANY TELEFONÓW (<= 640px)
+       ========================================================= */
+    @media (max-width: 640px) {
+        .hero-section {
+            padding-top: 80px;
+            padding-bottom: 2.75rem;
+        }
+
+        .hero-container {
+            padding: 0 1rem;
+        }
+
+        /* Na wąskich smartfonach tekst nachodzi idealnie na wysokość łokci */
+        .hero-visual-column {
+            margin-bottom: -80px;
+        }
+
+        .profile-stage {
+            max-width: 380px;
+            height: clamp(310px, 44vh, 390px);
+        }
+
+        .profile-cutout {
+            transform: scale(1.15); /* Wyraźnie powiększona postać na smartfonie */
+            transform-origin: top center;
+            mask-image: linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 1) 30%,
+                rgba(0, 0, 0, 0.8) 44%,
+                rgba(0, 0, 0, 0.35) 56%,
+                rgba(0, 0, 0, 0.08) 66%,
+                rgba(0, 0, 0, 0) 74%,
+                rgba(0, 0, 0, 0) 100%
+            );
+            -webkit-mask-image: linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 1) 30%,
+                rgba(0, 0, 0, 0.8) 44%,
+                rgba(0, 0, 0, 0.35) 56%,
+                rgba(0, 0, 0, 0.08) 66%,
+                rgba(0, 0, 0, 0) 74%,
+                rgba(0, 0, 0, 0) 100%
+            );
+        }
+
+        .kicker-pill {
+            font-size: 0.74rem;
+            padding: 5px 12px;
+            letter-spacing: 0.03em;
+            margin-bottom: 1rem;
+        }
+
+        .hero-title {
+            font-size: 2.1rem;
+            line-height: 1.18;
+            margin-bottom: 1rem;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            line-height: 1.55;
+            margin-bottom: 1.75rem;
+        }
+
+        .cta-button.primary {
+            padding: 0.95rem 1.25rem;
+            font-size: 1rem;
+        }
+
+        .cta-button.secondary {
+            padding: 0.8rem 1.15rem;
+        }
+    }
+
+    /* Wsparcie dla użytkowników preferujących zredukowany ruch */
+    @media (prefers-reduced-motion: reduce) {
+        .pulsing-dot,
+        .badge-guarantee,
+        .badge-equipment,
+        .badge-experience {
+            animation: none;
+        }
+
+        .cta-button,
+        .floating-badge {
+            transition: none;
         }
     }
 </style>

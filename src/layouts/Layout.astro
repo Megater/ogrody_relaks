@@ -1,19 +1,48 @@
 ---
 import NavbarDesktop from '../components/Navbars/NavbarDesktop.astro';
 import NavbarMobile from '../components/Navbars/NavbarMobile.astro';
-import Footer  from '../components/footer.astro';
+import Footer from '../components/footer.astro';
+
+interface Props {
+    title?: string;
+    description?: string;
+}
+
+const {
+    title = "Ogrody Relaks - Kompleksowa pielęgnacja i zakładanie ogrodów",
+    description = "Profesjonalne usługi ogrodnicze w Grójcu i okolicach. Pielęgnacja trawników, zakładanie ogrodów, instalacje nawadniania i całoroczna opieka nad zielenią."
+} = Astro.props;
 ---
 <!doctype html>
 <html lang="pl">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="generator" content={Astro.generator} />
-        <title>Ogrody Relaks</title>
+        
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="theme-color" content="#0c3b2e" />
+
+        <!-- Open Graph / Social Media -->
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="pl_PL" />
+
+        <!-- Preconnect Google Fonts for fast loading -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link 
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&display=swap" 
+            rel="stylesheet" 
+        />
     </head>
     <body>
+        <a href="#main-content" class="skip-link">Przejdź do treści głównej</a>
+
         <header id="Desktop">
             <NavbarDesktop />
         </header>
@@ -22,12 +51,11 @@ import Footer  from '../components/footer.astro';
             <NavbarMobile />
         </header>
 
-        <main>
+        <main id="main-content">
             <slot />
         </main>
-        <footer>
-            <Footer/>
-        </footer>
+
+        <Footer />
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
@@ -35,7 +63,7 @@ import Footer  from '../components/footer.astro';
                 const mobile = document.getElementById('Mobile');
                 
                 const handleScroll = () => {
-                    if (window.scrollY > 20) {
+                    if (window.scrollY > 25) {
                         desktop?.classList.add('is-scrolled');
                         mobile?.classList.add('is-scrolled');
                     } else {
@@ -44,27 +72,32 @@ import Footer  from '../components/footer.astro';
                     }
                 };
 
-                window.addEventListener('scroll', handleScroll);
-                handleScroll(); // Inicjalizacja przy ładowaniu
+                window.addEventListener('scroll', handleScroll, { passive: true });
+                handleScroll(); // Initial check on load
             });
         </script>
     </body>
 </html>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    :global(*),
+    :global(*::before),
+    :global(*::after) {
+        box-sizing: border-box;
+    }
 
     *, *::before, *::after {
         box-sizing: border-box;
     }
 
     html {
-        scroll-behavior: smooth; 
+        scroll-behavior: smooth;
+        scroll-padding-top: 95px; /* Zapobiega zasłanianiu sekcji przez pływające menu po kliknięciu w linki # */
     }
 
     body {
         font-family: 'Inter', sans-serif;
-        background-color: #fdfdfd; 
+        background-color: #fafafa; 
         color: #1a1a1a;
         margin: 0;
         padding: 0;
@@ -72,6 +105,27 @@ import Footer  from '../components/footer.astro';
         min-height: 100vh;
         -webkit-font-smoothing: antialiased; 
         -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+    }
+
+    /* Ułatwienie dostępności (A11y) */
+    .skip-link {
+        position: absolute;
+        top: -120px;
+        left: 20px;
+        background: #0c3b2e;
+        color: #ffffff;
+        padding: 10px 18px;
+        z-index: 100;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: top 0.25s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .skip-link:focus {
+        top: 20px;
     }
 
     main {
@@ -80,15 +134,10 @@ import Footer  from '../components/footer.astro';
         padding: 0;
         display: flex;
         flex-direction: column;
-        /* ZMUSZAMY ELEMENTY DO ZACZYNANIA SIĘ OD GÓRY I ZAJMOWANIA PEŁNEJ SZEROKOŚCI */
         justify-content: flex-start;
         align-items: stretch;
         width: 100%;
-        
-        /* Dodaj padding na górze, aby zawartość nie chowała się pod przyklejonym (fixed) menu. 
-        Wartość dostosuj do wysokości swojego menu mobilnego */
-        padding-top: 80px; 
-        }
+    }
 
     #Desktop, 
     #Mobile {
@@ -98,11 +147,11 @@ import Footer  from '../components/footer.astro';
         z-index: 50;
         pointer-events: none; 
         width: 100%;
-        transition: top 0.4s ease-in-out; /* Płynne oderwanie od sufitu */
+        transition: top 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     #Desktop {
-        top: 0; /* Domyślnie przyklejony do krawędzi */
+        top: 0;
     }
 
     #Mobile {
@@ -111,7 +160,7 @@ import Footer  from '../components/footer.astro';
 
     /* Pozycje po rozpoczęciu przewijania */
     #Desktop.is-scrolled {
-        top: 1.5rem;
+        top: 1.25rem;
     }
 
     #Mobile.is-scrolled {
@@ -133,12 +182,6 @@ import Footer  from '../components/footer.astro';
         display: block;
     }
 
-    @media (max-width: 1024px) {
-        main {
-            width: 100%;
-        }
-    }
-
     @media (min-width: 1024px) {
         #Desktop {
             display: flex;
@@ -148,9 +191,28 @@ import Footer  from '../components/footer.astro';
         #Mobile {
             display: none;
         }
+    }
 
-        main {
-            width: 100%; 
-        }
+    /* Stylowy pasek przewijania dopasowany do motywu zieleni */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f5f2;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #9bc658;
+        border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #84cc16;
+    }
+
+    ::selection {
+        background-color: #c4f07a;
+        color: #0c3b2e;
     }
 </style>
