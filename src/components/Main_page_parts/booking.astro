@@ -4,10 +4,41 @@ const monthNames = [
   'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
   'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
 ];
+const monthNamesGenitiveSSR = [
+  'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
+  'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'
+];
+const dayNamesPlSSR = [
+  'Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'
+];
+
 const now = new Date();
 const currentYear = now.getFullYear();
 const currentMonth = now.getMonth();
+const currentDay = now.getDate();
 const currentMonthName = monthNames[currentMonth];
+
+const dayNamesList = ['Pn.', 'Wt.', 'Śr.', 'Cz.', 'Pt.', 'So.', 'Nd.'];
+
+// Przesunięcie pierwszego dnia tygodnia (Pn = 0, ..., Nd = 6)
+const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+const startOffsetSSR = (firstDayOfMonth + 6) % 7;
+const totalDaysInCurrMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+// Domyślnie wybrany dzień (pierwszy wolny dzień roboczy od dzisiaj)
+let defaultSelectedDay = 0;
+for (let d = currentDay; d <= totalDaysInCurrMonth; d++) {
+  const dow = new Date(currentYear, currentMonth, d).getDay();
+  if (dow !== 0 && dow !== 6) {
+    defaultSelectedDay = d;
+    break;
+  }
+}
+const initialDateObj = defaultSelectedDay ? new Date(currentYear, currentMonth, defaultSelectedDay) : null;
+const initialDayName = initialDateObj ? dayNamesPlSSR[initialDateObj.getDay()] : '';
+const initialSelectedText = defaultSelectedDay ? `${initialDayName}, ${defaultSelectedDay} ${monthNamesGenitiveSSR[currentMonth]} ${currentYear}` : 'Wybierz dzień z kalendarza powyżej';
+const initialSelectedDateStr = defaultSelectedDay ? `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(defaultSelectedDay).padStart(2, '0')}` : '';
+const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${monthNamesGenitiveSSR[currentMonth]} ${currentYear}` : '—';
 ---
 
 <section class="booking-section" id="rezerwacja">
@@ -106,13 +137,42 @@ const currentMonthName = monthNames[currentMonth];
                   </button>
                 </div>
                 <div class="calendar-grid" id="calendar-grid">
-                  <div class="day-name">Pn.</div>
-                  <div class="day-name">Wt.</div>
-                  <div class="day-name">Śr.</div>
-                  <div class="day-name">Cz.</div>
-                  <div class="day-name">Pt.</div>
-                  <div class="day-name">So.</div>
-                  <div class="day-name">Nd.</div>
+                  {dayNamesList.map(name => (
+                    <div class="day-name">{name}</div>
+                  ))}
+                  {Array.from({ length: startOffsetSSR }).map(() => (
+                    <div class="day empty" aria-hidden="true"></div>
+                  ))}
+                  {Array.from({ length: totalDaysInCurrMonth }).map((_, idx) => {
+                    const d = idx + 1;
+                    const dateObj = new Date(currentYear, currentMonth, d);
+                    const dow = dateObj.getDay();
+                    const isPast = d < currentDay;
+                    const isWeekend = (dow === 0 || dow === 6);
+                    const isSelected = (d === defaultSelectedDay);
+                    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    
+                    if (isPast || isWeekend) {
+                      return (
+                        <div class="day disabled" aria-disabled="true" title={isWeekend ? 'Weekendy są niedostępne' : 'Termin niedostępny'}>
+                          {d}
+                        </div>
+                      );
+                    }
+                    return (
+                      <button
+                        type="button"
+                        class={`day available ${isSelected ? 'selected' : ''}`}
+                        data-date={dateStr}
+                        data-day={d}
+                        data-month={currentMonth}
+                        data-year={currentYear}
+                        aria-label={`Wybierz termin ${d} ${monthNames[currentMonth]} ${currentYear}`}
+                      >
+                        {d}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <!-- Pasek wybranego terminu (natychmiastowy i wyraźny feedback dla klienta) -->
@@ -127,7 +187,7 @@ const currentMonthName = monthNames[currentMonth];
                   </div>
                   <div class="banner-text">
                     <span class="banner-label">Wybrany dzień wizji lokalnej:</span>
-                    <strong id="selected-date-text" class="banner-date">Wybierz dzień z kalendarza powyżej</strong>
+                    <strong id="selected-date-text" class="banner-date">{initialSelectedText}</strong>
                   </div>
                 </div>
 
@@ -137,7 +197,7 @@ const currentMonthName = monthNames[currentMonth];
                 </p>
 
                 <!-- Ukryty input do przechowywania wybranej daty -->
-                <input type="hidden" id="selected-date" name="date" value="" required />
+                <input type="hidden" id="selected-date" name="date" value={initialSelectedDateStr} required />
               </div>
             </div>
 
@@ -169,7 +229,7 @@ const currentMonthName = monthNames[currentMonth];
                   Koszt wyceny: <strong>Darmowa (0 zł)</strong>
                 </div>
                 <div class="footer-date-info">
-                  Termin: <strong id="footer-date-text">—</strong>
+                  Termin: <strong id="footer-date-text">{initialFooterDateText}</strong>
                 </div>
               </div>
               <button type="submit" class="submit-btn">Zarezerwuj bezpłatną wycenę &rarr;</button>
@@ -184,7 +244,7 @@ const currentMonthName = monthNames[currentMonth];
 
 <!-- Skrypt obsługujący dynamiczny kalendarz i weryfikację e-mail -->
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  function setupBookingCalendar() {
     const monthNames = [
       'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
       'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
@@ -213,7 +273,6 @@ const currentMonthName = monthNames[currentMonth];
 
     let viewYear = currentYear;
     let viewMonth = currentMonth;
-    let selectedDateStr = '';
 
     const prevBtn = document.getElementById('cal-prev') as HTMLButtonElement | null;
     const nextBtn = document.getElementById('cal-next') as HTMLButtonElement | null;
@@ -223,48 +282,44 @@ const currentMonthName = monthNames[currentMonth];
     const selectedDateText = document.getElementById('selected-date-text');
     const footerDateText = document.getElementById('footer-date-text');
 
+    if (!calendarGrid || !monthTitle || !prevBtn || !nextBtn) return;
+
+    let selectedDateStr = dateInput?.value || '';
+
     // Nie można cofnąć się przed bieżący miesiąc
     const isAtMinMonth = () => {
       return viewYear < currentYear || (viewYear === currentYear && viewMonth <= currentMonth);
     };
 
-    // Domyślny wybór pierwszej dostępnej daty (od poniedziałku do piątku)
-    const daysInCurrMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    for (let d = currentDay; d <= daysInCurrMonth; d++) {
-      const checkDate = new Date(currentYear, currentMonth, d);
-      const dow = checkDate.getDay();
-      if (dow !== 0 && dow !== 6) { // Omijamy weekendy (soboty i niedziele)
-        selectedDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        if (dateInput) dateInput.value = selectedDateStr;
-        if (selectedDateText) selectedDateText.textContent = formatFullDate(currentYear, currentMonth, d);
-        if (footerDateText) footerDateText.textContent = `${d} ${monthNamesGenitive[currentMonth]} ${currentYear}`;
-        break;
-      }
-    }
+    const attachDayClickListeners = () => {
+      calendarGrid.querySelectorAll('button.day.available').forEach(dayBtn => {
+        dayBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const chosenDate = dayBtn.getAttribute('data-date');
+          const chosenDay = parseInt(dayBtn.getAttribute('data-day') || '1', 10);
+          const chosenMonth = parseInt(dayBtn.getAttribute('data-month') || String(viewMonth), 10);
+          const chosenYear = parseInt(dayBtn.getAttribute('data-year') || String(viewYear), 10);
+          if (!chosenDate) return;
 
-    if (!selectedDateStr) {
-      let nextM = currentMonth + 1;
-      let nextY = currentYear;
-      if (nextM > 11) {
-        nextM = 0;
-        nextY++;
-      }
-      for (let d = 1; d <= 7; d++) {
-        const checkDate = new Date(nextY, nextM, d);
-        const dow = checkDate.getDay();
-        if (dow !== 0 && dow !== 6) {
-          selectedDateStr = `${nextY}-${String(nextM + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-          if (dateInput) dateInput.value = selectedDateStr;
-          if (selectedDateText) selectedDateText.textContent = formatFullDate(nextY, nextM, d);
-          if (footerDateText) footerDateText.textContent = `${d} ${monthNamesGenitive[nextM]} ${nextY}`;
-          break;
-        }
-      }
-    }
+          selectedDateStr = chosenDate;
+          if (dateInput) dateInput.value = chosenDate;
+
+          // Natychmiastowa aktualizacja tekstu wybranego terminu
+          if (selectedDateText) {
+            selectedDateText.textContent = formatFullDate(chosenYear, chosenMonth, chosenDay);
+          }
+          if (footerDateText) {
+            footerDateText.textContent = `${chosenDay} ${monthNamesGenitive[chosenMonth]} ${chosenYear}`;
+          }
+
+          // Aktualizacja klasy zaznaczenia na kafelkach
+          calendarGrid.querySelectorAll('button.day.available').forEach(d => d.classList.remove('selected'));
+          dayBtn.classList.add('selected');
+        });
+      });
+    };
 
     const renderCalendar = () => {
-      if (!calendarGrid || !monthTitle || !prevBtn) return;
-
       // Aktualizacja nagłówka
       monthTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
 
@@ -316,33 +371,7 @@ const currentMonthName = monthNames[currentMonth];
       }
 
       calendarGrid.innerHTML = html;
-
-      // Obsługa kliknięcia przez klienta w dowolny dostępny dzień
-      calendarGrid.querySelectorAll('button.day.available').forEach(dayBtn => {
-        dayBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          const chosenDate = dayBtn.getAttribute('data-date');
-          const chosenDay = parseInt(dayBtn.getAttribute('data-day') || '1', 10);
-          const chosenMonth = parseInt(dayBtn.getAttribute('data-month') || String(viewMonth), 10);
-          const chosenYear = parseInt(dayBtn.getAttribute('data-year') || String(viewYear), 10);
-          if (!chosenDate) return;
-
-          selectedDateStr = chosenDate;
-          if (dateInput) dateInput.value = chosenDate;
-
-          // Natychmiastowa aktualizacja tekstu wybranego terminu
-          if (selectedDateText) {
-            selectedDateText.textContent = formatFullDate(chosenYear, chosenMonth, chosenDay);
-          }
-          if (footerDateText) {
-            footerDateText.textContent = `${chosenDay} ${monthNamesGenitive[chosenMonth]} ${chosenYear}`;
-          }
-
-          // Aktualizacja klasy zaznaczenia na kafelkach
-          calendarGrid.querySelectorAll('button.day.available').forEach(d => d.classList.remove('selected'));
-          dayBtn.classList.add('selected');
-        });
-      });
+      attachDayClickListeners();
     };
 
     // Obsługa strzałek zmiany miesięcy
@@ -367,8 +396,8 @@ const currentMonthName = monthNames[currentMonth];
       renderCalendar();
     });
 
-    // Startowe wyrenderowanie
-    renderCalendar();
+    // Podpięcie listenerów pod wygenerowane w SSR dni
+    attachDayClickListeners();
 
     // Walidacja maila przy próbie wysłania
     const form = document.getElementById('booking-form') as HTMLFormElement | null;
@@ -381,10 +410,16 @@ const currentMonthName = monthNames[currentMonth];
         return; // Zatrzymujemy wysyłkę jeśli mail jest zły
       }
       
-      // Jeśli wszystko ok, tutaj poszedłby fetch() do Google Sheets API
       alert(`Termin zarezerwowany na dzień: ${dateInput?.value || selectedDateStr}! (Wepnij tu integrację z API)`);
     });
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupBookingCalendar);
+  } else {
+    setupBookingCalendar();
+  }
+  document.addEventListener('astro:page-load', setupBookingCalendar);
 </script>
 
 <style>
@@ -769,6 +804,7 @@ const currentMonthName = monthNames[currentMonth];
     box-sizing: border-box;
   }
 
+  .calendar-grid :global(.day-name),
   .day-name {
     font-size: 0.88rem;
     font-weight: 700;
@@ -779,14 +815,15 @@ const currentMonthName = monthNames[currentMonth];
     text-overflow: ellipsis;
   }
 
+  .calendar-grid :global(.day),
   .day {
-    aspect-ratio: 1.15 / 1;
-    min-height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(0.85rem, 2.5vw, 1rem);
-    border-radius: 8px;
+    aspect-ratio: 1 / 1 !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: clamp(0.9rem, 2vw, 1.05rem);
+    border-radius: 10px;
     min-width: 0;
     box-sizing: border-box;
     user-select: none;
@@ -794,21 +831,24 @@ const currentMonthName = monthNames[currentMonth];
     padding: 0;
   }
 
+  .calendar-grid :global(.day.empty),
   .day.empty {
-    background: transparent;
-    border: 1px solid transparent;
+    background: transparent !important;
+    border: 1px solid transparent !important;
   }
   
-  /* Dni zablokowane (przeszłe, weekendy) – białe tło z delikatną szarą ramką i wygaszonym numerem dokładnie jak na makiecie */
+  /* Dni zablokowane (przeszłe, weekendy) – kwadratowe, białe z subtelną szarą obwódką */
+  .calendar-grid :global(.day.disabled),
   .day.disabled {
-    color: #cbd5e1;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    cursor: not-allowed;
+    color: #cbd5e1 !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    cursor: not-allowed !important;
     font-weight: 400;
   }
 
-  /* Klawisze dostępnych dni – pastelowe tło z wyrazistym zielonym numerem (odpowiednik błękitu z makiety) */
+  /* Klawisze dostępnych dni – kwadratowe, wyjściowo jasny zielony (#86b942) */
+  .calendar-grid :global(button.day),
   button.day {
     font: inherit;
     cursor: pointer;
@@ -820,33 +860,44 @@ const currentMonthName = monthNames[currentMonth];
     appearance: none;
   }
 
+  .calendar-grid :global(button.day.available),
   button.day.available {
-    background: #f0fdf4;
-    border: 1px solid transparent;
-    color: #16a34a;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.16s ease;
-  }
-
-  button.day.available:hover {
-    background: #dcfce7;
-    color: #15803d;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
-  }
-
-  button.day.available:active {
-    transform: translateY(0px) scale(0.96);
-  }
-
-  /* Zaznaczony dzień – pełne, intensywne zielone wypełnienie i biały tekst (odpowiednik kafelka 14 z makiety) */
-  button.day.available.selected {
-    background: #16a34a !important;
+    background: #86b942 !important;
+    border: 1px solid #7cb03b !important;
     color: #ffffff !important;
-    border: 1px solid #16a34a !important;
-    font-weight: 700;
-    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.35);
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.16s ease;
+    box-shadow: 0 2px 5px rgba(134, 185, 66, 0.25);
+  }
+
+  .calendar-grid :global(button.day.available:hover),
+  button.day.available:hover {
+    background: #77a837 !important;
+    border-color: #6c9930 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(134, 185, 66, 0.35);
+  }
+
+  .calendar-grid :global(button.day.available:active),
+  button.day.available:active {
+    transform: translateY(0px) scale(0.95);
+  }
+
+  /* Wybrany/wciśnięty dzień – zmienia się na głęboki ciemny zielony (#153c24) */
+  .calendar-grid :global(button.day.available.selected),
+  button.day.available.selected {
+    background: #153c24 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #0c2b20 !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 14px rgba(21, 60, 36, 0.45) !important;
+    transform: scale(1.02);
+  }
+
+  .calendar-grid :global(button.day.available.selected:hover),
+  button.day.available.selected:hover {
+    background: #0f2c1a !important;
   }
 
   /* Pasek wybranego terminu */
@@ -854,27 +905,28 @@ const currentMonthName = monthNames[currentMonth];
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
+    background: #f7fdf7;
+    border: 1.5px solid #86b942;
     border-radius: 12px;
     padding: 12px 16px;
-    margin-top: 18px;
+    margin-top: 20px;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    box-shadow: 0 2px 6px rgba(21, 60, 36, 0.05);
   }
 
   .banner-icon {
     width: 38px;
     height: 38px;
     border-radius: 8px;
-    background: #16a34a;
+    background: #153c24;
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+    box-shadow: 0 2px 6px rgba(21, 60, 36, 0.25);
   }
 
   .banner-text {
@@ -889,13 +941,13 @@ const currentMonthName = monthNames[currentMonth];
     text-transform: uppercase;
     letter-spacing: 0.04em;
     font-weight: 700;
-    color: #166534;
+    color: #153c24;
   }
 
   .banner-date {
     font-size: 1rem;
     font-weight: 700;
-    color: #14532d;
+    color: #153c24;
     white-space: normal;
     word-break: break-word;
   }
@@ -914,7 +966,7 @@ const currentMonthName = monthNames[currentMonth];
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #16a34a;
+    background: #86b942;
     flex-shrink: 0;
   }
 
@@ -1033,14 +1085,15 @@ const currentMonthName = monthNames[currentMonth];
     .calendar-grid {
       gap: 4px;
     }
+    .calendar-grid :global(.day-name),
     .day-name {
       font-size: 0.76rem;
       margin-bottom: 6px;
     }
+    .calendar-grid :global(.day),
     .day {
-      min-height: 36px;
-      border-radius: 6px;
-      font-size: clamp(0.75rem, 3.2vw, 0.92rem);
+      border-radius: 8px;
+      font-size: clamp(0.78rem, 3.2vw, 0.92rem);
     }
     .address-row { 
       grid-template-columns: minmax(0, 1fr); 
