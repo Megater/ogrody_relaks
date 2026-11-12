@@ -40,7 +40,7 @@ const clientAvatars = [
             <!-- Kicker / Subtelna pastylka informacyjna -->
             <div class="kicker-pill">
                 <span class="pulsing-dot" aria-hidden="true"></span>
-                <span class="kicker-text">Profesjonalne Usługi Ogrodnicze • Grójec i okolice</span>
+                <span class="kicker-text">Profesjonalne Usługi Ogrodnicze • Rejony pod Warszawą i okolice</span>
             </div>
 
             <!-- Nagłówek H1 - stonowany, bez neonowego świecenia -->
@@ -60,7 +60,7 @@ const clientAvatars = [
                     <span class="arrow" aria-hidden="true">→</span>
                 </a>
 
-                <a href="tel:+48516753132" class="cta-button secondary" aria-label="Zadzwoń: +48 516 753 132">
+                <a href="tel:+48535262302" class="cta-button secondary" aria-label="Zadzwoń: +48 535 262 302">
                     <span class="phone-icon-box" aria-hidden="true">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
@@ -68,7 +68,7 @@ const clientAvatars = [
                     </span>
                     <div class="phone-info">
                         <span class="phone-tag">Zadzwoń do nas</span>
-                        <span class="phone-num">+48 516 753 132</span>
+                        <span class="phone-num">+48 535 262 302</span>
                     </div>
                 </a>
             </div>
@@ -827,8 +827,9 @@ const clientAvatars = [
             height: auto;
             min-height: auto; /* Wyłączenie 100dvh/100vh eliminuje skakanie w mobilnym Firefoxie i Chrome przy chowaniu paska adresu */
             padding: 0;
-            overflow-x: hidden;
+            overflow: hidden;
             width: 100%;
+            max-width: 100%;
         }
 
         .hero-container {
@@ -842,7 +843,7 @@ const clientAvatars = [
             gap: 0;
             width: 100%;
             max-width: 100%;
-            overflow: visible;
+            overflow: hidden;
         }
 
         /* Dedykowany mobilny gradient:
@@ -859,12 +860,13 @@ const clientAvatars = [
             pointer-events: none;
             background: linear-gradient(
                 to bottom,
-                rgba(12, 43, 32, 0.1) 0px,
-                rgba(12, 43, 32, 0.16) 140px,
-                rgba(12, 43, 32, 0.42) 250px,
-                rgba(12, 43, 32, 0.8) 330px,
-                rgba(12, 43, 32, 1) 385px,
-                rgba(12, 43, 32, 1) 100%
+                transparent 0px,
+                transparent 170px,
+                rgba(12, 43, 32, 0.22) 240px,
+                rgba(12, 43, 32, 0.65) 300px,
+                rgba(12, 43, 32, 0.92) 360px,
+                #0c2b20 400px,
+                #0c2b20 100%
             );
         }
 
@@ -880,7 +882,7 @@ const clientAvatars = [
             align-items: flex-start;
             align-self: center;
             padding-top: 0.25rem;
-            margin-bottom: -15px;
+            margin-bottom: -45px;
             overflow: visible;
         }
 
@@ -908,20 +910,18 @@ const clientAvatars = [
             mask-image: linear-gradient(
                 to bottom,
                 rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 1) 48%,
-                rgba(0, 0, 0, 0.85) 62%,
-                rgba(0, 0, 0, 0.45) 75%,
-                rgba(0, 0, 0, 0.12) 88%,
-                rgba(0, 0, 0, 0) 98%
+                rgba(0, 0, 0, 1) 64%,
+                rgba(0, 0, 0, 0.85) 76%,
+                rgba(0, 0, 0, 0.35) 90%,
+                rgba(0, 0, 0, 0) 100%
             );
             -webkit-mask-image: linear-gradient(
                 to bottom,
                 rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 1) 48%,
-                rgba(0, 0, 0, 0.85) 62%,
-                rgba(0, 0, 0, 0.45) 75%,
-                rgba(0, 0, 0, 0.12) 88%,
-                rgba(0, 0, 0, 0) 98%
+                rgba(0, 0, 0, 1) 64%,
+                rgba(0, 0, 0, 0.85) 76%,
+                rgba(0, 0, 0, 0.35) 90%,
+                rgba(0, 0, 0, 0) 100%
             );
         }
 
@@ -1018,35 +1018,41 @@ const clientAvatars = [
             padding: 0;
             min-height: auto;
             height: auto;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
         }
 
         .hero-container {
             padding: 68px 1rem 3rem 1rem;
             min-height: auto;
             height: auto;
-            overflow: visible;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
         }
 
         .hero-mobile-gradient {
             background: linear-gradient(
                 to bottom,
-                rgba(12, 43, 32, 0.08) 0px,
-                rgba(12, 43, 32, 0.14) 130px,
-                rgba(12, 43, 32, 0.42) 230px,
-                rgba(12, 43, 32, 0.8) 310px,
-                rgba(12, 43, 32, 1) 365px,
-                rgba(12, 43, 32, 1) 100%
+                transparent 0px,
+                transparent 160px,
+                rgba(12, 43, 32, 0.2) 220px,
+                rgba(12, 43, 32, 0.6) 280px,
+                rgba(12, 43, 32, 0.9) 330px,
+                #0c2b20 370px,
+                #0c2b20 100%
             );
         }
 
         .hero-visual-column {
-            margin-bottom: -15px;
+            margin-bottom: -55px;
             overflow: visible;
         }
 
         .profile-stage {
             max-width: 380px;
-            height: 320px;
+            height: 310px;
         }
 
         .profile-cutout {
@@ -1055,20 +1061,18 @@ const clientAvatars = [
             mask-image: linear-gradient(
                 to bottom,
                 rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 1) 48%,
-                rgba(0, 0, 0, 0.85) 62%,
-                rgba(0, 0, 0, 0.45) 75%,
-                rgba(0, 0, 0, 0.12) 88%,
-                rgba(0, 0, 0, 0) 98%
+                rgba(0, 0, 0, 1) 64%,
+                rgba(0, 0, 0, 0.85) 76%,
+                rgba(0, 0, 0, 0.35) 90%,
+                rgba(0, 0, 0, 0) 100%
             );
             -webkit-mask-image: linear-gradient(
                 to bottom,
                 rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 1) 48%,
-                rgba(0, 0, 0, 0.85) 62%,
-                rgba(0, 0, 0, 0.45) 75%,
-                rgba(0, 0, 0, 0.12) 88%,
-                rgba(0, 0, 0, 0) 98%
+                rgba(0, 0, 0, 1) 64%,
+                rgba(0, 0, 0, 0.85) 76%,
+                rgba(0, 0, 0, 0.35) 90%,
+                rgba(0, 0, 0, 0) 100%
             );
         }
 
@@ -1089,9 +1093,12 @@ const clientAvatars = [
         }
 
         .hero-title {
-            font-size: clamp(1.85rem, 5.8vw, 2.35rem);
-            line-height: 1.18;
+            font-size: clamp(1.8rem, 5.6vw, 2.3rem);
+            line-height: 1.2;
             margin-bottom: 0.85rem;
+            text-wrap: balance;
+            word-break: normal;
+            overflow-wrap: break-word;
         }
 
         .hero-description {

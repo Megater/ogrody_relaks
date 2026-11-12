@@ -10,7 +10,7 @@ interface Props {
 
 const {
     title = "Ogrody Relaks - Kompleksowa pielęgnacja i zakładanie ogrodów",
-    description = "Profesjonalne usługi ogrodnicze w Grójcu i okolicach. Pielęgnacja trawników, zakładanie ogrodów, instalacje nawadniania i całoroczna opieka nad zielenią."
+    description = "Profesjonalne usługi ogrodnicze – Rejony pod Warszawą i okolice (Pniewy, Tarczyn, Grójec). Pielęgnacja trawników, porządkowanie działek, zakładanie ogrodów, instalacje nawadniania i całoroczna opieka nad zielenią."
 } = Astro.props;
 ---
 <!doctype html>
@@ -104,6 +104,8 @@ const {
     html {
         scroll-behavior: smooth;
         scroll-padding-top: 95px; /* Zapobiega zasłanianiu sekcji przez pływające menu po kliknięciu w linki # */
+        overflow-x: hidden;
+        max-width: 100%;
     }
 
     body {
@@ -113,6 +115,7 @@ const {
         margin: 0;
         padding: 0;
         width: 100%;
+        max-width: 100%;
         min-height: 100vh;
         -webkit-font-smoothing: antialiased; 
         -moz-osx-font-smoothing: grayscale;
@@ -148,6 +151,8 @@ const {
         justify-content: flex-start;
         align-items: stretch;
         width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
     #Desktop, 
@@ -159,6 +164,8 @@ const {
         z-index: 50;
         pointer-events: none; 
         width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     #Desktop :global(nav),
@@ -176,7 +183,15 @@ const {
     }
 
     #Mobile {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        box-sizing: border-box;
     }
 
     @media (min-width: 1024px) {
@@ -190,22 +205,31 @@ const {
         }
     }
 
-    /* Stylowy pasek przewijania dopasowany do motywu zieleni */
-    ::-webkit-scrollbar {
-        width: 10px;
+    /* Stylowy pasek przewijania dopasowany do motywu zieleni (na desktopie) */
+    @media (min-width: 1024px) {
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f2;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #9bc658;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #84cc16;
+        }
     }
 
-    ::-webkit-scrollbar-track {
-        background: #f1f5f2;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #9bc658;
-        border-radius: 5px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #84cc16;
+    @media (max-width: 1023px) {
+        ::-webkit-scrollbar {
+            display: none;
+            width: 0px;
+        }
     }
 
     ::selection {

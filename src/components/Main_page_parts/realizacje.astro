@@ -4,6 +4,8 @@ import type { ImageMetadata } from 'astro';
 import { sanityClient } from 'sanity:client';
 import imageUrlBuilder from '@sanity/image-url';
 import trawnik from '../../assets/images/Realizacje/trawnik.jpg';
+import dzialkaPrzedPo from '../../assets/images/Realizacje/dzialka_przed_po.jpg';
+import porzadkowanie from '../../assets/images/Realizacje/porzadkowanie_dzialki.jpg';
 
 // Interfejs dla TypeScriptu (usuwa podkreślanie 'item' w HTML-u)
 interface RealizacjaItem {
@@ -39,8 +41,22 @@ try {
 // 2. Dane zastępcze (działają, dopóki nie dodasz projektów w /studio)
 const fallbackRealizacje: RealizacjaItem[] = [
   {
+    title: "Przygotowanie działki pod sprzedaż",
+    description: "Wykoszenie gęstych zarośli, usunięcie samosiewów i wyrównanie przerośniętego żywopłotu.",
+    icon: "🚜", 
+    image: dzialkaPrzedPo,
+    href: "/realizacje#dzialka-sprzedaz"
+  },
+  {
+    title: "Porządkowanie i karczowanie posesji",
+    description: "Kompleksowe oczyszczenie mocno zarośniętego terenu pod inwestycję i budowę.",
+    icon: "🌲",
+    image: porzadkowanie,
+    href: "/realizacje#karczowanie-posesji"
+  },
+  {
     title: "Pielęgnacja trawników",
-    description: "Zdrowe, zielone trawniki przez cały rok.",
+    description: "Zdrowe, zielone trawniki przez cały rok. Koszenie, aeracja i nawożenie.",
     icon: "🌱", 
     image: trawnik,
     href: "/realizacje/pielegnacja-trawnikow"
@@ -54,28 +70,14 @@ const fallbackRealizacje: RealizacjaItem[] = [
   },
   {
     title: "Strefy wypoczynkowe",
-    description: "Patio, tarasy, paleniska i wiele więcej.",
+    description: "Patio, tarasy, paleniska i pergole.",
     icon: "🛋️",
     image: "https://images.unsplash.com/photo-1605810730434-7631ac76ec81?q=80&w=600&auto=format&fit=crop",
     href: "/realizacje/strefy-wypoczynkowe"
   },
   {
-    title: "Architektura twarda",
-    description: "Ścieżki, murki oporowe i prace kamieniarskie.",
-    icon: "🧱",
-    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=600&auto=format&fit=crop",
-    href: "/realizacje/architektura"
-  },
-  {
-    title: "Oświetlenie",
-    description: "Podkreśl piękno posesji w dzień i w nocy.",
-    icon: "💡",
-    image: "https://images.unsplash.com/photo-1509641772183-b9247ce96bf4?q=80&w=600&auto=format&fit=crop",
-    href: "/realizacje/oswietlenie"
-  },
-  {
     title: "Systemy nawadniania",
-    description: "Wydajne podlewanie dla zielonego jutra.",
+    description: "Wydajne podlewanie i automatyczne zraszacze.",
     icon: "💧",
     image: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?q=80&w=600&auto=format&fit=crop",
     href: "/realizacje/nawadnianie"

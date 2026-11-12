@@ -1,5 +1,13 @@
 ---
 // Booking.astro
+const monthNames = [
+  'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+  'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
+];
+const now = new Date();
+const currentYear = now.getFullYear();
+const currentMonth = now.getMonth();
+const currentMonthName = monthNames[currentMonth];
 ---
 
 <section class="booking-section" id="rezerwacja">
@@ -12,12 +20,12 @@
         <h2>Twój ogród.<br>Ustalmy pierwszy krok.</h2>
         
         <div class="contact-details">
-          <a href="tel:+48516753132" class="phone">123 456 789 ↗</a>
-          <a href="mailto:biurozielonezielone@gmail.com" class="email">alejazda@gmail.com</a>
+          <a href="tel:+48535262302" class="phone">+48 535 262 302 ↗</a>
+          <a href="mailto:kontakt@ogrodyrelaks.pl" class="email">kontakt@ogrodyrelaks.pl</a>
           
           <address class="address">
-            Grojec i okolice<br>
-            ul. Szarotki 1A, 31-347 Grojec
+            Rejony pod Warszawą i okolice<br>
+            Pniewy • Tarczyn • Grójec i sąsiadujące powiaty
           </address>
         </div>
 
@@ -34,7 +42,7 @@
       <!-- PRAWA KOLUMNA: Formularz / Kalendarz -->
       <div class="booking-form-wrapper">
         <p class="form-disclaimer">
-          Wybierz termin w kalendarzu poniżej. Wizja lokalna na działce z omówieniem zakresu i wyceny: <strong>199,99 PLN brutto</strong>. Warunki sprawdź podczas rezerwacji.
+          Wybierz dogodny termin w kalendarzu poniżej. Wizja lokalna na Twojej działce z omówieniem zakresu prac i wyceną jest w <strong>100% bezpłatna i niezobowiązująca</strong>.
         </p>
         
         <div class="form-card">
@@ -56,8 +64,9 @@
                 <label for="service">Wybierz usługę *</label>
                 <div class="select-wrapper">
                   <select id="service" name="service" required>
-                    <option value="wycena">Spotkanie - Wycena - konsultacja</option>
-                    <option value="projekt">Omówienie projektu</option>
+                    <option value="wycena" selected>Bezpłatna wycena i konsultacja na działce (0 zł)</option>
+                    <option value="projekt">Omówienie projektu i aranżacji</option>
+                    <option value="pielegnacja">Pielęgnacja ogrodu / porządkowanie terenu</option>
                   </select>
                 </div>
               </div>
@@ -81,14 +90,22 @@
             <div class="form-section">
               <h4 class="section-title">Termin</h4>
               
-              <!-- MOCKUP KALENDARZA (Zastąp systemem rezerwacji lub zostaw jako UI do własnego backendu) -->
+              <!-- MOCKUP KALENDARZA (Dynamiczny wybór terminu) -->
               <div class="calendar-widget">
                 <div class="calendar-header">
-                  <button type="button" class="cal-nav">&lt;</button>
-                  <strong>Listopad 2026</strong>
-                  <button type="button" class="cal-nav">&gt;</button>
+                  <button type="button" class="cal-nav prev disabled" id="cal-prev" aria-label="Poprzedni miesiąc" disabled>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </button>
+                  <strong id="cal-month-title">{currentMonthName} {currentYear}</strong>
+                  <button type="button" class="cal-nav next" id="cal-next" aria-label="Następny miesiąc">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
                 </div>
-                <div class="calendar-grid">
+                <div class="calendar-grid" id="calendar-grid">
                   <div class="day-name">Pn.</div>
                   <div class="day-name">Wt.</div>
                   <div class="day-name">Śr.</div>
@@ -96,48 +113,31 @@
                   <div class="day-name">Pt.</div>
                   <div class="day-name">So.</div>
                   <div class="day-name">Nd.</div>
-                  
-                  <!-- Puste dni -->
-                  <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
-                  <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
-                  <div class="day disabled">1</div>
-                  
-                  <div class="day disabled">2</div>
-                  <div class="day disabled">3</div>
-                  <div class="day disabled">4</div>
-                  <div class="day disabled">5</div>
-                  <div class="day available">6</div>
-                  <div class="day available">7</div>
-                  <div class="day disabled">8</div>
-                  
-                  <div class="day available">9</div>
-                  <div class="day available">10</div>
-                  <div class="day disabled">11</div>
-                  <div class="day available">12</div>
-                  <div class="day available">13</div>
-                  <div class="day available">14</div>
-                  <div class="day disabled">15</div>
-                  
-                  <div class="day available">16</div>
-                  <div class="day available">17</div>
-                  <div class="day disabled">18</div>
-                  <div class="day available">19</div>
-                  <div class="day available">20</div>
-                  <div class="day available">21</div>
-                  <div class="day disabled">22</div>
-                  
-                  <div class="day available selected">23</div>
-                  <div class="day available">24</div>
-                  <div class="day disabled">25</div>
-                  <div class="day available">26</div>
-                  <div class="day available">27</div>
-                  <div class="day available">28</div>
-                  <div class="day disabled">29</div>
-                  
-                  <div class="day available">30</div>
                 </div>
+
+                <!-- Pasek wybranego terminu (natychmiastowy i wyraźny feedback dla klienta) -->
+                <div class="selected-date-banner">
+                  <div class="banner-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                  </div>
+                  <div class="banner-text">
+                    <span class="banner-label">Wybrany dzień wizji lokalnej:</span>
+                    <strong id="selected-date-text" class="banner-date">Wybierz dzień z kalendarza powyżej</strong>
+                  </div>
+                </div>
+
+                <p class="calendar-hint">
+                  <span class="hint-dot" aria-hidden="true"></span>
+                  Kliknij w kalendarzu dowolny dzień roboczy (poniedziałek – piątek), aby zarezerwować bezpłatną konsultację.
+                </p>
+
                 <!-- Ukryty input do przechowywania wybranej daty -->
-                <input type="hidden" id="selected-date" name="date" value="2026-11-23" required />
+                <input type="hidden" id="selected-date" name="date" value="" required />
               </div>
             </div>
 
@@ -164,10 +164,15 @@
             </div>
 
             <div class="form-footer">
-              <div class="price-box">
-                Cena: <strong>199,99 zł</strong>
+              <div class="footer-meta">
+                <div class="price-box">
+                  Koszt wyceny: <strong>Darmowa (0 zł)</strong>
+                </div>
+                <div class="footer-date-info">
+                  Termin: <strong id="footer-date-text">—</strong>
+                </div>
               </div>
-              <button type="submit" class="submit-btn">Przejdź do podsumowania &rarr;</button>
+              <button type="submit" class="submit-btn">Zarezerwuj bezpłatną wycenę &rarr;</button>
             </div>
           </form>
 
@@ -177,42 +182,207 @@
   </div>
 </section>
 
-<!-- Skrypt obsługujący UI kalendarza i weryfikację e-mail -->
+<!-- Skrypt obsługujący dynamiczny kalendarz i weryfikację e-mail -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Prosta logika wyboru dni w kalendarzu (tylko UI)
-    const days = document.querySelectorAll('.day.available');
-    const dateInput = document.getElementById('selected-date') as HTMLInputElement;
-    
-days.forEach(day => {
-      // Zmieniliśmy 'function()' na nowoczesną funkcję strzałkową '() =>'
-      day.addEventListener('click', () => {
-        // 1. Usuń klasę selected ze wszystkich
-        days.forEach(d => d.classList.remove('selected'));
-        
-        // 2. Dodaj do klikniętego (zamiast 'this' używamy 'day')
-        day.classList.add('selected');
-        
-        // 3. Zaktualizuj ukryty input
-        if (dateInput) {
-          dateInput.value = `2026-11-${day.textContent?.trim().padStart(2, '0')}`;
+    const monthNames = [
+      'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+      'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
+    ];
+
+    const dayNamesPl = [
+      'Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'
+    ];
+
+    const monthNamesGenitive = [
+      'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
+      'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'
+    ];
+
+    const formatFullDate = (year: number, month: number, day: number) => {
+      const d = new Date(year, month, day);
+      const dayName = dayNamesPl[d.getDay()];
+      const monthName = monthNamesGenitive[month];
+      return `${dayName}, ${day} ${monthName} ${year}`;
+    };
+
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth(); // 0 - 11
+    const currentDay = today.getDate();
+
+    let viewYear = currentYear;
+    let viewMonth = currentMonth;
+    let selectedDateStr = '';
+
+    const prevBtn = document.getElementById('cal-prev') as HTMLButtonElement | null;
+    const nextBtn = document.getElementById('cal-next') as HTMLButtonElement | null;
+    const monthTitle = document.getElementById('cal-month-title');
+    const calendarGrid = document.getElementById('calendar-grid');
+    const dateInput = document.getElementById('selected-date') as HTMLInputElement | null;
+    const selectedDateText = document.getElementById('selected-date-text');
+    const footerDateText = document.getElementById('footer-date-text');
+
+    // Nie można cofnąć się przed bieżący miesiąc
+    const isAtMinMonth = () => {
+      return viewYear < currentYear || (viewYear === currentYear && viewMonth <= currentMonth);
+    };
+
+    // Domyślny wybór pierwszej dostępnej daty (od poniedziałku do piątku)
+    const daysInCurrMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    for (let d = currentDay; d <= daysInCurrMonth; d++) {
+      const checkDate = new Date(currentYear, currentMonth, d);
+      const dow = checkDate.getDay();
+      if (dow !== 0 && dow !== 6) { // Omijamy weekendy (soboty i niedziele)
+        selectedDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        if (dateInput) dateInput.value = selectedDateStr;
+        if (selectedDateText) selectedDateText.textContent = formatFullDate(currentYear, currentMonth, d);
+        if (footerDateText) footerDateText.textContent = `${d} ${monthNamesGenitive[currentMonth]} ${currentYear}`;
+        break;
+      }
+    }
+
+    if (!selectedDateStr) {
+      let nextM = currentMonth + 1;
+      let nextY = currentYear;
+      if (nextM > 11) {
+        nextM = 0;
+        nextY++;
+      }
+      for (let d = 1; d <= 7; d++) {
+        const checkDate = new Date(nextY, nextM, d);
+        const dow = checkDate.getDay();
+        if (dow !== 0 && dow !== 6) {
+          selectedDateStr = `${nextY}-${String(nextM + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          if (dateInput) dateInput.value = selectedDateStr;
+          if (selectedDateText) selectedDateText.textContent = formatFullDate(nextY, nextM, d);
+          if (footerDateText) footerDateText.textContent = `${d} ${monthNamesGenitive[nextM]} ${nextY}`;
+          break;
         }
+      }
+    }
+
+    const renderCalendar = () => {
+      if (!calendarGrid || !monthTitle || !prevBtn) return;
+
+      // Aktualizacja nagłówka
+      monthTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+
+      // Blokada strzałki wstecz jeśli jesteśmy na bieżącym miesiącu
+      const isMin = isAtMinMonth();
+      prevBtn.disabled = isMin;
+      if (isMin) {
+        prevBtn.classList.add('disabled');
+        prevBtn.setAttribute('aria-disabled', 'true');
+      } else {
+        prevBtn.classList.remove('disabled');
+        prevBtn.removeAttribute('aria-disabled');
+      }
+
+      // Nagłówki dni (zgodnie z makietą)
+      const dayNames = ['Pn.', 'Wt.', 'Śr.', 'Cz.', 'Pt.', 'So.', 'Nd.'];
+      let html = dayNames.map(name => `<div class="day-name">${name}</div>`).join('');
+
+      // Przesunięcie pierwszego dnia tygodnia (Pn = 0, ..., Nd = 6)
+      const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+      const startOffset = (firstDay + 6) % 7;
+
+      for (let i = 0; i < startOffset; i++) {
+        html += `<div class="day empty" aria-hidden="true"></div>`;
+      }
+
+      // Liczba dni w danym miesiącu
+      const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+      for (let d = 1; d <= totalDays; d++) {
+        const thisDate = new Date(viewYear, viewMonth, d);
+        const dayOfWeek = thisDate.getDay(); // 0 = Niedziela, 6 = Sobota
+        const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+        // Blokada dni przeszłych
+        const isPast = (viewYear < currentYear)
+          || (viewYear === currentYear && viewMonth < currentMonth)
+          || (viewYear === currentYear && viewMonth === currentMonth && d < currentDay);
+
+        // Wykluczenie sobót i niedziel (dostępne tylko od poniedziałku do piątku)
+        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+        if (isPast || isWeekend) {
+          html += `<div class="day disabled" aria-disabled="true" title="${isWeekend ? 'Weekendy są niedostępne' : 'Termin niedostępny'}">${d}</div>`;
+        } else {
+          const isSelected = (selectedDateStr === dateStr);
+          html += `<button type="button" class="day available ${isSelected ? 'selected' : ''}" data-date="${dateStr}" data-day="${d}" data-month="${viewMonth}" data-year="${viewYear}" aria-label="Wybierz termin ${d} ${monthNames[viewMonth]} ${viewYear}">${d}</button>`;
+        }
+      }
+
+      calendarGrid.innerHTML = html;
+
+      // Obsługa kliknięcia przez klienta w dowolny dostępny dzień
+      calendarGrid.querySelectorAll('button.day.available').forEach(dayBtn => {
+        dayBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const chosenDate = dayBtn.getAttribute('data-date');
+          const chosenDay = parseInt(dayBtn.getAttribute('data-day') || '1', 10);
+          const chosenMonth = parseInt(dayBtn.getAttribute('data-month') || String(viewMonth), 10);
+          const chosenYear = parseInt(dayBtn.getAttribute('data-year') || String(viewYear), 10);
+          if (!chosenDate) return;
+
+          selectedDateStr = chosenDate;
+          if (dateInput) dateInput.value = chosenDate;
+
+          // Natychmiastowa aktualizacja tekstu wybranego terminu
+          if (selectedDateText) {
+            selectedDateText.textContent = formatFullDate(chosenYear, chosenMonth, chosenDay);
+          }
+          if (footerDateText) {
+            footerDateText.textContent = `${chosenDay} ${monthNamesGenitive[chosenMonth]} ${chosenYear}`;
+          }
+
+          // Aktualizacja klasy zaznaczenia na kafelkach
+          calendarGrid.querySelectorAll('button.day.available').forEach(d => d.classList.remove('selected'));
+          dayBtn.classList.add('selected');
+        });
       });
+    };
+
+    // Obsługa strzałek zmiany miesięcy
+    prevBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (isAtMinMonth()) return;
+      viewMonth--;
+      if (viewMonth < 0) {
+        viewMonth = 11;
+        viewYear--;
+      }
+      renderCalendar();
     });
 
+    nextBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      viewMonth++;
+      if (viewMonth > 11) {
+        viewMonth = 0;
+        viewYear++;
+      }
+      renderCalendar();
+    });
+
+    // Startowe wyrenderowanie
+    renderCalendar();
+
     // Walidacja maila przy próbie wysłania
-    const form = document.getElementById('booking-form') as HTMLFormElement;
+    const form = document.getElementById('booking-form') as HTMLFormElement | null;
     form?.addEventListener('submit', (e) => {
       e.preventDefault();
       
-      const emailInput = document.getElementById('email') as HTMLInputElement;
-      if (!emailInput.validity.valid) {
+      const emailInput = document.getElementById('email') as HTMLInputElement | null;
+      if (emailInput && !emailInput.validity.valid) {
         emailInput.classList.add('invalid');
         return; // Zatrzymujemy wysyłkę jeśli mail jest zły
       }
       
       // Jeśli wszystko ok, tutaj poszedłby fetch() do Google Sheets API
-      alert('Formularz prawidłowy! Trwa wysyłanie... (Wepnij tu integrację z API)');
+      alert(`Termin zarezerwowany na dzień: ${dateInput?.value || selectedDateStr}! (Wepnij tu integrację z API)`);
     });
   });
 </script>
@@ -220,29 +390,42 @@ days.forEach(day => {
 <style>
   /* Zmienne i ogólny układ */
   .booking-section {
-    padding: 100px 0;
-    /* Delikatne, miętowo-zielone tło inspirowane projektem */
+    padding: 90px 0;
+    /* Delikatne, miętowo-zielone tło */
     background-color: #eef6f1; 
     font-family: 'Inter', sans-serif;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 
   .container {
+    width: 100%;
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 20px;
+    box-sizing: border-box;
   }
 
   .booking-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 60px;
     align-items: flex-start;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   /* --- LEWA KOLUMNA --- */
   .booking-info {
     position: sticky;
     top: 40px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .kicker {
@@ -256,37 +439,46 @@ days.forEach(day => {
   }
 
   .booking-info h2 {
-    font-size: 3rem;
+    font-size: clamp(2rem, 4.5vw, 3rem);
     color: #153c24; /* Firmowy ciemnozielony */
-    line-height: 1.1;
-    margin: 0 0 40px 0;
+    line-height: 1.15;
+    margin: 0 0 32px 0;
     font-weight: 800;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .contact-details {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .phone {
-    font-size: 1.8rem;
+    font-size: clamp(1.3rem, 4.5vw, 1.8rem);
     font-weight: 700;
     color: #153c24;
     text-decoration: none;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     transition: color 0.3s;
+    word-break: break-word;
+    max-width: 100%;
   }
   .phone:hover { color: #86b942; }
 
   .email {
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 3.5vw, 1.1rem);
     color: #374151;
     text-decoration: none;
     transition: color 0.3s;
+    word-break: break-all;
+    max-width: 100%;
   }
   .email:hover { color: #86b942; }
 
@@ -295,10 +487,14 @@ days.forEach(day => {
     color: #4b5563;
     line-height: 1.6;
     margin-top: 10px;
+    word-break: break-word;
   }
 
   .preparation-box {
     margin-top: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .preparation-box h3 {
@@ -333,19 +529,33 @@ days.forEach(day => {
   }
 
   /* --- PRAWA KOLUMNA --- */
+  .booking-form-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
   .form-disclaimer {
     font-size: 0.9rem;
     color: #4b5563;
     line-height: 1.5;
     margin: 0 0 20px 0;
     text-align: right;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   .form-card {
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: 14px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.05);
     overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .card-header {
@@ -357,6 +567,9 @@ days.forEach(day => {
     font-size: 0.9rem;
     font-weight: 600;
     color: #374151;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .card-header .dot {
@@ -368,20 +581,31 @@ days.forEach(day => {
 
   .booking-form {
     padding: 30px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .hero-bar {
-    background-color: #86b942; /* Kolorystycznie dopasowany pasek */
+    background-color: #86b942;
     color: white;
     padding: 14px 20px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-weight: 600;
     margin-bottom: 30px;
     text-align: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .form-section {
-    margin-bottom: 40px;
+    margin-bottom: 36px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .section-title {
@@ -396,6 +620,10 @@ days.forEach(day => {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .input-group label {
@@ -404,11 +632,23 @@ days.forEach(day => {
     color: #374151;
   }
 
+  .select-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
   .input-group input,
   .input-group select {
-    padding: 12px 16px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 12px 14px;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 0.95rem;
     color: #1a1a1a;
     background-color: #ffffff;
@@ -416,11 +656,18 @@ days.forEach(day => {
     font-family: inherit;
   }
 
+  .input-group select {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
   .input-group input:focus,
   .input-group select:focus {
     outline: none;
     border-color: #86b942;
-    box-shadow: 0 0 0 3px rgba(134, 185, 66, 0.1);
+    box-shadow: 0 0 0 3px rgba(134, 185, 66, 0.15);
   }
 
   /* Style dla błędu maila */
@@ -436,14 +683,13 @@ days.forEach(day => {
     display: block;
   }
 
-  .select-wrapper {
-    position: relative;
-  }
-  
   .address-row {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .required-note {
@@ -453,86 +699,223 @@ days.forEach(day => {
     margin-top: -10px;
   }
 
-  /* --- KALENDARZ UI --- */
+  /* --- KALENDARZ UI (zgodny z makietą w odcieniach zieleni) --- */
   .calendar-widget {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 20px;
-    background: #fafaf9;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 22px 20px;
+    background: #ffffff;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   }
 
   .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    padding-bottom: 16px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #f1f5f9;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .calendar-header strong {
-    color: #153c24;
-    font-size: 1.1rem;
+    color: #1e293b;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-align: center;
+    flex: 1;
   }
 
   .cal-nav {
-    background: none;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    width: 32px;
-    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
     cursor: pointer;
-    color: #374151;
-    transition: all 0.2s;
-  }
-  .cal-nav:hover { background: #f3f4f6; }
-
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    text-align: center;
-  }
-
-  .day-name {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #374151;
-    margin-bottom: 8px;
-  }
-
-  .day {
-    aspect-ratio: 1;
+    color: #94a3b8;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
-    border-radius: 4px;
+    transition: all 0.2s ease;
+    user-select: none;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .cal-nav:hover:not(:disabled) {
+    background: #f1f5f9;
+    color: #16a34a;
+  }
+  .cal-nav:disabled,
+  .cal-nav.disabled {
+    visibility: hidden;
+    pointer-events: none;
   }
 
-  .day.empty { background: transparent; }
-  
-  .day.disabled {
-    color: #9ca3af;
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .day-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 10px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .day {
+    aspect-ratio: 1.15 / 1;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    border-radius: 8px;
+    min-width: 0;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: inherit;
+    padding: 0;
+  }
+
+  .day.empty {
+    background: transparent;
     border: 1px solid transparent;
   }
-
-  .day.available {
+  
+  /* Dni zablokowane (przeszłe, weekendy) – białe tło z delikatną szarą ramką i wygaszonym numerem dokładnie jak na makiecie */
+  .day.disabled {
+    color: #cbd5e1;
     background: #ffffff;
-    border: 1px solid #d1d5db;
-    color: #86b942;
+    border: 1px solid #e2e8f0;
+    cursor: not-allowed;
+    font-weight: 400;
+  }
+
+  /* Klawisze dostępnych dni – pastelowe tło z wyrazistym zielonym numerem (odpowiednik błękitu z makiety) */
+  button.day {
+    font: inherit;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  button.day.available {
+    background: #f0fdf4;
+    border: 1px solid transparent;
+    color: #16a34a;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.16s ease;
   }
 
-  .day.available:hover {
-    border-color: #86b942;
+  button.day.available:hover {
+    background: #dcfce7;
+    color: #15803d;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
+  }
+
+  button.day.available:active {
+    transform: translateY(0px) scale(0.96);
+  }
+
+  /* Zaznaczony dzień – pełne, intensywne zielone wypełnienie i biały tekst (odpowiednik kafelka 14 z makiety) */
+  button.day.available.selected {
+    background: #16a34a !important;
+    color: #ffffff !important;
+    border: 1px solid #16a34a !important;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.35);
+  }
+
+  /* Pasek wybranego terminu */
+  .selected-date-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 18px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  .day.available.selected {
-    background: #86b942;
+  .banner-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #16a34a;
     color: #ffffff;
-    border-color: #86b942;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+  }
+
+  .banner-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .banner-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    color: #166534;
+  }
+
+  .banner-date {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #14532d;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .calendar-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 12px 0 0 0;
+    line-height: 1.4;
+  }
+
+  .hint-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #16a34a;
+    flex-shrink: 0;
   }
 
   /* --- STOPKA FORMULARZA --- */
@@ -540,20 +923,42 @@ days.forEach(day => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 30px;
+    padding-top: 24px;
     border-top: 1px solid #f3f4f6;
-    margin-top: 30px;
+    margin-top: 24px;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .footer-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
+
+  .footer-date-info {
+    font-size: 0.85rem;
+    color: #4b5563;
+  }
+
+  .footer-date-info strong {
+    color: #15803d;
+    font-weight: 700;
   }
 
   .price-box {
     font-size: 0.95rem;
     color: #374151;
+    max-width: 100%;
+    word-break: break-word;
   }
 
   .price-box strong {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     color: #1a1a1a;
   }
 
@@ -561,29 +966,42 @@ days.forEach(day => {
     background-color: #153c24;
     color: #ffffff;
     border: none;
-    padding: 14px 28px;
-    border-radius: 30px;
-    font-size: 1rem;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-size: 0.98rem;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.15s;
+    box-sizing: border-box;
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.35;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
 
   .submit-btn:hover {
     background-color: #2d6641;
   }
 
+  .submit-btn:active {
+    transform: scale(0.98);
+  }
+
   /* --- RESPONSYWNOŚĆ --- */
   @media (max-width: 1024px) {
     .booking-grid {
-      grid-template-columns: 1fr;
-      gap: 40px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 36px;
     }
     .booking-info {
       position: static;
     }
     .booking-info h2 {
-      font-size: 2.5rem;
+      font-size: 2.3rem;
       margin-bottom: 20px;
     }
     .form-disclaimer {
@@ -592,8 +1010,59 @@ days.forEach(day => {
   }
 
   @media (max-width: 600px) {
-    .booking-form { padding: 20px; }
-    .address-row { grid-template-columns: 1fr; }
-    .form-footer { flex-direction: column; align-items: stretch; text-align: center; }
+    .booking-section {
+      padding: 50px 0;
+    }
+    .container {
+      padding: 0 16px;
+    }
+    .booking-form { 
+      padding: 20px 14px; 
+    }
+    .calendar-widget {
+      padding: 16px 10px;
+      border-radius: 14px;
+    }
+    .calendar-header {
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .calendar-header strong {
+      font-size: 1.05rem;
+    }
+    .calendar-grid {
+      gap: 4px;
+    }
+    .day-name {
+      font-size: 0.76rem;
+      margin-bottom: 6px;
+    }
+    .day {
+      min-height: 36px;
+      border-radius: 6px;
+      font-size: clamp(0.75rem, 3.2vw, 0.92rem);
+    }
+    .address-row { 
+      grid-template-columns: minmax(0, 1fr); 
+      gap: 12px;
+    }
+    .form-footer { 
+      flex-direction: column; 
+      align-items: stretch; 
+      text-align: center; 
+    }
+    .footer-meta {
+      text-align: center;
+      align-items: center;
+    }
+    .selected-date-banner {
+      padding: 8px 10px;
+      gap: 10px;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 13px 16px;
+      font-size: 0.95rem;
+    }
   }
 </style>

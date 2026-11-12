@@ -6,7 +6,7 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
 
 <div id="main" class="navbar-mobile-bar">
     <a href="/#start" id="logo" aria-label="Ogrody Relaks - Strona Główna">
-        <Image src={logo} alt="Ogrody Relaks Logo" class="Logo_photo" loading="eager" />
+        <Image src={logo} alt="Ogrody Relaks Logo" class="Logo_photo" height={48} loading="eager" />
     </a>
 
     <div id="katalog">
@@ -20,7 +20,7 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
     </div>
 </div>
 
-<div id="box" class="box" aria-hidden="true"> 
+<div id="box" class="box is-hidden" aria-hidden="true"> 
     <div class="box-inner">
         <MenuRoll /> 
     </div>
@@ -31,13 +31,18 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
         const button = document.getElementById('menu-btn');
         const box = document.getElementById('box');
         const mainBar = document.getElementById('main');
+        let closeTimer: ReturnType<typeof setTimeout> | null = null;
 
-        const toggleMenu = () => {
-            const isOpen = box?.classList.toggle('is-open');
-            button?.classList.toggle('clicked');
-            mainBar?.classList.toggle('menu-open', isOpen);
-            button?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            box?.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        const openMenu = () => {
+            if (closeTimer) clearTimeout(closeTimer);
+            box?.classList.remove('is-hidden');
+            // Wymuszenie reflow przeglądarki przed startem animacji CSS
+            void box?.offsetHeight;
+            box?.classList.add('is-open');
+            button?.classList.add('clicked');
+            mainBar?.classList.add('menu-open');
+            button?.setAttribute('aria-expanded', 'true');
+            box?.setAttribute('aria-hidden', 'false');
         };
 
         const closeMenu = () => {
@@ -46,6 +51,21 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
             mainBar?.classList.remove('menu-open');
             button?.setAttribute('aria-expanded', 'false');
             box?.setAttribute('aria-hidden', 'true');
+            if (closeTimer) clearTimeout(closeTimer);
+            // Po zakończeniu animacji zwijania całkowicie chowamy element z render tree
+            closeTimer = setTimeout(() => {
+                if (!box?.classList.contains('is-open')) {
+                    box?.classList.add('is-hidden');
+                }
+            }, 360);
+        };
+
+        const toggleMenu = () => {
+            if (box?.classList.contains('is-open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
         };
 
         button?.addEventListener('click', (e) => {
@@ -74,11 +94,12 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
        1. STAN DOMYŚLNY (Zadokowany)
        ========================================================= */
     #main {
-        margin: auto;
+        margin: 0 auto;
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
         width: 100%;
+        max-width: 100%;
         transform: translateY(0);
         height: 74px;
         border-radius: 0;
@@ -86,7 +107,7 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
         border-bottom: 1px solid rgba(0, 0, 0, 0.06);
         color: #11301e;    
         display: grid;
-        grid-template-columns: 1fr auto; 
+        grid-template-columns: minmax(0, 1fr) auto; 
         justify-content: space-between;
         align-items: center;
         box-sizing: border-box;
@@ -108,17 +129,23 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
         display: grid;
         grid-template-rows: 0fr;
         width: 100%;
+        max-width: 100%;
         margin: 0 auto;
+        box-sizing: border-box;
         transform: translateY(0);
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
         overflow: hidden;
-        background: transparent;
-        border: none;
-        box-shadow: none;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        outline: none !important;
+        height: 0;
         transition: 
-            grid-template-rows 0.38s cubic-bezier(0.25, 1, 0.35, 1),
+            grid-template-rows 0.35s cubic-bezier(0.25, 1, 0.35, 1),
             opacity 0.25s ease,
             visibility 0.25s ease,
             transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
@@ -127,6 +154,11 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
             border-radius 0.35s ease;
         position: relative;
         z-index: 9;
+    }
+
+    /* Po zwinięciu menu jest całkowicie wyjęte z drzewa renderowania (brak jakichkolwiek resztek czy bałasków) */
+    .box.is-hidden {
+        display: none !important;
     }
 
     /* Wewnętrzny kontener bez paddingu, dzięki czemu grid-template-rows: 0fr zwija się do absolutnego 0px */
@@ -140,17 +172,18 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
 
     /* W stanie zadokowanym: roleta rozwija się bezpośrednio pod paskiem */
     .box.is-open {
+        height: auto;
         grid-template-rows: 1fr;
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 0 0 24px 24px;
-        box-shadow: 0 16px 36px rgba(17, 48, 30, 0.14);
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        border-top: none;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-radius: 0 0 24px 24px !important;
+        box-shadow: 0 16px 36px rgba(17, 48, 30, 0.14) !important;
+        border: 1px solid rgba(0, 0, 0, 0.06) !important;
+        border-top: none !important;
     }
 
     /* Spłaszczenie dolnych rogów TYLKO w stanie zadokowanym (gdy nie jest wyspą) */
@@ -166,6 +199,8 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
     :global(#Mobile.is-scrolled) #main {
         transform: translateY(10px);
         width: 92%;
+        max-width: 92%;
+        margin: 0 auto;
         border-radius: 20px;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         background: rgba(255, 255, 255, 0.96);
@@ -176,14 +211,16 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
     :global(#Mobile.is-scrolled) .box {
         transform: translateY(10px);
         width: 92%;
+        max-width: 92%;
+        margin: 0 auto;
     }
 
     /* Gdy navbar jest wyspą: całe roll menu ma pełny border-radius (wszystkie 4 narożniki zaokrąglone) i pływa jako niezależna wyspa z odstępem */
     :global(#Mobile.is-scrolled) .box.is-open {
-        margin-top: 10px;
+        margin: 10px auto 0 auto;
         border-radius: 24px !important;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        box-shadow: 0 16px 40px rgba(17, 48, 30, 0.18);
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        box-shadow: 0 16px 40px rgba(17, 48, 30, 0.18) !important;
     }
 
     /* =========================================================
@@ -195,11 +232,16 @@ import MenuRoll from '../NavbarM_menu/menu_roll.astro';
         align-items: center;
         text-decoration: none;
         height: 48px;
+        max-width: calc(100% - 65px);
+        min-width: 0;
+        overflow: hidden;
     }
 
     .Logo_photo {
         height: 100%;
+        max-height: 48px;
         width: auto;
+        max-width: 100%;
         object-fit: contain;
     }
 

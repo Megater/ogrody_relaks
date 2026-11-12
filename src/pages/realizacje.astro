@@ -4,6 +4,8 @@ import type { ImageMetadata } from 'astro';
 import { sanityClient } from 'sanity:client';
 import imageUrlBuilder from '@sanity/image-url';
 import trawnik from '../assets/images/Realizacje/trawnik.jpg';
+import dzialkaPrzedPo from '../assets/images/Realizacje/dzialka_przed_po.jpg';
+import porzadkowanie from '../assets/images/Realizacje/porzadkowanie_dzialki.jpg';
 
 // Jeśli używasz głównego Layoutu (np. z menu i stopką), odkomentuj poniższą linię:
 // import Layout from '../layouts/Layout.astro';
@@ -43,9 +45,37 @@ try {
 }
 
 const trawnikSrc = typeof trawnik === 'string' ? trawnik : trawnik.src;
+const dzialkaPrzedPoSrc = typeof dzialkaPrzedPo === 'string' ? dzialkaPrzedPo : dzialkaPrzedPo.src;
+const porzadkowanieSrc = typeof porzadkowanie === 'string' ? porzadkowanie : porzadkowanie.src;
 
 // 2. Dane zastępcze (jeśli w Sanity jeszcze nic nie ma)
 const fallbackRealizacje: RealizacjaItem[] = [
+  {
+    title: "Przygotowanie działki pod sprzedaż",
+    description: "Kompleksowe doprowadzenie zarośniętej posesji do stanu idealnego pod prezentację i sprzedaż: wykoszenie chaszczy, wycięcie dzikich samosiewów oraz precyzyjne wyrównanie przerośniętego żywopłotu.",
+    icon: "🚜", 
+    image: dzialkaPrzedPo,
+    fullImage: dzialkaPrzedPoSrc,
+    gallery: [
+      dzialkaPrzedPoSrc,
+      porzadkowanieSrc
+    ],
+    slug: "przygotowanie-dzialki-pod-sprzedaz",
+    date: "2026"
+  },
+  {
+    title: "Porządkowanie i karczowanie posesji",
+    description: "Oczyszczenie mocno zachwaszczonego i zakrzaczonego terenu pod nową inwestycję. Usunięcie niechcianej roślinności, rozdrobnienie gałęzi oraz przygotowanie podłoża.",
+    icon: "🌲",
+    image: porzadkowanie,
+    fullImage: porzadkowanieSrc,
+    gallery: [
+      porzadkowanieSrc,
+      dzialkaPrzedPoSrc
+    ],
+    slug: "porzadkowanie-karczowanie-posesji",
+    date: "2026"
+  },
   {
     title: "Pielęgnacja trawników",
     description: "Zdrowe, gęste i soczyście zielone trawniki przez cały rok. Kompleksowa wertykulacja, aeracja oraz nawożenie dopasowane do gleby.",
