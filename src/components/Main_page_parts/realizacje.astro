@@ -1,9 +1,43 @@
 ---
 import { Image } from 'astro:assets';
-import trawnik from '../../assets/images/Realizacje/trawnik.jpg'
+import type { ImageMetadata } from 'astro';
+import { sanityClient } from 'sanity:client';
+import imageUrlBuilder from '@sanity/image-url';
+import trawnik from '../../assets/images/Realizacje/trawnik.jpg';
 
-// Zewnętrzne linki (np. z Sanity, AWS S3, Cloudinary, Unsplash) będą działać automatycznie
-const realizacje = [
+// Interfejs dla TypeScriptu (usuwa podkreślanie 'item' w HTML-u)
+interface RealizacjaItem {
+  title: string;
+  description: string;
+  icon: string;
+  image: string | ImageMetadata;
+  href: string;
+}
+
+// Konfiguracja buildera do wyciągania zoptymalizowanych linków ze zdjęć Sanity
+const builder = imageUrlBuilder(sanityClient);
+function urlFor(source: any) {
+  return builder.image(source);
+}
+
+// 1. Pobieranie danych z Sanity (sortowane od najnowszych)
+let sanityRealizacje: any[] = [];
+try {
+  sanityRealizacje = await sanityClient.fetch(`
+    *[_type == "realizacja"] | order(_createdAt desc) {
+      title,
+      description,
+      icon,
+      "slug": slug.current,
+      image
+    }
+  `);
+} catch (error) {
+  console.warn("Błąd pobierania z Sanity lub brak konfiguracji – używam danych zastępczych.");
+}
+
+// 2. Dane zastępcze (działają, dopóki nie dodasz projektów w /studio)
+const fallbackRealizacje: RealizacjaItem[] = [
   {
     title: "Pielęgnacja trawników",
     description: "Zdrowe, zielone trawniki przez cały rok.",
@@ -47,6 +81,21 @@ const realizacje = [
     href: "/realizacje/nawadnianie"
   }
 ];
+
+// 3. Mapowanie danych z Sanity na format naszych kart
+const mappedSanity: RealizacjaItem[] = sanityRealizacje.map((item: any) => ({
+  title: item.title,
+  description: item.description,
+  icon: item.icon || "🌿",
+  image: item.image ? urlFor(item.image).width(600).height(450).auto('format').url() : "",
+  href: item.slug ? `/realizacje/${item.slug}` : "/realizacje"
+}));
+
+const activeList: RealizacjaItem[] = mappedSanity.length > 0 ? mappedSanity : fallbackRealizacje;
+
+const realizacje: RealizacjaItem[] = activeList.length < 5 
+  ? [...activeList, ...activeList, ...activeList] 
+  : activeList;
 ---
 
 <section class="realizacje-section">
@@ -73,7 +122,6 @@ const realizacje = [
             )}
             <div class="card-icon">{item.icon}</div>
           </div>
-          <!-- DODANO: Tego brakowało w Twoim kodzie! -->
           <div class="card-content">
             <h3>{item.title}</h3>
             <p>{item.description}</p>
@@ -85,7 +133,7 @@ const realizacje = [
     <!-- Wagonik 2 (Kopia do nieskończonej pętli) -->
     <div class="slider-track" aria-hidden="true">
       {realizacje.map((item) => (
-        <a href={item.href} class="card">
+        <a href={item.href} class="card" tabindex="-1">
           <div class="card-image-wrapper">
             {typeof item.image === 'string' ? (
               <img src={item.image} alt={item.title} class="card-img" loading="lazy" />
@@ -105,6 +153,7 @@ const realizacje = [
 </section>
 
 <style>
+  /* Twój oryginalny CSS bez zmian */
   .realizacje-section {
     padding: 80px 0;
     background-color: #fafafa;
@@ -117,7 +166,6 @@ const realizacje = [
     padding: 0 20px;
   }
 
-  /* --- NAGŁÓWEK --- */
   .section-header {
     display: flex;
     justify-content: space-between;
@@ -158,13 +206,12 @@ const realizacje = [
     transform: translateX(5px);
   }
 
-  /* --- SLIDER / WAGONIKI --- */
   .slider-wrapper {
     display: flex;
     gap: 25px;
     width: 100%;
     overflow: hidden;
-    padding: 20px 0 40px 0; /* Miejsce na cienie przy hoverze */
+    padding: 20px 0 40px 0;
   }
 
   .slider-track {
@@ -173,20 +220,18 @@ const realizacje = [
     flex-shrink: 0;
     width: max-content; 
     animation: scroll 35s linear infinite;
-    will-change: transform; /* Optymalizacja wydajności animacji */
+    will-change: transform;
   }
 
   .slider-wrapper:hover .slider-track {
     animation-play-state: paused;
   }
 
-  /* NAPRAWIONY BŁĄD SKŁADNI: odjęcie gap'u (25px) od -100% */
   @keyframes scroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(calc(-100% - 25px)); }
   }
 
-  /* --- KARTY --- */
   .card {
     width: 340px;
     flex: 0 0 340px; 
@@ -210,22 +255,20 @@ const realizacje = [
     position: relative;
     height: 240px;
     border-radius: 16px 16px 0 0;
-    overflow: hidden; /* Kluczowe dla efektu zoomu zdjęcia */
+    overflow: hidden;
   }
 
   .card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s ease; /* Płynny zoom */
+    transition: transform 0.6s ease;
   }
 
-  /* Efekt zoom przy najechaniu na całą kartę */
   .card:hover .card-img {
     transform: scale(1.08);
   }
 
-  /* Subtelny gradient pod ikoną, żeby była bardziej czytelna */
   .card-image-wrapper::after {
     content: '';
     position: absolute;
@@ -279,7 +322,6 @@ const realizacje = [
     line-height: 1.6;
   }
 
-  /* Responsywność */
   @media (max-width: 768px) {
     .card {
       width: 280px;
