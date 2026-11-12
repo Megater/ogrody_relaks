@@ -1,0 +1,1101 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { sanityClient } from 'sanity:client';
+import imageUrlBuilder from '@sanity/image-url';
+import trawnik from '../assets/images/Realizacje/trawnik.jpg';
+
+// Jeśli używasz głównego Layoutu (np. z menu i stopką), odkomentuj poniższą linię:
+// import Layout from '../layouts/Layout.astro';
+
+interface RealizacjaItem {
+  title: string;
+  description: string;
+  icon: string;
+  image: string | ImageMetadata;
+  fullImage: string;
+  gallery: string[];
+  slug: string;
+  date?: string;
+}
+
+const builder = imageUrlBuilder(sanityClient);
+function urlFor(source: any) {
+  return builder.image(source);
+}
+
+// 1. Pobieranie danych z Sanity (wraz z nowym polem gallery)
+let sanityRealizacje: any[] = [];
+try {
+  sanityRealizacje = await sanityClient.fetch(`
+    *[_type == "realizacja"] | order(_createdAt desc) {
+      title,
+      description,
+      icon,
+      "slug": slug.current,
+      image,
+      gallery,
+      _createdAt
+    }
+  `);
+} catch (error) {
+  console.warn("Błąd pobierania z Sanity – używam danych zastępczych.");
+}
+
+const trawnikSrc = typeof trawnik === 'string' ? trawnik : trawnik.src;
+
+// 2. Dane zastępcze (jeśli w Sanity jeszcze nic nie ma)
+const fallbackRealizacje: RealizacjaItem[] = [
+  {
+    title: "Pielęgnacja trawników",
+    description: "Zdrowe, gęste i soczyście zielone trawniki przez cały rok. Kompleksowa wertykulacja, aeracja oraz nawożenie dopasowane do gleby.",
+    icon: "🌱", 
+    image: trawnik,
+    fullImage: trawnikSrc,
+    gallery: [
+      trawnikSrc,
+      "https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1558904541-efa843a96f0f?q=80&w=1600&auto=format&fit=crop"
+    ],
+    slug: "pielegnacja-trawnikow",
+    date: "2026"
+  },
+  {
+    title: "Projektowanie ogrodów",
+    description: "Przemyślane i funkcjonalne ogrody przydomowe, w których chce się przebywać o każdej porze roku.",
+    icon: "🌿",
+    image: "https://images.unsplash.com/photo-1558904541-efa843a96f0f?q=80&w=900&auto=format&fit=crop",
+    fullImage: "https://images.unsplash.com/photo-1558904541-efa843a96f0f?q=80&w=1600&auto=format&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1558904541-efa843a96f0f?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1600&auto=format&fit=crop"
+    ],
+    slug: "projektowanie",
+    date: "2026"
+  },
+  {
+    title: "Strefy wypoczynkowe",
+    description: "Nowoczesne patio, tarasy drewniane i kompozytowe, paleniska ogrodowe oraz pergole.",
+    icon: "🛋️",
+    image: "https://images.unsplash.com/photo-1605810730434-7631ac76ec81?q=80&w=900&auto=format&fit=crop",
+    fullImage: "https://images.unsplash.com/photo-1605810730434-7631ac76ec81?q=80&w=1600&auto=format&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1605810730434-7631ac76ec81?q=80&w=1600&auto=format&fit=crop"
+    ],
+    slug: "strefy-wypoczynkowe",
+    date: "2026"
+  },
+  {
+    title: "Architektura twarda",
+    description: "Ścieżki ogrodowe, podjazdy, murki oporowe, gabiony i precyzyjne prace kamieniarskie.",
+    icon: "🧱",
+    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=900&auto=format&fit=crop",
+    fullImage: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1600&auto=format&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1600&auto=format&fit=crop"
+    ],
+    slug: "architektura",
+    date: "2026"
+  },
+  {
+    title: "Oświetlenie ogrodowe",
+    description: "Nastrojowe i energooszczędne instalacje LED podkreślające architekturę roślin nocą.",
+    icon: "💡",
+    image: "https://images.unsplash.com/photo-1509641772183-b9247ce96bf4?q=80&w=900&auto=format&fit=crop",
+    fullImage: "https://images.unsplash.com/photo-1509641772183-b9247ce96bf4?q=80&w=1600&auto=format&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1509641772183-b9247ce96bf4?q=80&w=1600&auto=format&fit=crop"
+    ],
+    slug: "oswietlenie",
+    date: "2026"
+  },
+  {
+    title: "Systemy nawadniania",
+    description: "Automatyczne systemy zraszaczy i linii kroplujących gwarantujące oszczędność wody i czasu.",
+    icon: "💧",
+    image: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?q=80&w=900&auto=format&fit=crop",
+    fullImage: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?q=80&w=1600&auto=format&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?q=80&w=1600&auto=format&fit=crop"
+    ],
+    slug: "nawadnianie",
+    date: "2026"
+  }
+];
+
+// 3. Mapowanie wpisów z Sanity (zoptymalizowane pod kątem szybkości ładowania - WebP)
+const mappedSanity: RealizacjaItem[] = sanityRealizacje.map((item: any) => {
+  // Główne zdjęcie do pełnego podglądu w lightboxie (szerokość 1600px, WebP, jakość 80%)
+  const mainFullUrl = item.image 
+    ? urlFor(item.image).width(1600).format('webp').quality(80).url() 
+    : "";
+
+  // Dodatkowe zdjęcia z galerii (szerokość 1600px, WebP, jakość 80%)
+  const extraImages: string[] = Array.isArray(item.gallery)
+    ? item.gallery
+        .filter((img: any) => img && img.asset)
+        .map((img: any) => urlFor(img).width(1600).format('webp').quality(80).url())
+    : [];
+
+  const allImages = mainFullUrl ? [mainFullUrl, ...extraImages] : extraImages;
+
+  return {
+    title: item.title,
+    description: item.description,
+    icon: item.icon || "🌿",
+    // Miniaturka w siatce na stronie (mniejsza, szybsza: 900x650, WebP, jakość 75%)
+    image: item.image 
+      ? urlFor(item.image).width(900).height(650).format('webp').quality(75).url() 
+      : "",
+    fullImage: mainFullUrl,
+    gallery: allImages,
+    slug: item.slug || "",
+    date: item._createdAt ? new Date(item._createdAt).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' }) : ""
+  };
+});
+
+const realizacje: RealizacjaItem[] = mappedSanity.length > 0 ? mappedSanity : fallbackRealizacje;
+---
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nasze Realizacje | Portfolio Ogrodnicze</title>
+</head>
+<body>
+
+  <main class="portfolio-page">
+    <!-- HERO NAGŁÓWEK -->
+    <header class="portfolio-hero">
+      <div class="container">
+        <a href="/" class="back-link">&larr; Powrót do strony głównej</a>
+        <div class="hero-content">
+          <div class="hero-left">
+            <span class="kicker">Portfolio &bull; {realizacje.length} projektów</span>
+            <h1>NASZE REALIZACJE</h1>
+            <p class="hero-subtitle">
+              Każdy ogród to inna historia. Zobacz wybrane projekty i metamorfozy terenów zielonych, które wykonaliśmy dla naszych klientów.
+            </p>
+          </div>
+          
+          <!-- Wyszukiwarka na żywo -->
+          <div class="controls-wrapper">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Szukaj (np. taras, trawnik, nawadnianie)..." 
+                autocomplete="off"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- SIATKA BENTO Z REALIZACJAMI -->
+    <section class="portfolio-grid-section">
+      <div class="container">
+        <div class="portfolio-grid" id="portfolio-grid">
+          {realizacje.map((item: RealizacjaItem, index: number) => (
+            <article 
+              class={`project-card ${index === 0 ? 'featured-card' : ''}`}
+              data-title={item.title.toLowerCase()}
+              data-desc={item.description.toLowerCase()}
+              data-full-img={item.fullImage}
+              data-gallery={JSON.stringify(item.gallery)}
+              data-raw-title={item.title}
+              data-raw-desc={item.description}
+              data-icon={item.icon}
+              data-date={item.date}
+            >
+              <div class="image-container">
+                {typeof item.image === 'string' ? (
+                  <img src={item.image} alt={item.title} class="project-img" loading={index < 3 ? "eager" : "lazy"} />
+                ) : (
+                  <Image src={item.image} alt={item.title} class="project-img" />
+                )}
+                
+                <div class="overlay-gradient"></div>
+                
+                <div class="top-badges">
+                  <span class="icon-badge">{item.icon}</span>
+                  <div class="badges-right">
+                    {item.gallery.length > 1 && (
+                      <span class="photo-count-badge">📷 {item.gallery.length} zdjęcia</span>
+                    )}
+                    {index === 0 && <span class="featured-badge">Najnowsza realizacja</span>}
+                  </div>
+                </div>
+
+                <button class="zoom-btn" aria-label="Powiększ zdjęcie">
+                  <span>Zobacz galerię ({item.gallery.length})</span> ⤢
+                </button>
+              </div>
+
+              <div class="card-body">
+                <div class="card-meta">
+                  {item.date && <span class="project-date">{item.date}</span>}
+                  <span class="project-number">#{String(realizacje.length - index).padStart(2, '0')}</span>
+                </div>
+                <h2>{item.title}</h2>
+                <p>{item.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- Komunikat przy braku wyników wyszukiwania -->
+        <div id="empty-state" class="empty-state" hidden>
+          <p>Nie znaleźliśmy realizacji pasujących do tego hasła. 🌱</p>
+          <button id="reset-search" class="btn-secondary">Pokaż wszystkie projekty</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOLNY BANER KONTAKTOWY (CTA) -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <div class="cta-text">
+            <span class="kicker">Twój ogród może być następny</span>
+            <h2>Spodobały Ci się nasze projekty?</h2>
+            <p>Skontaktuj się z nami – bezpłatnie wycenimy prace i doradzimy najlepsze rozwiązania dla Twojej działki.</p>
+          </div>
+          <div class="cta-actions">
+            <a href="/#kontakt" class="btn-primary">Umów bezpłatną wycenę &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIGHTBOX MODAL Z GALERIĄ ZDJĘĆ -->
+    <div id="lightbox" class="lightbox" aria-hidden="true">
+      <div class="lightbox-backdrop"></div>
+      <div class="lightbox-container">
+        <button id="lightbox-close" class="lightbox-close" aria-label="Zamknij podgląd">&times;</button>
+        
+        <div class="lightbox-media">
+          <button id="lightbox-prev" class="lightbox-nav prev" aria-label="Poprzednie zdjęcie">&#10094;</button>
+          <img id="lightbox-img" src="" alt="" />
+          <button id="lightbox-next" class="lightbox-nav next" aria-label="Następne zdjęcie">&#10095;</button>
+          <div id="lightbox-counter" class="lightbox-counter">1 / 1</div>
+        </div>
+
+        <div class="lightbox-details">
+          <div class="lightbox-header">
+            <span id="lightbox-icon" class="lightbox-icon"></span>
+            <div>
+              <span id="lightbox-date" class="lightbox-date"></span>
+              <h3 id="lightbox-title"></h3>
+            </div>
+          </div>
+          <p id="lightbox-desc"></p>
+
+          <!-- Pasek miniaturek -->
+          <div id="lightbox-thumbs" class="lightbox-thumbs"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const cards = document.querySelectorAll('.project-card');
+    const emptyState = document.getElementById('empty-state');
+    const resetBtn = document.getElementById('reset-search');
+
+    // Filtrowanie na żywo
+    function filterProjects(query: string) {
+      const q = query.toLowerCase().trim();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const el = card as HTMLElement;
+        const title = el.dataset.title || '';
+        const desc = el.dataset.desc || '';
+        const matches = title.includes(q) || desc.includes(q);
+
+        if (matches) {
+          el.style.display = 'flex';
+          visibleCount++;
+        } else {
+          el.style.display = 'none';
+        }
+      });
+
+      if (emptyState) {
+        emptyState.hidden = visibleCount > 0;
+      }
+    }
+
+    searchInput?.addEventListener('input', (e) => {
+      filterProjects((e.target as HTMLInputElement).value);
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      if (searchInput) {
+        searchInput.value = '';
+        filterProjects('');
+      }
+    });
+
+    // Lightbox + Galeria wielu zdjęć
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxDesc = document.getElementById('lightbox-desc');
+    const lightboxIcon = document.getElementById('lightbox-icon');
+    const lightboxDate = document.getElementById('lightbox-date');
+    const lightboxCounter = document.getElementById('lightbox-counter');
+    const lightboxThumbs = document.getElementById('lightbox-thumbs');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    const closeBtn = document.getElementById('lightbox-close');
+    const backdrop = document.querySelector('.lightbox-backdrop');
+
+    let currentGallery: string[] = [];
+    let currentIndex = 0;
+
+    function updateLightboxImage(index: number) {
+      if (!lightboxImg || currentGallery.length === 0) return;
+      currentIndex = (index + currentGallery.length) % currentGallery.length;
+      lightboxImg.src = currentGallery[currentIndex];
+
+      // Aktualizacja licznika i strzałek
+      const hasMultiple = currentGallery.length > 1;
+      if (lightboxCounter) {
+        lightboxCounter.textContent = `${currentIndex + 1} / ${currentGallery.length}`;
+        lightboxCounter.style.display = hasMultiple ? 'block' : 'none';
+      }
+      if (prevBtn) prevBtn.style.display = hasMultiple ? 'flex' : 'none';
+      if (nextBtn) nextBtn.style.display = hasMultiple ? 'flex' : 'none';
+
+      // Podświetlenie aktywnej miniaturki
+      if (lightboxThumbs) {
+        const thumbs = lightboxThumbs.querySelectorAll('.thumb-item');
+        thumbs.forEach((t, i) => {
+          t.classList.toggle('active', i === currentIndex);
+        });
+      }
+    }
+
+    function renderThumbnails() {
+      if (!lightboxThumbs) return;
+      lightboxThumbs.innerHTML = '';
+
+      if (currentGallery.length <= 1) {
+        lightboxThumbs.style.display = 'none';
+        return;
+      }
+
+      lightboxThumbs.style.display = 'flex';
+      currentGallery.forEach((imgUrl, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `thumb-item ${idx === 0 ? 'active' : ''}`;
+        btn.setAttribute('aria-label', `Zdjęcie ${idx + 1}`);
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = `Miniaturka ${idx + 1}`;
+        btn.appendChild(img);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          updateLightboxImage(idx);
+        });
+        lightboxThumbs.appendChild(btn);
+      });
+    }
+
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const el = card as HTMLElement;
+        if (!lightbox || !lightboxImg) return;
+
+        try {
+          currentGallery = JSON.parse(el.dataset.gallery || '[]');
+        } catch {
+          currentGallery = [];
+        }
+        if (currentGallery.length === 0 && el.dataset.fullImg) {
+          currentGallery = [el.dataset.fullImg];
+        }
+
+        lightboxImg.alt = el.dataset.rawTitle || '';
+        if (lightboxTitle) lightboxTitle.textContent = el.dataset.rawTitle || '';
+        if (lightboxDesc) lightboxDesc.textContent = el.dataset.rawDesc || '';
+        if (lightboxIcon) lightboxIcon.textContent = el.dataset.icon || '🌿';
+        if (lightboxDate) lightboxDate.textContent = el.dataset.date || '';
+
+        renderThumbnails();
+        updateLightboxImage(0);
+
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    prevBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateLightboxImage(currentIndex - 1);
+    });
+
+    nextBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateLightboxImage(currentIndex + 1);
+    });
+
+    function closeLightbox() {
+      lightbox?.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    closeBtn?.addEventListener('click', closeLightbox);
+    backdrop?.addEventListener('click', closeLightbox);
+    window.addEventListener('keydown', (e) => {
+      if (!lightbox?.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') updateLightboxImage(currentIndex - 1);
+      if (e.key === 'ArrowRight') updateLightboxImage(currentIndex + 1);
+    });
+  </script>
+
+  <style>
+    :root {
+      --green-dark: #153c24;
+      --green-accent: #86b942;
+      --bg-light: #f6f8f5;
+      --text-main: #1f2922;
+      --text-muted: #556258;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-main);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* --- HERO SECTION --- */
+    .portfolio-hero {
+      background: linear-gradient(180deg, #ffffff 0%, var(--bg-light) 100%);
+      padding: 48px 0 40px 0;
+      border-bottom: 1px solid rgba(21, 60, 36, 0.08);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green-dark);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+      padding: 8px 16px;
+      background: rgba(134, 185, 66, 0.12);
+      border-radius: 999px;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(134, 185, 66, 0.24);
+      transform: translateX(-4px);
+    }
+
+    .hero-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+
+    .hero-left {
+      max-width: 680px;
+    }
+
+    .kicker {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--green-accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .portfolio-hero h1 {
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      color: var(--green-dark);
+      margin: 0 0 14px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* --- WYSZUKIWARKA --- */
+    .controls-wrapper {
+      flex: 1;
+      min-width: 280px;
+      max-width: 400px;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 15px 20px 15px 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(21, 60, 36, 0.15);
+      background: #ffffff;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    #search-input:focus {
+      outline: none;
+      border-color: var(--green-accent);
+      box-shadow: 0 0 0 4px rgba(134, 185, 66, 0.18);
+    }
+
+    /* --- SIATKA PROJEKTÓW (BENTO GRID) --- */
+    .portfolio-grid-section {
+      padding: 60px 0 80px 0;
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .project-card.featured-card {
+      grid-column: span 2;
+    }
+
+    .project-card {
+      background: #ffffff;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(21, 60, 36, 0.05);
+      border: 1px solid rgba(21, 60, 36, 0.06);
+      transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.35s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(21, 60, 36, 0.12);
+    }
+
+    .image-container {
+      position: relative;
+      height: 290px;
+      overflow: hidden;
+      background: #e9eee9;
+    }
+
+    .featured-card .image-container {
+      height: 380px;
+    }
+
+    .project-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.65s ease;
+    }
+
+    .project-card:hover .project-img {
+      transform: scale(1.06);
+    }
+
+    .overlay-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(15, 38, 23, 0.55) 0%, transparent 55%);
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+
+    .project-card:hover .overlay-gradient {
+      opacity: 0.85;
+    }
+
+    .top-badges {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .badges-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-badge {
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(6px);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    }
+
+    .photo-count-badge {
+      background: rgba(15, 38, 23, 0.78);
+      backdrop-filter: blur(6px);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 999px;
+    }
+
+    .featured-badge {
+      background: var(--green-accent);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .zoom-btn {
+      position: absolute;
+      bottom: 18px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--green-dark);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+    }
+
+    .project-card:hover .zoom-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.82rem;
+      color: var(--green-accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .project-number {
+      color: #b0bdb3;
+    }
+
+    .card-body h2 {
+      font-size: 1.4rem;
+      color: var(--green-dark);
+      margin: 0 0 12px 0;
+      font-weight: 800;
+    }
+
+    .featured-card .card-body h2 {
+      font-size: 1.7rem;
+    }
+
+    .card-body p {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* --- BRAK WYNIKÓW --- */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: #ffffff;
+      border-radius: 20px;
+      margin-top: 20px;
+    }
+
+    .empty-state p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .btn-secondary {
+      background: var(--green-dark);
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* --- BANER CTA --- */
+    .cta-section {
+      padding-bottom: 90px;
+    }
+
+    .cta-box {
+      background: var(--green-dark);
+      color: #ffffff;
+      border-radius: 28px;
+      padding: 56px 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 32px;
+      box-shadow: 0 24px 48px rgba(21, 60, 36, 0.18);
+    }
+
+    .cta-text {
+      max-width: 620px;
+    }
+
+    .cta-text h2 {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin: 0 0 12px 0;
+    }
+
+    .cta-text p {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--green-accent);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 18px 34px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 1.05rem;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .btn-primary:hover {
+      background: #95ca4d;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(134, 185, 66, 0.35);
+    }
+
+    /* --- LIGHTBOX MODAL --- */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 28, 17, 0.88);
+      backdrop-filter: blur(8px);
+    }
+
+    .lightbox-container {
+      position: relative;
+      z-index: 2;
+      background: #ffffff;
+      max-width: 1120px;
+      width: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      max-height: 88vh;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(21, 60, 36, 0.1);
+      color: var(--green-dark);
+      font-size: 1.6rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      z-index: 10;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(21, 60, 36, 0.2);
+    }
+
+    .lightbox-media {
+      position: relative;
+      background: #0d1710;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 620px;
+      max-height: 88vh;
+    }
+
+    .lightbox-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Strzałki lewo / prawo */
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--green-dark);
+      font-size: 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+      transition: background 0.2s ease, transform 0.2s ease;
+      z-index: 4;
+    }
+
+    .lightbox-nav:hover {
+      background: #ffffff;
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .lightbox-nav.prev {
+      left: 16px;
+    }
+
+    .lightbox-nav.next {
+      right: 16px;
+    }
+
+    .lightbox-counter {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 38, 23, 0.8);
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      letter-spacing: 1px;
+    }
+
+    .lightbox-details {
+      padding: 42px 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .lightbox-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .lightbox-icon {
+      font-size: 2.2rem;
+      background: var(--bg-light);
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .lightbox-date {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--green-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .lightbox-header h3 {
+      font-size: 1.6rem;
+      color: var(--green-dark);
+      margin: 4px 0 0 0;
+    }
+
+    .lightbox-details p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* Pasek miniaturek w Lightboxie */
+    .lightbox-thumbs {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    :global(.thumb-item) {
+      width: 68px;
+      height: 52px;
+      padding: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      opacity: 0.55;
+      transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      background: none;
+    }
+
+    :global(.thumb-item:hover) {
+      opacity: 0.9;
+    }
+
+    :global(.thumb-item.active) {
+      opacity: 1;
+      border-color: var(--green-accent);
+      transform: scale(1.05);
+    }
+
+    :global(.thumb-item img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* --- RESPONSYWNOŚĆ --- */
+    @media (max-width: 1024px) {
+      .portfolio-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .project-card.featured-card {
+        grid-column: span 2;
+      }
+      .lightbox-container {
+        grid-template-columns: 1fr;
+        max-height: 92vh;
+      }
+      .lightbox-media {
+        height: 44vh;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portfolio-grid {
+        grid-template-columns: 1fr;
+      }
+      .project-card.featured-card {
+        grid-column: span 1;
+      }
+      .featured-card .image-container {
+        height: 260px;
+      }
+      .cta-box {
+        padding: 36px 28px;
+      }
+      .controls-wrapper {
+        max-width: 100%;
+      }
+    }
+  </style>
+</body>
+</html>

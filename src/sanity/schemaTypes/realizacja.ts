@@ -33,10 +33,25 @@ export const realizacjaType = defineType({
     }),
     defineField({
       name: 'image',
-      title: 'Zdjęcie ukończonego projektu',
+      title: 'Zdjęcie główne (okładka w wagoniku i siatce)',
       type: 'image',
       options: { hotspot: true },
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'gallery',
+      title: 'Dodatkowe zdjęcia (np. 2 kolejne ujęcia tego samego ogrodu)',
+      type: 'array',
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+        },
+      ],
+      options: {
+        layout: 'grid', // Wyświetla ładną siatkę miniaturek w panelu /studio
+      },
+      validation: (rule) => rule.max(5), // Limit do 5 dodatkowych zdjęć (możesz zmienić np. na 2)
     }),
   ],
 });

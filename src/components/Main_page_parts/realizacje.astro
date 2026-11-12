@@ -82,13 +82,16 @@ const fallbackRealizacje: RealizacjaItem[] = [
   }
 ];
 
-// 3. Mapowanie danych z Sanity na format naszych kart
+// 3. Mapowanie danych z Sanity na format naszych kart (WebP + niższa waga)
 const mappedSanity: RealizacjaItem[] = sanityRealizacje.map((item: any) => ({
   title: item.title,
   description: item.description,
   icon: item.icon || "🌿",
-  image: item.image ? urlFor(item.image).width(600).height(450).auto('format').url() : "",
-  href: item.slug ? `/realizacje/${item.slug}` : "/realizacje"
+  // Karta w wagoniku ma 340px szerokości, więc 600x420 w WebP (jakość 75%) w zupełności wystarczy
+  image: item.image 
+    ? urlFor(item.image).width(600).height(420).format('webp').quality(75).url() 
+    : "",
+  href: "/realizacje"
 }));
 
 const activeList: RealizacjaItem[] = mappedSanity.length > 0 ? mappedSanity : fallbackRealizacje;
