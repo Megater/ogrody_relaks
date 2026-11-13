@@ -1575,10 +1575,17 @@ const allReviews = mappedSanityReviews.length >= 4
           }),
         });
 
-        const result = await response.json().catch(() => null);
+        let result: any = null;
+        try {
+          result = await response.json();
+        } catch (jsonErr) {
+          console.warn('Odpowiedź serwera nie jest poprawnym JSON:', jsonErr);
+        }
 
         if (!response.ok || !result?.success) {
-          const errMsg = result?.error || 'Wystąpił błąd podczas wysyłania opinii. Spróbuj ponownie.';
+          const errMsg =
+            result?.error ||
+            `Wystąpił błąd podczas wysyłania opinii (status: ${response.status} ${response.statusText || ''}). Spróbuj ponownie.`;
           showError(errMsg);
           setLoading(false);
           return;

@@ -12,7 +12,9 @@ const ALLOWED_TAGS = [
   'Piękny efekt',
 ];
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async (context) => {
+  const { request } = context;
+
   try {
     // 1. Walidacja formatu żądania
     const contentType = request.headers.get('content-type') || '';
@@ -46,7 +48,7 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'Imię / Rola autora jest wymagana.',
+          error: 'Imię autora jest wymagane.',
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
@@ -101,18 +103,27 @@ export const POST: APIRoute = async ({ request }) => {
           .slice(0, 10)
       : [];
 
-    // 3. Sprawdzenie konfiguracji Sanity i tokena zapisu
-    // Odczytujemy zmienne ze środowiska Astro (Cloudflare Pages / local env)
+    // 3. Pobieranie zmiennych środowiskowych i tokena zapisu
+    // Na Cloudflare Pages / Workers zmienne z dashboardu są wstrzykiwane w context.locals.runtime.env
+    // Lokalnie lub w trybie Node odczytujemy z import.meta.env lub process.env
+    const cfEnv =
+      (context.locals as any)?.runtime?.env ||
+      (context.locals as any)?.env ||
+      (context as any)?.env;
+
     const writeToken =
+      cfEnv?.SANITY_WRITE_TOKEN ||
       import.meta.env.SANITY_WRITE_TOKEN ||
       (typeof process !== 'undefined' ? process.env?.SANITY_WRITE_TOKEN : undefined);
 
     const projectId =
+      cfEnv?.SANITY_PROJECT_ID ||
       import.meta.env.SANITY_PROJECT_ID ||
       (typeof process !== 'undefined' ? process.env?.SANITY_PROJECT_ID : undefined) ||
       '9qf0gufo';
 
     const dataset =
+      cfEnv?.SANITY_DATASET ||
       import.meta.env.SANITY_DATASET ||
       (typeof process !== 'undefined' ? process.env?.SANITY_DATASET : undefined) ||
       'production';
@@ -123,7 +134,7 @@ export const POST: APIRoute = async ({ request }) => {
         JSON.stringify({
           success: false,
           error:
-            'Serwer nie został jeszcze skonfigurowany do zapisywania danych (brak SANITY_WRITE_TOKEN). Skontaktuj się z administratorem strony.',
+            'Serwer nie posiada skonfigurowanego tokena SANITY_WRITE_TOKEN w panelu Cloudflare (Environment Variables).',
         }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
@@ -139,7 +150,6 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     // 5. Utworzenie dokumentu w Sanity
-    // Ważne: approved jest zawsze ustawione na false dla nowych opinii z zewnątrz
     const newDoc = {
       _type: 'opinia',
       author: author.trim(),
@@ -168,7 +178,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'Wystąpił nieoczekiwany błąd podczas zapisywania opinii. Spróbuj ponownie później.',
+        error: `Błąd podczas zapisywania opinii w Sanity: ${err?.message || 'Spróbuj ponownie później.'}`,
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
