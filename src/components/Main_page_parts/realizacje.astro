@@ -248,10 +248,6 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     cursor: grabbing;
   }
 
-  .slider-wrapper.is-dragging .card {
-    pointer-events: none;
-  }
-
   .slider-inner {
     display: flex;
     gap: 25px;
@@ -284,9 +280,11 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     cursor: pointer;
   }
 
-  .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
   }
 
   .card-image-wrapper {
@@ -424,7 +422,8 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     let dragVelocity = 0;
     let inertiaVelocity = 0;
     let isHorizontalDrag: boolean | null = null;
-    let preventNextClick = false;
+    let isMoved = false;
+    const DRAG_THRESHOLD = 15;
     let wheelTimeout: any = null;
 
     // Prędkość domyślna: pełny obieg w 35s (zgodnie z oryginalną animacją)
@@ -433,18 +432,30 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     // Wykrywanie hover tylko dla precyzyjnego wskaźnika (mysz komputerowa, nie telefon)
     const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-    if (isFinePointer) {
-      // Zatrzymujemy auto-przesuwanie tylko wtedy, gdy kursor najeżdża bezpośrednio na konkretną kartę
-      const cards = sliderInner.querySelectorAll('.card');
-      cards.forEach((card) => {
+    // Zatrzymujemy auto-przesuwanie przy najechaniu na kartę oraz obsługujemy pojedyncze kliknięcie
+    const cards = sliderInner.querySelectorAll('.card');
+    cards.forEach((card) => {
+      if (isFinePointer) {
         card.addEventListener('mouseenter', () => {
           isCardHovered = true;
         });
         card.addEventListener('mouseleave', () => {
           isCardHovered = false;
         });
+      }
+
+      // Gwarancja natychmiastowego przejścia na /realizacje po pojedynczym kliknięciu
+      card.addEventListener('click', (e: Event) => {
+        if (isMoved) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        const mouseEv = e as MouseEvent;
+        if (mouseEv.button !== 0 || mouseEv.ctrlKey || mouseEv.metaKey || mouseEv.shiftKey) return;
+        window.location.href = '/realizacje';
       });
-    }
+    });
 
     function normalizeCurrentX() {
       if (singleTrackWidth <= 0) return;
@@ -460,7 +471,7 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     sliderWrapper.addEventListener('touchstart', (e: TouchEvent) => {
       if (e.touches.length !== 1) return;
       isDragging = true;
-      preventNextClick = false;
+      isMoved = false;
       isHorizontalDrag = null;
       dragStartX = e.touches[0].clientX;
       dragStartY = e.touches[0].clientY;
@@ -477,10 +488,11 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
       const clientY = e.touches[0].clientY;
       const dx = clientX - dragStartX;
       const dy = clientY - dragStartY;
+      const dist = Math.hypot(dx, dy);
 
       // Rozpoznajemy intencję: scroll pionowy strony vs przesunięcie poziome wagoników
       if (isHorizontalDrag === null) {
-        if (Math.hypot(dx, dy) > 8) {
+        if (dist > 8) {
           isHorizontalDrag = Math.abs(dx) >= Math.abs(dy);
           if (!isHorizontalDrag) {
             isDragging = false;
@@ -495,8 +507,8 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
         // Blokujemy pionowy scroll strony, gdy użytkownik przesuwa wagoniki poziomo
         if (e.cancelable) e.preventDefault();
 
-        if (Math.abs(dx) > 10) {
-          preventNextClick = true;
+        if (dist > DRAG_THRESHOLD) {
+          isMoved = true;
         }
 
         const now = performance.now();
@@ -524,11 +536,9 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
         }
       }
       isHorizontalDrag = null;
-      if (preventNextClick) {
-        setTimeout(() => {
-          preventNextClick = false;
-        }, 200);
-      }
+      setTimeout(() => {
+        isMoved = false;
+      }, 150);
     }
 
     sliderWrapper.addEventListener('touchend', handleTouchEnd);
@@ -538,7 +548,7 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
     sliderWrapper.addEventListener('mousedown', (e: MouseEvent) => {
       if (e.button !== 0) return;
       isDragging = true;
-      preventNextClick = false;
+      isMoved = false;
       isHorizontalDrag = true;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
@@ -547,14 +557,17 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
       lastDragTime = performance.now();
       dragVelocity = 0;
       inertiaVelocity = 0;
-      sliderWrapper.classList.add('is-dragging');
     });
 
     window.addEventListener('mousemove', (e: MouseEvent) => {
       if (!isDragging) return;
       const dx = e.clientX - dragStartX;
-      if (Math.abs(dx) > 8) {
-        preventNextClick = true;
+      const dy = e.clientY - dragStartY;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist > DRAG_THRESHOLD) {
+        isMoved = true;
+        sliderWrapper.classList.add('is-dragging');
       }
 
       const now = performance.now();
@@ -574,20 +587,18 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
       if (!isDragging) return;
       isDragging = false;
       sliderWrapper.classList.remove('is-dragging');
-      const dx = e.clientX - dragStartX;
-      if (Math.abs(dx) <= 8) {
-        preventNextClick = false;
+      const dist = Math.hypot(e.clientX - dragStartX, e.clientY - dragStartY);
+      if (dist <= DRAG_THRESHOLD) {
+        isMoved = false;
       }
       if (Math.abs(dragVelocity) > 60) {
         inertiaVelocity = dragVelocity;
       } else {
         inertiaVelocity = 0;
       }
-      if (preventNextClick) {
-        setTimeout(() => {
-          preventNextClick = false;
-        }, 200);
-      }
+      setTimeout(() => {
+        isMoved = false;
+      }, 150);
     });
 
     // 3. OBSŁUGA NA KOMPUTERZE: SHIFT + SCROLL KÓŁKIEM MYSZKI
@@ -613,14 +624,13 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
       }
     }, { passive: false });
 
-    // Blokujemy przypadkowe kliknięcie w link po przeciągnięciu
+    // Blokujemy kliknięcie TYLKO wtedy, gdy użytkownik rzeczywiście przeciągał wagonik (>15px)
     sliderWrapper.addEventListener('click', (e: MouseEvent) => {
-      if (preventNextClick) {
+      if (isMoved) {
         e.preventDefault();
         e.stopPropagation();
-        preventNextClick = false;
       }
-    }, true);
+    });
 
     // 4. GŁÓWNA PĘTLA ANIMACJI (REQUEST ANIMATION FRAME)
     let lastFrameTime = performance.now();

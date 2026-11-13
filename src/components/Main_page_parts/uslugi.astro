@@ -283,7 +283,7 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
                         <span>Zarezerwuj tę usługę (0 zł)</span>
                         <span class="btn-arrow" aria-hidden="true">&rarr;</span>
                       </a>
-                      <a href={`/uslugi#${service.slug}`} class="btn-secondary">
+                      <a href={`/uslugi#szczegoly-${service.slug}`} class="btn-secondary">
                         <span>Więcej szczegółów</span>
                         <span class="btn-arrow" aria-hidden="true">↗</span>
                       </a>
@@ -299,7 +299,12 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
 
                     <div class="service-photos-mosaic">
                       {service.images.map((imgSrc, imgIdx) => (
-                        <div class={`mosaic-item item-${imgIdx + 1}`}>
+                        <a 
+                          href={`/uslugi#szczegoly-${service.slug}`} 
+                          class={`mosaic-item item-${imgIdx + 1}`}
+                          title={`Zobacz usługę: ${service.title} w pełnej ofercie`}
+                          aria-label={`Przejdź do oferty: ${service.title}`}
+                        >
                           <img 
                             src={imgSrc} 
                             alt={`${service.title} - zdjęcie ${imgIdx + 1}`}
@@ -307,14 +312,12 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
                             decoding="async"
                           />
                           <span class="photo-overlay" aria-hidden="true">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                              <circle cx="11" cy="11" r="8"></circle>
-                              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                              <line x1="11" y1="8" x2="11" y2="14"></line>
-                              <line x1="8" y1="11" x2="14" y2="11"></line>
-                            </svg>
+                            <span class="overlay-text">
+                              <span>Zobacz ofertę</span>
+                              <span class="arrow">&rarr;</span>
+                            </span>
                           </span>
-                        </div>
+                        </a>
                       ))}
                     </div>
                   </div>
@@ -390,6 +393,19 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
           trigger.setAttribute('aria-expanded', 'true');
           collapse.setAttribute('aria-hidden', 'false');
           if (label) label.textContent = 'Zwiń opis';
+        }
+      });
+    });
+
+    // Niezawodne przekierowanie na stronę /uslugi po kliknięciu w dowolne zdjęcie na desktopie i mobile
+    const mosaicLinks = accordion.querySelectorAll('.mosaic-item');
+    mosaicLinks.forEach((link) => {
+      link.addEventListener('click', (e: Event) => {
+        const mouseEv = e as MouseEvent;
+        if (mouseEv.button !== 0 || mouseEv.ctrlKey || mouseEv.metaKey || mouseEv.shiftKey) return;
+        const href = (link as HTMLAnchorElement).href;
+        if (href) {
+          window.location.href = href;
         }
       });
     });
@@ -918,6 +934,9 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
     overflow: hidden;
     background: #e2e8f0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
   }
 
   /* Pierwsze zdjęcie zajmuje całą górną szerokość */
@@ -948,7 +967,7 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
   .photo-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(21, 60, 36, 0.25);
+    background: rgba(21, 60, 36, 0.45);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -959,6 +978,25 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
 
   .mosaic-item:hover .photo-overlay {
     opacity: 1;
+  }
+
+  .overlay-text {
+    background: #86b942;
+    color: #153c24;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 7px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transform: translateY(6px);
+    transition: transform 0.3s ease;
+  }
+
+  .mosaic-item:hover .overlay-text {
+    transform: translateY(0);
   }
 
   /* --- DOLNY PASEK ZAPRASZAJĄCY DO PEŁNEJ PODSTRONY --- */

@@ -256,12 +256,23 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
               />
               <div class="card-gradient-overlay" aria-hidden="true"></div>
 
-              <!-- GÓRNY PASEK KARTY: ETYKIETA + IKONA -->
+              <!-- GÓRNY PASEK KARTY: ETYKIETA + IKONA / PODGLĄD -->
               <div class="card-top-bar">
                 <span class="badge-pill">{service.badge}</span>
-                <div class="round-icon-badge" aria-label={`Ikona usługi: ${service.title}`}>
+                <button 
+                  type="button" 
+                  class="round-icon-badge gallery-trigger" 
+                  data-gallery={JSON.stringify(service.images)}
+                  data-index="0"
+                  data-title={service.title}
+                  data-desc={service.description}
+                  data-icon={service.icon}
+                  data-badge={service.badge}
+                  title="Kliknij, aby otworzyć galerię zdjęć"
+                  aria-label={`Powiększ zdjęcia dla usługi: ${service.title}`}
+                >
                   <span>{service.icon}</span>
-                </div>
+                </button>
               </div>
 
               <!-- DOLNA TREŚĆ KARTY: TYTUŁ, KRÓTKI OPIS, PRZYCISK -->
@@ -359,32 +370,89 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
 
                   <div class="deep-gallery-grid">
                     <!-- GŁÓWNE ZDJĘCIE (DUŻE) -->
-                    <div class="photo-main-box">
+                    <div 
+                      class="photo-main-box gallery-trigger"
+                      data-gallery={JSON.stringify(service.images)}
+                      data-index="0"
+                      data-title={service.title}
+                      data-desc={service.description}
+                      data-icon={service.icon}
+                      data-badge={service.badge}
+                      title="Kliknij, aby powiększyć zdjęcie"
+                      role="button"
+                      tabindex="0"
+                    >
                       <img 
                         src={service.images[0]} 
                         alt={`${service.title} - ujęcie główne`}
                         loading="lazy"
                       />
                       <span class="photo-tag">Widok główny</span>
+                      <span class="photo-zoom-hint" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                          <line x1="11" y1="8" x2="11" y2="14"></line>
+                          <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                      </span>
                     </div>
 
                     <!-- 2 ZDJĘCIA MNIEJSZE -->
-                    <div class="photo-sub-box">
+                    <div 
+                      class="photo-sub-box gallery-trigger"
+                      data-gallery={JSON.stringify(service.images)}
+                      data-index="1"
+                      data-title={service.title}
+                      data-desc={service.description}
+                      data-icon={service.icon}
+                      data-badge={service.badge}
+                      title="Kliknij, aby powiększyć zdjęcie"
+                      role="button"
+                      tabindex="0"
+                    >
                       <img 
                         src={service.images[1]} 
                         alt={`${service.title} - ujęcie 2`}
                         loading="lazy"
                       />
                       <span class="photo-tag">Proces prac</span>
+                      <span class="photo-zoom-hint" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                          <line x1="11" y1="8" x2="11" y2="14"></line>
+                          <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                      </span>
                     </div>
 
-                    <div class="photo-sub-box">
+                    <div 
+                      class="photo-sub-box gallery-trigger"
+                      data-gallery={JSON.stringify(service.images)}
+                      data-index="2"
+                      data-title={service.title}
+                      data-desc={service.description}
+                      data-icon={service.icon}
+                      data-badge={service.badge}
+                      title="Kliknij, aby powiększyć zdjęcie"
+                      role="button"
+                      tabindex="0"
+                    >
                       <img 
                         src={service.images[2]} 
                         alt={`${service.title} - ujęcie 3`}
                         loading="lazy"
                       />
                       <span class="photo-tag">Efekt końcowy</span>
+                      <span class="photo-zoom-hint" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                          <line x1="11" y1="8" x2="11" y2="14"></line>
+                          <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -421,6 +489,44 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
         </div>
       </div>
     </section>
+
+    <!-- LIGHTBOX / PODGLĄD ZDJĘCIA USŁUGI -->
+    <div id="service-lightbox" class="service-lightbox" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="lightbox-backdrop"></div>
+      <div class="lightbox-container">
+        <button id="lightbox-close" class="lightbox-close" aria-label="Zamknij podgląd" title="Zamknij (Esc)">&times;</button>
+        
+        <div class="lightbox-media">
+          <button id="lightbox-prev" class="lightbox-nav prev" aria-label="Poprzednie zdjęcie" title="Poprzednie">&#10094;</button>
+          <img id="lightbox-img" src="" alt="Podgląd zdjęcia usługi" />
+          <button id="lightbox-next" class="lightbox-nav next" aria-label="Następne zdjęcie" title="Następne">&#10095;</button>
+          <div id="lightbox-counter" class="lightbox-counter">1 / 3</div>
+        </div>
+
+        <div class="lightbox-details">
+          <div>
+            <div class="lightbox-header">
+              <span id="lightbox-icon" class="lightbox-icon">🌿</span>
+              <div class="lightbox-header-text">
+                <span id="lightbox-badge" class="lightbox-badge">Oferta</span>
+                <h3 id="lightbox-title">Nazwa usługi</h3>
+              </div>
+            </div>
+            <p id="lightbox-desc">Opis usługi</p>
+          </div>
+
+          <!-- Pasek miniaturek zdjęć -->
+          <div id="lightbox-thumbs" class="lightbox-thumbs"></div>
+
+          <div class="lightbox-footer-action">
+            <a href="/#rezerwacja" class="lightbox-cta-btn">
+              <span>Umów bezpłatną wycenę dla tej usługi</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </Layout>
@@ -1237,4 +1343,449 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
       text-align: center;
     }
   }
+
+  /* ==========================================================================
+     LIGHTBOX / PODGLĄD ZDJĘCIA USŁUGI
+     ========================================================================== */
+  .service-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .service-lightbox.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(12, 38, 23, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .lightbox-container {
+    position: relative;
+    background: #ffffff;
+    width: 100%;
+    max-width: 1100px;
+    border-radius: 24px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    transform: scale(0.94) translateY(12px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2;
+    max-height: 90vh;
+  }
+
+  .service-lightbox.is-open .lightbox-container {
+    transform: scale(1) translateY(0);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(21, 60, 36, 0.1);
+    color: #153c24;
+    font-size: 1.6rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+
+  .lightbox-close:hover {
+    background: #86b942;
+    color: #ffffff;
+    transform: rotate(90deg);
+  }
+
+  .lightbox-media {
+    position: relative;
+    background: #0d1e13;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 440px;
+    height: 100%;
+  }
+
+  .lightbox-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    color: #153c24;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+    z-index: 4;
+  }
+
+  .lightbox-nav:hover {
+    background: #86b942;
+    color: #ffffff;
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .lightbox-nav.prev {
+    left: 14px;
+  }
+
+  .lightbox-nav.next {
+    right: 14px;
+  }
+
+  .lightbox-counter {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 38, 23, 0.85);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+
+  .lightbox-details {
+    padding: 36px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    background: #ffffff;
+  }
+
+  .lightbox-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .lightbox-icon {
+    font-size: 2rem;
+    background: #f0fdf4;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #bbf7d0;
+  }
+
+  .lightbox-badge {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #86b942;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .lightbox-header h3 {
+    font-size: 1.45rem;
+    color: #153c24;
+    margin: 0;
+    line-height: 1.25;
+    font-weight: 800;
+  }
+
+  .lightbox-details p {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+  }
+
+  .lightbox-thumbs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  :global(.service-thumb-item) {
+    width: 68px;
+    height: 52px;
+    padding: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: all 0.2s ease;
+    background: #000;
+  }
+
+  :global(.service-thumb-item:hover),
+  :global(.service-thumb-item.active) {
+    opacity: 1;
+    border-color: #86b942;
+    transform: scale(1.05);
+  }
+
+  :global(.service-thumb-item img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .lightbox-footer-action {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .lightbox-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #153c24;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.92rem;
+    transition: background 0.2s ease;
+  }
+
+  .lightbox-cta-btn:hover {
+    background: #86b942;
+    color: #153c24;
+  }
+
+  /* Wskaźnik lupy na zdjęciach galerii */
+  .photo-main-box,
+  .photo-sub-box {
+    cursor: pointer;
+  }
+
+  .photo-zoom-hint {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: rgba(21, 60, 36, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: all 0.25s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 2;
+  }
+
+  .photo-main-box:hover .photo-zoom-hint,
+  .photo-sub-box:hover .photo-zoom-hint {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .round-icon-badge.gallery-trigger {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+
+  .round-icon-badge.gallery-trigger:hover {
+    transform: scale(1.1);
+    background: #86b942;
+  }
+
+  @media (max-width: 900px) {
+    .lightbox-container {
+      grid-template-columns: 1fr;
+      max-height: 94vh;
+    }
+    .lightbox-media {
+      min-height: 260px;
+      height: 38vh;
+    }
+    .lightbox-details {
+      padding: 24px 20px;
+    }
+  }
 </style>
+
+<script>
+  function setupServiceLightbox() {
+    const lightbox = document.getElementById('service-lightbox');
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxDesc = document.getElementById('lightbox-desc');
+    const lightboxIcon = document.getElementById('lightbox-icon');
+    const lightboxBadge = document.getElementById('lightbox-badge');
+    const lightboxCounter = document.getElementById('lightbox-counter');
+    const lightboxThumbs = document.getElementById('lightbox-thumbs');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    const closeBtn = document.getElementById('lightbox-close');
+    const backdrop = lightbox?.querySelector('.lightbox-backdrop');
+
+    let currentGallery: string[] = [];
+    let currentIndex = 0;
+
+    function openLightbox(gallery: string[], index: number, title: string, desc: string, icon: string, badge: string) {
+      if (!lightbox || !lightboxImg || gallery.length === 0) return;
+      currentGallery = gallery;
+      currentIndex = (index >= 0 && index < gallery.length) ? index : 0;
+
+      if (lightboxTitle) lightboxTitle.textContent = title;
+      if (lightboxDesc) lightboxDesc.textContent = desc;
+      if (lightboxIcon) lightboxIcon.textContent = icon;
+      if (lightboxBadge) lightboxBadge.textContent = badge;
+
+      renderThumbnails();
+      updateLightboxImage(currentIndex);
+
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    function updateLightboxImage(idx: number) {
+      if (!lightboxImg || currentGallery.length === 0) return;
+      currentIndex = (idx + currentGallery.length) % currentGallery.length;
+      lightboxImg.src = currentGallery[currentIndex];
+
+      const hasMultiple = currentGallery.length > 1;
+      if (lightboxCounter) {
+        lightboxCounter.textContent = `${currentIndex + 1} / ${currentGallery.length}`;
+        lightboxCounter.style.display = hasMultiple ? 'block' : 'none';
+      }
+      if (prevBtn) prevBtn.style.display = hasMultiple ? 'flex' : 'none';
+      if (nextBtn) nextBtn.style.display = hasMultiple ? 'flex' : 'none';
+
+      if (lightboxThumbs) {
+        const thumbs = lightboxThumbs.querySelectorAll('.service-thumb-item');
+        thumbs.forEach((t, i) => {
+          t.classList.toggle('active', i === currentIndex);
+        });
+      }
+    }
+
+    function renderThumbnails() {
+      if (!lightboxThumbs) return;
+      lightboxThumbs.innerHTML = '';
+      if (currentGallery.length <= 1) {
+        lightboxThumbs.style.display = 'none';
+        return;
+      }
+      lightboxThumbs.style.display = 'flex';
+      currentGallery.forEach((imgUrl, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `service-thumb-item ${i === currentIndex ? 'active' : ''}`;
+        btn.setAttribute('aria-label', `Pokaż zdjęcie ${i + 1}`);
+        const thumbImg = document.createElement('img');
+        thumbImg.src = imgUrl;
+        thumbImg.alt = `Miniaturka ${i + 1}`;
+        btn.appendChild(thumbImg);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          updateLightboxImage(i);
+        });
+        lightboxThumbs.appendChild(btn);
+      });
+    }
+
+    // Podpinamy kliknięcia pod wszystkie elementy ze zdjęciami galerii
+    const triggers = document.querySelectorAll('.gallery-trigger');
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const el = trigger as HTMLElement;
+        try {
+          const gallery = JSON.parse(el.dataset.gallery || '[]');
+          const idx = parseInt(el.dataset.index || '0', 10);
+          const title = el.dataset.title || '';
+          const desc = el.dataset.desc || '';
+          const icon = el.dataset.icon || '🌿';
+          const badge = el.dataset.badge || '';
+          openLightbox(gallery, idx, title, desc, icon, badge);
+        } catch (err) {
+          console.error('Błąd podglądu zdjęcia:', err);
+        }
+      });
+    });
+
+    closeBtn?.addEventListener('click', closeLightbox);
+    backdrop?.addEventListener('click', closeLightbox);
+    prevBtn?.addEventListener('click', () => updateLightboxImage(currentIndex - 1));
+    nextBtn?.addEventListener('click', () => updateLightboxImage(currentIndex + 1));
+
+    window.addEventListener('keydown', (e) => {
+      if (!lightbox?.classList.contains('is-open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') updateLightboxImage(currentIndex - 1);
+      if (e.key === 'ArrowRight') updateLightboxImage(currentIndex + 1);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupServiceLightbox);
+  } else {
+    setupServiceLightbox();
+  }
+  document.addEventListener('astro:page-load', setupServiceLightbox);
+</script>
