@@ -1,40 +1,95 @@
 ---
-import { Image } from 'astro:assets';
+import { sanityClient } from 'sanity:client';
 
-// TUTAJ WKLEJ LINK DO SWOJEJ WIZYTÓWKI GOOGLE MAPS
+// Link do wizytówki Google Maps
 const googleMapsUrl = "https://g.page/r/TWÓJ_LINK_DO_OPINII/review";
 
-// TUTAJ MOŻESZ WKLEIĆ PRAWDZIWE OPINIE SKOPIOWANE Z GOOGLE
+// 1. ZAPYTANIE GROQ: Pobieramy tylko zatwierdzone opinie (approved == true) posortowane od najnowszych
+let sanityOpinie: any[] = [];
+try {
+  sanityOpinie = await sanityClient.fetch(`
+    *[_type == "opinia" && approved == true] | order(_createdAt desc) {
+      _id,
+      author,
+      role,
+      rating,
+      tags,
+      content,
+      _createdAt
+    }
+  `);
+} catch (error) {
+  console.warn("Błąd pobierania opinii z Sanity (lub brak połączenia):", error);
+}
+
+// 2. Domyślne opinie z Google (wyświetlane jako uzupełnienie karuzeli)
 const googleReviews = [
   {
+    id: "g-1",
     name: "Michał D.",
     role: "Właściciel firmy",
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&auto=format&fit=crop",
-    rating: "5.0",
-    text: "Nasz trawnik przed firmą zawsze był traktowany po macoszemu przez poprzednie ekipy. Nowa firma dba o niego jak o własny — zieleń wygląda perfekcyjnie przez cały rok."
+    rating: 5,
+    ratingDisplay: "5.0",
+    text: "Nasz trawnik przed firmą zawsze był traktowany po macoszemu przez poprzednie ekipy. Nowa firma dba o niego jak o własny — zieleń wygląda perfekcyjnie przez cały rok.",
+    tags: ["Fachowe doradztwo", "Piękny efekt"],
+    isGoogle: true
   },
   {
+    id: "g-2",
     name: "Karolina L.",
     role: "Klient indywidualny",
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop",
-    rating: "5.0",
-    text: "Świetna komunikacja i uczciwe ceny. Jedyny powód, dla którego to nie jest pełne 5+, to małe przesunięcie terminu w bardzo zajętym tygodniu wiosennym — ale uprzedzili nas o tym z wyprzedzeniem."
+    rating: 5,
+    ratingDisplay: "5.0",
+    text: "Świetna komunikacja i uczciwe ceny. Jedyny powód, dla którego to nie jest pełne 5+, to małe przesunięcie terminu w bardzo zajętym tygodniu wiosennym — ale uprzedzili nas o tym z wyprzedzeniem.",
+    tags: ["Szybka realizacja", "Fachowe doradztwo"],
+    isGoogle: true
   },
   {
+    id: "g-3",
     name: "Dariusz P.",
     role: "Zarządca obiektu",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop",
-    rating: "5.0",
-    text: "Zajmują się naszym komercyjnym placem przez całą zimę. Konsekwentne odśnieżanie za każdym razem, co naprawdę ma ogromne znaczenie, dopóki tego nie zabraknie."
+    rating: 5,
+    ratingDisplay: "5.0",
+    text: "Zajmują się naszym komercyjnym placem przez całą zimę. Konsekwentne odśnieżanie za każdym razem, co naprawdę ma ogromne znaczenie, dopóki tego nie zabraknie.",
+    tags: ["Terminowość", "Zostawiony porządek"],
+    isGoogle: true
   },
   {
+    id: "g-4",
     name: "Anna W.",
     role: "Właścicielka domu",
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop",
-    rating: "5.0",
-    text: "Trawnik nigdy nie wyglądał tak zdrowo i gęsto. Profesjonalne doradztwo w zakresie nawożenia i nawadniania to strzał w dziesiątkę. Polecam każdemu z czystym sumieniem."
+    rating: 5,
+    ratingDisplay: "5.0",
+    text: "Trawnik nigdy nie wyglądał tak zdrowo i gęsto. Profesjonalne doradztwo w zakresie nawożenia i nawadniania to strzał w dziesiątkę. Polecam każdemu z czystym sumieniem.",
+    tags: ["Fachowe doradztwo", "Piękny efekt"],
+    isGoogle: true
   }
 ];
+
+// Mapujemy zatwierdzone opinie z Sanity
+const mappedSanityReviews = (sanityOpinie || []).map((item) => {
+  const r = typeof item.rating === 'number' ? Math.min(5, Math.max(1, item.rating)) : 5;
+  return {
+    id: item._id,
+    name: item.author || "Anonimowy Klient",
+    role: item.role || "Klient",
+    avatar: "", // Elegancki awatar z inicjałem
+    rating: r,
+    ratingDisplay: `${r}.0`,
+    text: item.content || "",
+    tags: Array.isArray(item.tags) ? item.tags : [],
+    isGoogle: false
+  };
+});
+
+// Wyświetlamy opinie z Sanity; jeśli jest ich mniej niż 4, uzupełniamy bazą Google
+const allReviews = mappedSanityReviews.length >= 4
+  ? mappedSanityReviews
+  : [...mappedSanityReviews, ...googleReviews];
 ---
 
 <section class="testimonials-section" id="opinie">
@@ -50,225 +105,263 @@ const googleReviews = [
       <div class="header-right">
         <p>Dbamy o cały cykl sezonowy — bez konieczności żonglowania wieloma wykonawcami.</p>
         
-        <!-- Strzałki z projektu - tutaj mogą pełnić rolę linku do Google Maps -->
-        <div class="arrows-container">
-          <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" class="arrow-btn arrow-prev" aria-label="Zobacz na Google">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </a>
-          <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" class="arrow-btn arrow-next" aria-label="Napisz opinię na Google">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          </a>
+        <div class="header-actions">
+          <!-- Przycisk dodawania nowej opinii -->
+          <button type="button" class="btn-add-review" id="openReviewModalBtn" aria-haspopup="dialog">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Dodaj opinię</span>
+          </button>
+
+          <!-- Strzałki z projektu (link do Google) -->
+          <div class="arrows-container">
+            <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" class="arrow-btn arrow-prev" aria-label="Zobacz na Google">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </a>
+            <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" class="arrow-btn arrow-next" aria-label="Napisz opinię na Google">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SLIDER (WAGONIKI) -->
+  <!-- SLIDER (WAGONIKI Z PĘTLĄ NIESKOŃCZONĄ) -->
   <div class="slider-wrapper" id="testimonialsSlider">
     <div class="slider-inner" id="testimonialsInner">
-      <!-- Wagonik 1 -->
-      <div class="slider-track" data-track="1">
-        {googleReviews.map((review) => (
-          <div class="review-card">
-            
-            <div class="card-top">
-              <div class="author-info">
-                <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
-                <div class="author-text">
-                  <span class="author-name">{review.name}</span>
-                  <span class="author-role">{review.role}</span>
+      {[1, 2, 3, 4].map((trackNum) => (
+        <div class="slider-track" data-track={trackNum} aria-hidden={trackNum > 1 ? "true" : undefined}>
+          {allReviews.map((review) => (
+            <div class="review-card">
+              
+              <div class="card-top">
+                <div class="author-info">
+                  {review.avatar ? (
+                    <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
+                  ) : (
+                    <div class="avatar-fallback" aria-hidden="true">
+                      {review.name ? review.name.trim().charAt(0).toUpperCase() : 'K'}
+                    </div>
+                  )}
+                  <div class="author-text">
+                    <span class="author-name">{review.name}</span>
+                    <span class="author-role">{review.role}</span>
+                  </div>
+                </div>
+                <div class="rating-number">{review.ratingDisplay}</div>
+              </div>
+
+              <div class="card-middle">
+                <svg class="quote-icon" width="28" height="28" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
+                </svg>
+                <p class="review-text">{review.text}</p>
+
+                {review.tags && review.tags.length > 0 && (
+                  <div class="card-chips">
+                    {review.tags.map((tag: string) => (
+                      <span class="tag-chip">{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div class="card-bottom">
+                {review.isGoogle ? (
+                  <div class="source-brand" title="Opinia z Google">
+                    <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    <span class="source-label">Google</span>
+                  </div>
+                ) : (
+                  <div class="source-brand client-source" title="Zweryfikowana opinia klienta">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d4a22" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      <polyline points="9 12 11 14 15 10"></polyline>
+                    </svg>
+                    <span class="source-label">Zweryfikowana</span>
+                  </div>
+                )}
+
+                <div class="stars-container" aria-label={`Ocena: ${review.rating} z 5`}>
+                  {[1, 2, 3, 4, 5].map((starNum) => (
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill={starNum <= review.rating ? "#F59E0B" : "#E5E7EB"}
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                    </svg>
+                  ))}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon" title="Zweryfikowana">
+                    <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
+                    <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </div>
               </div>
-              <div class="rating-number">{review.rating}</div>
+              
             </div>
-
-            <div class="card-middle">
-              <!-- Ikona cudzysłowu -->
-              <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
-              </svg>
-              <p class="review-text">{review.text}</p>
-            </div>
-
-            <div class="card-bottom">
-              <!-- Logo Google (G) -->
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-
-              <!-- Gwiazdki -->
-              <div class="stars-container">
-                {[1, 2, 3, 4, 5].map(() => (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                  </svg>
-                ))}
-                <!-- Ikonka zweryfikowane -->
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
-                  <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
-                  <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-            
-          </div>
-        ))}
-      </div>
-
-      <!-- Wagonik 2 (Klon do nieskończonej pętli) -->
-      <div class="slider-track" aria-hidden="true" data-track="2">
-        {googleReviews.map((review) => (
-          <div class="review-card">
-            
-            <div class="card-top">
-              <div class="author-info">
-                <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
-                <div class="author-text">
-                  <span class="author-name">{review.name}</span>
-                  <span class="author-role">{review.role}</span>
-                </div>
-              </div>
-              <div class="rating-number">{review.rating}</div>
-            </div>
-
-            <div class="card-middle">
-              <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
-              </svg>
-              <p class="review-text">{review.text}</p>
-            </div>
-
-            <div class="card-bottom">
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-
-              <div class="stars-container">
-                {[1, 2, 3, 4, 5].map(() => (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                  </svg>
-                ))}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
-                  <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
-                  <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-            
-          </div>
-        ))}
-      </div>
-
-      <!-- Wagonik 3 (Kopia do płynnego przewijania) -->
-      <div class="slider-track" aria-hidden="true" data-track="3">
-        {googleReviews.map((review) => (
-          <div class="review-card">
-            
-            <div class="card-top">
-              <div class="author-info">
-                <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
-                <div class="author-text">
-                  <span class="author-name">{review.name}</span>
-                  <span class="author-role">{review.role}</span>
-                </div>
-              </div>
-              <div class="rating-number">{review.rating}</div>
-            </div>
-
-            <div class="card-middle">
-              <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
-              </svg>
-              <p class="review-text">{review.text}</p>
-            </div>
-
-            <div class="card-bottom">
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-
-              <div class="stars-container">
-                {[1, 2, 3, 4, 5].map(() => (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                  </svg>
-                ))}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
-                  <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
-                  <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-            
-          </div>
-        ))}
-      </div>
-
-      <!-- Wagonik 4 (Kopia dla ultra-szerokich ekranów) -->
-      <div class="slider-track" aria-hidden="true" data-track="4">
-        {googleReviews.map((review) => (
-          <div class="review-card">
-            
-            <div class="card-top">
-              <div class="author-info">
-                <img src={review.avatar} alt={review.name} class="avatar" loading="lazy" draggable="false" />
-                <div class="author-text">
-                  <span class="author-name">{review.name}</span>
-                  <span class="author-role">{review.role}</span>
-                </div>
-              </div>
-              <div class="rating-number">{review.rating}</div>
-            </div>
-
-            <div class="card-middle">
-              <svg class="quote-icon" width="32" height="32" viewBox="0 0 24 24" fill="#e5e7eb" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"/>
-              </svg>
-              <p class="review-text">{review.text}</p>
-            </div>
-
-            <div class="card-bottom">
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-
-              <div class="stars-container">
-                {[1, 2, 3, 4, 5].map(() => (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                  </svg>
-                ))}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="verified-icon">
-                  <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
-                  <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-            
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ))}
     </div>
   </div>
 </section>
 
+<!-- MODAL FORMULARZA OPINII -->
+<div class="review-modal-backdrop" id="reviewModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-dialog">
+    <button type="button" class="modal-close-btn" id="closeReviewModalBtn" aria-label="Zamknij okno">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="modal-header">
+      <span class="modal-kicker"><span class="dot"></span> TWOJA OPINIA</span>
+      <h3 id="modalTitle">Dodaj swoją opinię</h3>
+      <p class="modal-subtitle">Twoja recenzja pomoże nam stale podnosić jakość naszych usług ogrodniczych.</p>
+    </div>
+
+    <!-- Pudełko na komunikaty błędów lub powiadomień -->
+    <div class="form-feedback" id="formFeedback" style="display: none;" role="alert"></div>
+
+    <!-- Formularz dodawania opinii -->
+    <form id="reviewForm" class="review-form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="authorInput">Imię i nazwisko / Nick <span class="required">*</span></label>
+          <input
+            type="text"
+            id="authorInput"
+            name="author"
+            placeholder="np. Karolina Nowak"
+            required
+            maxlength="100"
+            autocomplete="name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="roleInput">Rola / Miejscowość <span class="optional">(opcjonalnie)</span></label>
+          <input
+            type="text"
+            id="roleInput"
+            name="role"
+            placeholder="np. Właściciel ogrodu"
+            maxlength="80"
+          />
+        </div>
+      </div>
+
+      <!-- Interaktywna ocena gwiazdkowa (1-5) -->
+      <div class="form-group">
+        <label>Twoja ocena <span class="required">*</span></label>
+        <div class="star-rating-widget">
+          <div class="star-rating-stars" id="starRatingStars" role="radiogroup" aria-label="Wybierz ocenę od 1 do 5">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                type="button"
+                class="star-btn is-active"
+                data-star={star}
+                role="radio"
+                aria-checked={star === 5 ? "true" : "false"}
+                aria-label={`${star} gwiazdek z 5`}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                </svg>
+              </button>
+            ))}
+          </div>
+          <span class="star-rating-label" id="starRatingLabel">5.0 / 5 — Doskonale! ⭐</span>
+          <input type="hidden" id="ratingInput" name="rating" value="5" />
+        </div>
+      </div>
+
+      <!-- Szybkie cechy (Tagi - klikalne przyciski) -->
+      <div class="form-group">
+        <label>Szybkie cechy (wybierz pasujące atuty)</label>
+        <div class="tags-selector" id="tagsSelector">
+          {[
+            'Fachowe doradztwo',
+            'Szybka realizacja',
+            'Zostawiony porządek',
+            'Terminowość',
+            'Piękny efekt',
+          ].map((tag) => (
+            <button type="button" class="tag-toggle-btn" data-tag={tag}>
+              <span class="tag-check-icon">✓</span>
+              <span class="tag-text">{tag}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Treść opinii -->
+      <div class="form-group">
+        <div class="label-with-counter">
+          <label for="contentInput">Treść opinii <span class="required">*</span></label>
+          <span class="char-counter" id="charCounter">0 / 1000</span>
+        </div>
+        <textarea
+          id="contentInput"
+          name="content"
+          rows="4"
+          placeholder="Napisz kilka słów o przebiegu prac, kontakcie i efekcie w ogrodzie..."
+          required
+          maxlength="1000"
+        ></textarea>
+      </div>
+
+      <!-- Notka o zatwierdzeniu moderacji -->
+      <div class="moderation-info">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d4a22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>Opinia przed pojawieniem się na stronie zostanie zweryfikowana przez właściciela.</span>
+      </div>
+
+      <!-- Przyciski akcji -->
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" id="cancelModalBtn">Anuluj</button>
+        <button type="submit" class="btn-submit" id="submitReviewBtn">
+          <span class="btn-text">Wyślij opinię</span>
+          <span class="btn-spinner" id="btnSpinner" style="display: none;"></span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Sukces: Ekran podziękowania po pomyślnym przesłaniu -->
+    <div class="success-view" id="successView" style="display: none;">
+      <div class="success-icon-wrap">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h4>Dziękujemy za przesłanie opinii!</h4>
+      <p>Twoja opinia została bezpiecznie zapisana. Po krótkiej weryfikacji w panelu Sanity przez właściciela pojawi się w karuzeli na stronie głównej.</p>
+      <button type="button" class="btn-success-close" id="successCloseBtn">Zamknij</button>
+    </div>
+  </div>
+</div>
+
 <style>
   .testimonials-section {
     padding: 100px 0;
-    background-color: #ffffff; /* Zgodnie ze screenem tło główne jest białe/bardzo jasne */
+    background-color: #ffffff;
     font-family: 'Inter', sans-serif;
     overflow: hidden;
   }
@@ -326,12 +419,12 @@ const googleReviews = [
   }
 
   .header-right {
-    max-width: 400px;
+    max-width: 440px;
     text-align: right;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 24px;
+    gap: 20px;
   }
 
   .header-right p {
@@ -341,10 +434,46 @@ const googleReviews = [
     margin: 0;
   }
 
-  /* Guziki (strzałki ze screena) */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  /* Przycisk Dodaj opinię */
+  .btn-add-review {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #1f3318;
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 11px 22px;
+    border-radius: 9999px;
+    border: 1px solid #1f3318;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(31, 51, 24, 0.15);
+    font-family: inherit;
+  }
+
+  .btn-add-review:hover {
+    background-color: #2d4a22;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(31, 51, 24, 0.25);
+  }
+
+  .btn-add-review:active {
+    transform: translateY(0);
+  }
+
+  /* Guziki nawigacji (strzałki ze screena) */
   .arrows-container {
     display: flex;
-    gap: 12px;
+    gap: 10px;
   }
 
   .arrow-btn {
@@ -368,7 +497,7 @@ const googleReviews = [
   }
 
   .arrow-next {
-    background-color: #1f3318; /* Ciemna zieleń z projektu */
+    background-color: #1f3318;
     color: #ffffff;
     border-color: #1f3318;
   }
@@ -422,7 +551,7 @@ const googleReviews = [
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 320px;
+    min-height: 340px;
     user-select: none;
     -webkit-user-select: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -433,6 +562,12 @@ const googleReviews = [
     box-shadow: 0 14px 34px rgba(0,0,0,0.07);
   }
 
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
   .avatar {
     width: 48px;
     height: 48px;
@@ -441,6 +576,23 @@ const googleReviews = [
     pointer-events: none;
     -webkit-user-drag: none;
     user-drag: none;
+  }
+
+  /* Awatar z inicjałem (fallback dla dodanych opinii) */
+  .avatar-fallback {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1f3318 0%, #3b5a38 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    user-select: none;
+    box-shadow: 0 2px 8px rgba(31, 51, 24, 0.2);
   }
 
   .author-text {
@@ -459,6 +611,12 @@ const googleReviews = [
     color: #6b7280;
   }
 
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .rating-number {
     font-size: 2.2rem;
     font-weight: 400;
@@ -467,11 +625,12 @@ const googleReviews = [
     letter-spacing: -1px;
   }
 
-  /* ŚRODEK KARTY (Cytat i Tekst) */
+  /* ŚRODEK KARTY (Cytat, Tekst, Plakietki tagów) */
   .card-middle {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    margin-top: 18px;
   }
 
   .quote-icon {
@@ -479,20 +638,57 @@ const googleReviews = [
   }
 
   .review-text {
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     color: #374151;
     line-height: 1.6;
     margin: 0;
   }
 
-  /* DÓŁ KARTY (Google + Gwiazdki) */
+  /* Plakietki (Chipsy) z szybkimi cechami */
+  .card-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 16px;
+  }
+
+  .tag-chip {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background-color: #f0f7ee;
+    color: #23421d;
+    border: 1px solid #d3e8cf;
+    letter-spacing: 0.2px;
+  }
+
+  /* DÓŁ KARTY (Źródło / Google + Gwiazdki) */
   .card-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 24px;
-    padding-top: 24px;
-    /* border-top: 1px solid #f3f4f6; Opcjonalnie, w projekcie go chyba nie ma */
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .source-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .source-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  .client-source .source-label {
+    color: #2d4a22;
   }
 
   .stars-container {
@@ -503,6 +699,417 @@ const googleReviews = [
   
   .verified-icon {
     margin-left: 4px;
+  }
+
+  /* --- MODAL FORMULARZA --- */
+  .review-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .review-modal-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-dialog {
+    position: relative;
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 24px;
+    padding: 36px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.22);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .review-modal-backdrop.is-open .modal-dialog {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal-close-btn {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #f3f4f6;
+    border: none;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .modal-close-btn:hover {
+    background-color: #e5e7eb;
+    color: #111827;
+  }
+
+  .modal-header {
+    margin-bottom: 24px;
+    padding-right: 30px;
+  }
+
+  .modal-kicker {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #2d4a22;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+  }
+
+  .modal-subtitle {
+    color: #6b7280;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* Formularz w modalu */
+  .review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .form-group label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .form-group .required {
+    color: #dc2626;
+  }
+
+  .form-group .optional {
+    font-weight: 400;
+    color: #9ca3af;
+    font-size: 0.8rem;
+  }
+
+  .label-with-counter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .char-counter {
+    font-size: 0.78rem;
+    color: #9ca3af;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: #1f2937;
+    background-color: #fafafa;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #2d4a22;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(45, 74, 34, 0.12);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 95px;
+  }
+
+  /* Widget wyboru gwiazdek */
+  .star-rating-widget {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    background-color: #f9fafb;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid #f3f4f6;
+  }
+
+  .star-rating-stars {
+    display: flex;
+    gap: 4px;
+  }
+
+  .star-btn {
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    line-height: 0;
+    transition: transform 0.15s ease;
+  }
+
+  .star-btn:hover {
+    transform: scale(1.18);
+  }
+
+  .star-btn svg {
+    transition: fill 0.15s ease;
+  }
+
+  .star-rating-label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  /* Wybór tagów (przyciski / chipsy w formularzu) */
+  .tags-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 9999px;
+    background-color: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    color: #4b5563;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tag-toggle-btn .tag-check-icon {
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: scale(0.6);
+  }
+
+  .tag-toggle-btn:hover {
+    border-color: #cbd5e1;
+    background-color: #f1f5f9;
+  }
+
+  .tag-toggle-btn.is-active {
+    background-color: #1f3318;
+    color: #ffffff;
+    border-color: #1f3318;
+    box-shadow: 0 2px 8px rgba(31, 51, 24, 0.2);
+  }
+
+  .tag-toggle-btn.is-active .tag-check-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Pasek info o moderacji */
+  .moderation-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background-color: #f0f7ee;
+    border-radius: 12px;
+    border: 1px solid #d4e8cf;
+    color: #23421d;
+    font-size: 0.84rem;
+    line-height: 1.45;
+  }
+
+  .moderation-info svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Komunikaty powiadomień formularza */
+  .form-feedback {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    margin-bottom: 16px;
+  }
+
+  .form-feedback.is-error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+
+  .form-feedback.is-success {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+  }
+
+  /* Stopka modalu */
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .btn-cancel {
+    background: none;
+    border: 1px solid #e5e7eb;
+    padding: 11px 20px;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .btn-cancel:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: #1f3318;
+    color: #ffffff;
+    border: 1px solid #1f3318;
+    padding: 11px 24px;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    font-family: inherit;
+  }
+
+  .btn-submit:hover:not(:disabled) {
+    background-color: #2d4a22;
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  /* Spinner ładowania */
+  .btn-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Widok po pomyślnym przesłaniu */
+  .success-view {
+    text-align: center;
+    padding: 30px 10px;
+  }
+
+  .success-icon-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: #ecfdf5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+  }
+
+  .success-view h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 10px 0;
+  }
+
+  .success-view p {
+    color: #4b5563;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    max-width: 440px;
+    margin: 0 auto 24px auto;
+  }
+
+  .btn-success-close {
+    background-color: #1f3318;
+    color: #ffffff;
+    border: none;
+    padding: 11px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: inherit;
+  }
+
+  .btn-success-close:hover {
+    background-color: #2d4a22;
   }
 
   /* --- RESPONSYWNOŚĆ --- */
@@ -528,7 +1135,8 @@ const googleReviews = [
       text-align: left;
     }
 
-    .arrows-container {
+    .header-actions {
+      justify-content: flex-start;
       margin-top: 10px;
     }
 
@@ -537,10 +1145,20 @@ const googleReviews = [
       flex: 0 0 320px;
       padding: 24px;
     }
+
+    .modal-dialog {
+      padding: 24px 20px;
+      max-height: 94vh;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
 <script>
+  // 1. INICJALIZACJA KARUZELI (WAGONIKI)
   function initTestimonialsSlider() {
     const sliderWrapper = document.getElementById('testimonialsSlider');
     const sliderInner = document.getElementById('testimonialsInner');
@@ -588,14 +1206,13 @@ const googleReviews = [
     let isHorizontalDrag: boolean | null = null;
     let wheelTimeout: any = null;
 
-    // Prędkość domyślna: pełny obieg w 40s (zgodnie z oryginalną animacją scroll-reviews)
+    // Prędkość domyślna: pełny obieg w 40s
     const BASE_LOOP_SECONDS = 40;
 
-    // Wykrywanie hover tylko dla precyzyjnego wskaźnika (mysz komputerowa, nie telefon)
+    // Wykrywanie hover tylko dla precyzyjnego wskaźnika (mysz)
     const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     if (isFinePointer) {
-      // Zatrzymujemy auto-przesuwanie tylko wtedy, gdy kursor najeżdża bezpośrednio na konkretną kartę
       const cards = sliderInner.querySelectorAll('.review-card');
       cards.forEach((card) => {
         card.addEventListener('mouseenter', () => {
@@ -617,7 +1234,7 @@ const googleReviews = [
       sliderInner.style.transform = `translate3d(${currentX}px, 0, 0)`;
     }
 
-    // 1. OBSŁUGA DOTYKU NA TELEFONIE (SWIPE / DRAG PALCEM LEWO-PRAWO)
+    // Touch na urządzeniach mobilnych
     sliderWrapper.addEventListener('touchstart', (e: TouchEvent) => {
       if (e.touches.length !== 1) return;
       isDragging = true;
@@ -638,7 +1255,6 @@ const googleReviews = [
       const dx = clientX - dragStartX;
       const dy = clientY - dragStartY;
 
-      // Rozpoznajemy intencję: scroll pionowy strony vs przesunięcie poziome wagoników
       if (isHorizontalDrag === null) {
         if (Math.hypot(dx, dy) > 7) {
           isHorizontalDrag = Math.abs(dx) >= Math.abs(dy);
@@ -652,7 +1268,6 @@ const googleReviews = [
       }
 
       if (isHorizontalDrag) {
-        // Blokujemy pionowy scroll strony, gdy użytkownik przesuwa wagoniki poziomo
         if (e.cancelable) e.preventDefault();
 
         const now = performance.now();
@@ -685,7 +1300,7 @@ const googleReviews = [
     sliderWrapper.addEventListener('touchend', handleTouchEnd);
     sliderWrapper.addEventListener('touchcancel', handleTouchEnd);
 
-    // 2. PRZECIĄGANIE MYSZKĄ NA KOMPUTERZE
+    // Przeciąganie myszką na komputerze
     sliderWrapper.addEventListener('mousedown', (e: MouseEvent) => {
       if (e.button !== 0) return;
       isDragging = true;
@@ -728,21 +1343,15 @@ const googleReviews = [
       }
     });
 
-    // 3. OBSŁUGA NA KOMPUTERZE: SHIFT + SCROLL KÓŁKIEM MYSZKI
+    // Kółko myszy ze shiftem
     sliderWrapper.addEventListener('wheel', (e: WheelEvent) => {
-      // Reagujemy, gdy wciśnięty jest Shift LUB gdy kółko/trackpad przekazuje scroll poziomy deltaX
       if (e.shiftKey || Math.abs(e.deltaX) > 0) {
         e.preventDefault();
-
-        // Kółko pionowe z Shiftem może być przekazywane jako deltaY lub deltaX w zależności od systemu
         const delta = Math.abs(e.deltaX) > 0 ? e.deltaX : e.deltaY;
-
-        // Przesuwamy wagoniki zgodnie z ruchem kółka
         currentX -= delta * 1.15;
         normalizeCurrentX();
         applyTransform();
 
-        // Podczas aktywnego scrollowania wstrzymujemy automatyczny ruch
         isWheeling = true;
         clearTimeout(wheelTimeout);
         wheelTimeout = setTimeout(() => {
@@ -751,23 +1360,20 @@ const googleReviews = [
       }
     }, { passive: false });
 
-    // 4. GŁÓWNA PĘTLA ANIMACJI (REQUEST ANIMATION FRAME)
+    // Główna pętla RAF
     let lastFrameTime = performance.now();
-
     function animate(now: number) {
       const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
       lastFrameTime = now;
 
       if (!isDragging && !isWheeling) {
-        // Płynna inercja po dynamicznym puszczeniu palca
         if (Math.abs(inertiaVelocity) > 20) {
           currentX += inertiaVelocity * dt;
-          inertiaVelocity *= Math.pow(0.08, dt); // Płynne tłumienie
+          inertiaVelocity *= Math.pow(0.08, dt);
           normalizeCurrentX();
           applyTransform();
         } else {
           inertiaVelocity = 0;
-          // Automatyczny ruch wagoników, gdy użytkownik nie wchodzi w interakcję
           if (!isCardHovered) {
             const speed = singleTrackWidth > 0 ? singleTrackWidth / BASE_LOOP_SECONDS : 45;
             currentX -= speed * dt;
@@ -783,11 +1389,246 @@ const googleReviews = [
     requestAnimationFrame(animate);
   }
 
-  // Uruchomienie przy załadowaniu strony oraz przy przejściach Astro View Transitions
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTestimonialsSlider);
-  } else {
-    initTestimonialsSlider();
+  // 2. OBSŁUGA MODALU I FORMULARZA DODAWANIA OPINII
+  function initReviewModal() {
+    const modal = document.getElementById('reviewModal');
+    const openBtn = document.getElementById('openReviewModalBtn');
+    const closeBtn = document.getElementById('closeReviewModalBtn');
+    const cancelBtn = document.getElementById('cancelModalBtn');
+    const successCloseBtn = document.getElementById('successCloseBtn');
+    const form = document.getElementById('reviewForm') as HTMLFormElement | null;
+    const successView = document.getElementById('successView');
+    const feedbackBox = document.getElementById('formFeedback');
+    const contentInput = document.getElementById('contentInput') as HTMLTextAreaElement | null;
+    const charCounter = document.getElementById('charCounter');
+    const submitBtn = document.getElementById('submitReviewBtn') as HTMLButtonElement | null;
+    const btnSpinner = document.getElementById('btnSpinner');
+
+    if (!modal || !openBtn || !form) return;
+
+    // Unikamy powtórnego bindowania listenerów
+    if ((modal as any)._modalBound) return;
+    (modal as any)._modalBound = true;
+
+    // Otwieranie modalu
+    function openModal() {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      // Reset powiadomień
+      if (feedbackBox) {
+        feedbackBox.style.display = 'none';
+        feedbackBox.className = 'form-feedback';
+        feedbackBox.textContent = '';
+      }
+    }
+
+    // Zamykanie modalu
+    function closeModal() {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      // Reset ewentualnego ekranu sukcesu
+      setTimeout(() => {
+        if (successView) successView.style.display = 'none';
+        if (form) form.style.display = 'flex';
+      }, 300);
+    }
+
+    openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (successCloseBtn) successCloseBtn.addEventListener('click', closeModal);
+
+    // Zamknięcie po kliknięciu w tło modalu
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Zamknięcie klawiszem Escape
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+        closeModal();
+      }
+    });
+
+    // Licznik znaków w polu tekstowym
+    if (contentInput && charCounter) {
+      contentInput.addEventListener('input', () => {
+        charCounter.textContent = `${contentInput.value.length} / 1000`;
+      });
+    }
+
+    // Obsługa interaktywnych gwiazdek
+    const starButtons = modal.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('ratingInput') as HTMLInputElement | null;
+    const ratingLabel = document.getElementById('starRatingLabel');
+
+    let currentRating = 5;
+
+    const ratingLabelsMap: Record<number, string> = {
+      5: '5.0 / 5 — Doskonale! ⭐',
+      4: '4.0 / 5 — Bardzo dobrze! 👍',
+      3: '3.0 / 5 — Dobrze 🙂',
+      2: '2.0 / 5 — Przeciętnie 😐',
+      1: '1.0 / 5 — Niezadowolony 🙁',
+    };
+
+    function updateStarsDisplay(rating: number) {
+      starButtons.forEach((btn) => {
+        const starVal = Number(btn.getAttribute('data-star'));
+        const svg = btn.querySelector('svg');
+        if (svg) {
+          svg.setAttribute('fill', starVal <= rating ? '#F59E0B' : '#E5E7EB');
+        }
+        btn.setAttribute('aria-checked', starVal === rating ? 'true' : 'false');
+      });
+      if (ratingLabel) {
+        ratingLabel.textContent = ratingLabelsMap[rating] || `${rating}.0 / 5`;
+      }
+    }
+
+    starButtons.forEach((btn) => {
+      const starVal = Number(btn.getAttribute('data-star'));
+
+      // Hover
+      btn.addEventListener('mouseenter', () => {
+        updateStarsDisplay(starVal);
+      });
+
+      // Opuszczenie hover
+      btn.addEventListener('mouseleave', () => {
+        updateStarsDisplay(currentRating);
+      });
+
+      // Kliknięcie i wybór oceny
+      btn.addEventListener('click', () => {
+        currentRating = starVal;
+        if (ratingInput) ratingInput.value = String(starVal);
+        updateStarsDisplay(currentRating);
+      });
+    });
+
+    // Obsługa wyboru szybkich cech (Tagów)
+    const tagButtons = modal.querySelectorAll('.tag-toggle-btn');
+    tagButtons.forEach((tagBtn) => {
+      tagBtn.addEventListener('click', () => {
+        tagBtn.classList.toggle('is-active');
+      });
+    });
+
+    // Obsługa wysyłki formularza (AJAX / POST do /api/dodaj-opinie)
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (feedbackBox) {
+        feedbackBox.style.display = 'none';
+        feedbackBox.className = 'form-feedback';
+        feedbackBox.textContent = '';
+      }
+
+      const authorInput = document.getElementById('authorInput') as HTMLInputElement | null;
+      const roleInput = document.getElementById('roleInput') as HTMLInputElement | null;
+
+      const author = authorInput?.value.trim() || '';
+      const role = roleInput?.value.trim() || '';
+      const content = contentInput?.value.trim() || '';
+      const rating = currentRating;
+
+      // Zbieranie zaznaczonych tagów
+      const selectedTags: string[] = [];
+      modal.querySelectorAll('.tag-toggle-btn.is-active').forEach((btn) => {
+        const tag = btn.getAttribute('data-tag');
+        if (tag) selectedTags.push(tag);
+      });
+
+      // Walidacja frontendowa
+      if (!author) {
+        showError('Podaj swoje imię i nazwisko lub pseudonim.');
+        authorInput?.focus();
+        return;
+      }
+
+      if (!content) {
+        showError('Treść opinii nie może być pusta.');
+        contentInput?.focus();
+        return;
+      }
+
+      // Stan ładowania przycisku
+      setLoading(true);
+
+      try {
+        const response = await fetch('/api/dodaj-opinie', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            author,
+            role,
+            rating,
+            tags: selectedTags,
+            content,
+          }),
+        });
+
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok || !result?.success) {
+          const errMsg = result?.error || 'Wystąpił błąd podczas wysyłania opinii. Spróbuj ponownie.';
+          showError(errMsg);
+          setLoading(false);
+          return;
+        }
+
+        // Sukces: reset formularza i pokazanie podziękowania
+        form.reset();
+        currentRating = 5;
+        if (ratingInput) ratingInput.value = '5';
+        updateStarsDisplay(5);
+        tagButtons.forEach((btn) => btn.classList.remove('is-active'));
+        if (charCounter) charCounter.textContent = '0 / 1000';
+
+        form.style.display = 'none';
+        if (successView) successView.style.display = 'block';
+      } catch (err) {
+        console.error('Błąd połączenia z API opinii:', err);
+        showError('Nie udało się nawiązać połączenia z serwerem. Sprawdź połączenie z internetem i spróbuj ponownie.');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    function showError(message: string) {
+      if (feedbackBox) {
+        feedbackBox.textContent = message;
+        feedbackBox.className = 'form-feedback is-error';
+        feedbackBox.style.display = 'block';
+        feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function setLoading(isLoading: boolean) {
+      if (!submitBtn) return;
+      submitBtn.disabled = isLoading;
+      const btnText = submitBtn.querySelector('.btn-text');
+      if (btnSpinner) btnSpinner.style.display = isLoading ? 'inline-block' : 'none';
+      if (btnText) btnText.textContent = isLoading ? 'Wysyłanie...' : 'Wyślij opinię';
+    }
   }
-  document.addEventListener('astro:page-load', initTestimonialsSlider);
+
+  function initAll() {
+    initTestimonialsSlider();
+    initReviewModal();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+  document.addEventListener('astro:page-load', initAll);
 </script>

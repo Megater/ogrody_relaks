@@ -2,6 +2,7 @@ import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { realizacjaType } from './src/sanity/schemaTypes/realizacja';
 import { uslugaType } from './src/sanity/schemaTypes/usluga';
+import { opiniaType } from './src/sanity/schemaTypes/opinia';
 
 export default defineConfig({
   name: 'default',
@@ -10,6 +11,6 @@ export default defineConfig({
   dataset: 'production',
   plugins: [structureTool()],
   schema: {
-    types: [realizacjaType, uslugaType],
+    types: [realizacjaType, uslugaType, opiniaType],
   },
 });
