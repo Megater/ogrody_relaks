@@ -91,6 +91,9 @@ export const POST: APIRoute = async (context) => {
     }
 
     // 2. Odczyt adresu Webhooka Make.com (obsługa Cloudflare Pages locals + env lokalnego)
+    const DEFAULT_MAKE_WEBHOOK_URL =
+      'https://hook.eu1.make.com/96pm3uvdsfog0zckk47awyzaaaxlk77n';
+
     const cfEnv =
       (context.locals as any)?.runtime?.env ||
       (context.locals as any)?.env ||
@@ -99,7 +102,8 @@ export const POST: APIRoute = async (context) => {
     const makeWebhookUrl =
       cfEnv?.MAKE_WEBHOOK_URL ||
       import.meta.env.MAKE_WEBHOOK_URL ||
-      (typeof process !== 'undefined' ? process.env?.MAKE_WEBHOOK_URL : undefined);
+      (typeof process !== 'undefined' ? process.env?.MAKE_WEBHOOK_URL : undefined) ||
+      DEFAULT_MAKE_WEBHOOK_URL;
 
     if (!makeWebhookUrl) {
       console.error('[API rezerwacja] Błąd: Brak zmiennej MAKE_WEBHOOK_URL!');

@@ -4,6 +4,9 @@ export const prerender = false;
 
 export const GET: APIRoute = async (context) => {
   try {
+    const DEFAULT_GAS_CALENDAR_URL =
+      'https://script.google.com/macros/s/AKfycbz8xkJQIayN_rIY2u4zR-VD6bUAvjWenjERVs9TsC9l3LlRZQDugsiLUH1z_rNJ_ZEDVg/exec';
+
     const cfEnv =
       (context.locals as any)?.runtime?.env ||
       (context.locals as any)?.env ||
@@ -12,7 +15,8 @@ export const GET: APIRoute = async (context) => {
     const gasCalendarUrl =
       cfEnv?.GAS_CALENDAR_URL ||
       import.meta.env.GAS_CALENDAR_URL ||
-      (typeof process !== 'undefined' ? process.env?.GAS_CALENDAR_URL : undefined);
+      (typeof process !== 'undefined' ? process.env?.GAS_CALENDAR_URL : undefined) ||
+      DEFAULT_GAS_CALENDAR_URL;
 
     // Jeśli zmienna nie jest jeszcze skonfigurowana, zwracamy pustą listę zajętych terminów
     if (!gasCalendarUrl) {

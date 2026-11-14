@@ -85,9 +85,13 @@ export async function onRequestPost(context: any) {
       );
     }
 
+    const DEFAULT_MAKE_WEBHOOK_URL =
+      'https://hook.eu1.make.com/96pm3uvdsfog0zckk47awyzaaaxlk77n';
+
     const makeWebhookUrl =
       env?.MAKE_WEBHOOK_URL ||
-      (typeof process !== 'undefined' ? process.env?.MAKE_WEBHOOK_URL : undefined);
+      (typeof process !== 'undefined' ? process.env?.MAKE_WEBHOOK_URL : undefined) ||
+      DEFAULT_MAKE_WEBHOOK_URL;
 
     if (!makeWebhookUrl) {
       console.error('[Cloudflare Pages Function rezerwacja] Brak MAKE_WEBHOOK_URL!');
