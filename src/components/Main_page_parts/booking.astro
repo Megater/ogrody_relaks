@@ -92,6 +92,43 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
               <h4 class="section-title">Podstawowe informacje</h4>
               
               <div class="input-group">
+                <label for="name">Imię i nazwisko *</label>
+                <input 
+                  type="text" 
+                  id="name" 
+                  name="name" 
+                  placeholder="np. Jan Kowalski" 
+                  required 
+                  autocomplete="name"
+                />
+              </div>
+
+              <div class="address-row">
+                <div class="input-group">
+                  <label for="phone">Numer telefonu *</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="np. 535 262 302" 
+                    required 
+                    autocomplete="tel"
+                  />
+                </div>
+                <div class="input-group">
+                  <label for="email">Adres e-mail * (na ten adres wyślemy potwierdzenie)</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="np. jan.kowalski@gmail.com" 
+                    required 
+                    autocomplete="email"
+                  />
+                </div>
+              </div>
+
+              <div class="input-group">
                 <label for="service">Wybierz usługę *</label>
                 <div class="select-wrapper">
                   <select id="service" name="service" required>
@@ -100,21 +137,6 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
                     <option value="pielegnacja">Pielęgnacja ogrodu / porządkowanie terenu</option>
                   </select>
                 </div>
-              </div>
-
-              <!-- Zintegrowane pole E-mail ze ścisłą weryfikacją HTML5 -->
-              <div class="input-group">
-                <label for="email">Adres e-mail * (na ten adres wyślemy potwierdzenie)</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  placeholder="np. jan.kowalski@gmail.com" 
-                  required 
-                  pattern="[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\\.[a-z]{2,}$"
-                  title="Podaj prawidłowy adres e-mail, np. nazwa@domena.pl"
-                />
-                <span class="error-msg">Wprowadź poprawny adres e-mail!</span>
               </div>
             </div>
 
@@ -223,6 +245,8 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
               <span class="required-note">* pola wymagane</span>
             </div>
 
+            <div id="booking-feedback" class="booking-feedback" style="display: none;" role="alert"></div>
+
             <div class="form-footer">
               <div class="footer-meta">
                 <div class="price-box">
@@ -232,7 +256,10 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
                   Termin: <strong id="footer-date-text">{initialFooterDateText}</strong>
                 </div>
               </div>
-              <button type="submit" class="submit-btn">Zarezerwuj bezpłatną wycenę &rarr;</button>
+              <button type="submit" class="submit-btn" id="booking-submit-btn">
+                <span class="btn-text">Zarezerwuj bezpłatną wycenę &rarr;</span>
+                <span class="btn-spinner" id="booking-spinner" style="display: none;"></span>
+              </button>
             </div>
           </form>
 
@@ -281,14 +308,39 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
     const dateInput = document.getElementById('selected-date') as HTMLInputElement | null;
     const selectedDateText = document.getElementById('selected-date-text');
     const footerDateText = document.getElementById('footer-date-text');
+    const form = document.getElementById('booking-form') as HTMLFormElement | null;
+    const feedbackEl = document.getElementById('booking-feedback');
+    const submitBtn = document.getElementById('booking-submit-btn') as HTMLButtonElement | null;
+    const btnSpinner = document.getElementById('booking-spinner');
 
-    if (!calendarGrid || !monthTitle || !prevBtn || !nextBtn) return;
+    if (!calendarGrid || !monthTitle || !prevBtn || !nextBtn || !form) return;
+
+    // Unikamy wielokrotnego bindowania przy View Transitions
+    if ((form as any)._bookingBound) return;
+    (form as any)._bookingBound = true;
 
     let selectedDateStr = dateInput?.value || '';
+    let occupiedDates: string[] = [];
 
     // Nie można cofnąć się przed bieżący miesiąc
     const isAtMinMonth = () => {
       return viewYear < currentYear || (viewYear === currentYear && viewMonth <= currentMonth);
+    };
+
+    const showFeedback = (msg: string, type: 'success' | 'error') => {
+      if (!feedbackEl) return;
+      feedbackEl.textContent = msg;
+      feedbackEl.className = `booking-feedback is-${type}`;
+      feedbackEl.style.display = 'flex';
+      feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    const setSubmitting = (isSubmitting: boolean) => {
+      if (!submitBtn) return;
+      submitBtn.disabled = isSubmitting;
+      const btnText = submitBtn.querySelector('.btn-text');
+      if (btnSpinner) btnSpinner.style.display = isSubmitting ? 'inline-block' : 'none';
+      if (btnText) btnText.textContent = isSubmitting ? 'Przetwarzanie rezerwacji...' : 'Zarezerwuj bezpłatną wycenę →';
     };
 
     const attachDayClickListeners = () => {
@@ -334,7 +386,7 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
         prevBtn.removeAttribute('aria-disabled');
       }
 
-      // Nagłówki dni (zgodnie z makietą)
+      // Nagłówki dni
       const dayNames = ['Pn.', 'Wt.', 'Śr.', 'Cz.', 'Pt.', 'So.', 'Nd.'];
       let html = dayNames.map(name => `<div class="day-name">${name}</div>`).join('');
 
@@ -362,8 +414,15 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
         // Wykluczenie sobót i niedziel (dostępne tylko od poniedziałku do piątku)
         const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
 
-        if (isPast || isWeekend) {
-          html += `<div class="day disabled" aria-disabled="true" title="${isWeekend ? 'Weekendy są niedostępne' : 'Termin niedostępny'}">${d}</div>`;
+        // Wykluczenie terminów zajętych w Google Calendar
+        const isOccupied = occupiedDates.includes(dateStr);
+
+        if (isPast || isWeekend || isOccupied) {
+          let reason = 'Termin niedostępny';
+          if (isWeekend) reason = 'Weekendy są niedostępne';
+          else if (isOccupied) reason = 'Termin zajęty w kalendarzu';
+
+          html += `<div class="day disabled" aria-disabled="true" title="${reason}">${d}</div>`;
         } else {
           const isSelected = (selectedDateStr === dateStr);
           html += `<button type="button" class="day available ${isSelected ? 'selected' : ''}" data-date="${dateStr}" data-day="${d}" data-month="${viewMonth}" data-year="${viewYear}" aria-label="Wybierz termin ${d} ${monthNames[viewMonth]} ${viewYear}">${d}</button>`;
@@ -372,6 +431,30 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
 
       calendarGrid.innerHTML = html;
       attachDayClickListeners();
+    };
+
+    // 1. Asynchroniczne odpytywanie /api/dostepnosc o zajęte terminy z Google Calendar
+    const fetchAvailability = async () => {
+      try {
+        const res = await fetch('/api/dostepnosc');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            occupiedDates = data;
+            renderCalendar();
+
+            // Jeśli wstępnie zaznaczona data okazała się zajęta, resetujemy zaznaczenie
+            if (selectedDateStr && occupiedDates.includes(selectedDateStr)) {
+              selectedDateStr = '';
+              if (dateInput) dateInput.value = '';
+              if (selectedDateText) selectedDateText.textContent = 'Wybierz wolny dzień z kalendarza powyżej';
+              if (footerDateText) footerDateText.textContent = '—';
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[Kalendarz] Błąd pobierania zajętych terminów:', err);
+      }
     };
 
     // Obsługa strzałek zmiany miesięcy
@@ -399,18 +482,125 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
     // Podpięcie listenerów pod wygenerowane w SSR dni
     attachDayClickListeners();
 
-    // Walidacja maila przy próbie wysłania
-    const form = document.getElementById('booking-form') as HTMLFormElement | null;
-    form?.addEventListener('submit', (e) => {
+    // Pobranie aktualnych zajętych terminów z Google Calendar
+    fetchAvailability();
+
+    // 2. Obsługa wysyłki formularza rezerwacji przez fetch() z e.preventDefault()
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      const emailInput = document.getElementById('email') as HTMLInputElement | null;
-      if (emailInput && !emailInput.validity.valid) {
-        emailInput.classList.add('invalid');
-        return; // Zatrzymujemy wysyłkę jeśli mail jest zły
+
+      if (feedbackEl) {
+        feedbackEl.style.display = 'none';
+        feedbackEl.className = 'booking-feedback';
       }
-      
-      alert(`Termin zarezerwowany na dzień: ${dateInput?.value || selectedDateStr}! (Wepnij tu integrację z API)`);
+
+      const nameInput = document.getElementById('name') as HTMLInputElement | null;
+      const phoneInput = document.getElementById('phone') as HTMLInputElement | null;
+      const emailInput = document.getElementById('email') as HTMLInputElement | null;
+      const serviceInput = document.getElementById('service') as HTMLSelectElement | null;
+      const addressInput = document.getElementById('address') as HTMLInputElement | null;
+      const zipInput = document.getElementById('zip') as HTMLInputElement | null;
+      const cityInput = document.getElementById('city') as HTMLInputElement | null;
+
+      const name = nameInput?.value.trim() || '';
+      const phone = phoneInput?.value.trim() || '';
+      const email = emailInput?.value.trim() || '';
+      const service = serviceInput?.value || 'wycena';
+      const address = addressInput?.value.trim() || '';
+      const zip = zipInput?.value.trim() || '';
+      const city = cityInput?.value.trim() || '';
+      const date = dateInput?.value.trim() || selectedDateStr;
+
+      // Walidacja frontendowa
+      if (!name) {
+        showFeedback('Podaj swoje imię i nazwisko.', 'error');
+        nameInput?.focus();
+        return;
+      }
+
+      if (!phone) {
+        showFeedback('Podaj numer telefonu do kontaktu.', 'error');
+        phoneInput?.focus();
+        return;
+      }
+
+      if (!email || !emailInput?.validity.valid) {
+        showFeedback('Wprowadź poprawny adres e-mail.', 'error');
+        emailInput?.focus();
+        return;
+      }
+
+      if (!date) {
+        showFeedback('Wybierz wolny termin z kalendarza powyżej.', 'error');
+        return;
+      }
+
+      if (occupiedDates.includes(date)) {
+        showFeedback('Wybrany termin jest już zajęty. Wybierz inny dzień.', 'error');
+        return;
+      }
+
+      if (!address || !city) {
+        showFeedback('Uzupełnij dokładny adres działki / spotkania.', 'error');
+        addressInput?.focus();
+        return;
+      }
+
+      setSubmitting(true);
+
+      try {
+        const response = await fetch('/api/rezerwacja', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            phone,
+            email,
+            service,
+            address,
+            zip,
+            city,
+            date,
+          }),
+        });
+
+        let result: any = null;
+        try {
+          result = await response.json();
+        } catch {}
+
+        if (!response.ok || !result?.success) {
+          const errMsg =
+            result?.error ||
+            `Wystąpił błąd podczas wysyłania rezerwacji (status: ${response.status}). Spróbuj ponownie lub zadzwoń.`;
+          showFeedback(errMsg, 'error');
+          setSubmitting(false);
+          return;
+        }
+
+        // Komunikat sukcesu wymagany w specyfikacji
+        showFeedback('Zarezerwowano! Skontaktujemy się z Tobą w celu potwierdzenia.', 'success');
+
+        // Dodajemy datę do zajętych na widoku i odświeżamy kalendarz
+        if (date && !occupiedDates.includes(date)) {
+          occupiedDates.push(date);
+          selectedDateStr = '';
+          if (dateInput) dateInput.value = '';
+          renderCalendar();
+        }
+
+        // Czyścimy formularz
+        form.reset();
+        if (selectedDateText) selectedDateText.textContent = 'Wybierz dzień z kalendarza powyżej';
+        if (footerDateText) footerDateText.textContent = '—';
+      } catch (err) {
+        console.error('Błąd wysyłki rezerwacji:', err);
+        showFeedback('Nie udało się nawiązać połączenia z serwerem. Sprawdź połączenie i spróbuj ponownie.', 'error');
+      } finally {
+        setSubmitting(false);
+      }
     });
   }
 
@@ -1041,6 +1231,48 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
 
   .submit-btn:active {
     transform: scale(0.98);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: btn-spin 0.8s linear infinite;
+  }
+
+  @keyframes btn-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .booking-feedback {
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.45;
+    margin-bottom: 20px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .booking-feedback.is-success {
+    background-color: #eaf7ed;
+    color: #1e5c2d;
+    border: 1px solid #94d3a2;
+  }
+
+  .booking-feedback.is-error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
   }
 
   /* --- RESPONSYWNOŚĆ --- */
