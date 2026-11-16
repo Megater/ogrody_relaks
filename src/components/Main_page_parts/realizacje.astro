@@ -526,12 +526,12 @@ const realizacje: RealizacjaItem[] = activeList.length < 5
         singleTrackWidth = dist;
       }
     }
-    updateTrackWidth();
+    window.requestAnimationFrame(() => updateTrackWidth());
 
-    window.addEventListener('resize', updateTrackWidth);
-    window.addEventListener('load', updateTrackWidth);
+    window.addEventListener('resize', () => window.requestAnimationFrame(updateTrackWidth), { passive: true });
+    window.addEventListener('load', () => window.requestAnimationFrame(updateTrackWidth), { passive: true });
     if ('ResizeObserver' in window) {
-      const ro = new ResizeObserver(() => updateTrackWidth());
+      const ro = new ResizeObserver(() => window.requestAnimationFrame(updateTrackWidth));
       ro.observe(sliderInner);
     }
 

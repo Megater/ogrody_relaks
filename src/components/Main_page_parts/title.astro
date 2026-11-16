@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import main_photo from '../../assets/images/Kamil_title_photo.jpg';
 import profile from '../../assets/images/Kamil_cut.png';
 import sprzet from '../../assets/images/kosiara.jpg';
@@ -11,21 +11,55 @@ const clientAvatars = [
   { initials: "DP", bg: "linear-gradient(135deg, #854d0e, #eab308)", name: "Dariusz P." },
   { initials: "AW", bg: "linear-gradient(135deg, #9d174d, #ec4899)", name: "Anna W." }
 ];
+
+// Responsywne warianty tła sekcji hero dla błyskawicznego LCP na mobile i desktopie
+const mobileHeroBg = await getImage({
+  src: main_photo,
+  width: 640,
+  height: 480,
+  format: 'webp',
+  quality: 55
+});
+
+const desktopHeroBg = await getImage({
+  src: main_photo,
+  width: 1200,
+  height: 900,
+  format: 'webp',
+  quality: 60
+});
+
+// Zoptymalizowane warianty postaci Kamila
+const mobileProfile = await getImage({
+  src: profile,
+  width: 420,
+  format: 'webp',
+  quality: 72
+});
+
+const desktopProfile = await getImage({
+  src: profile,
+  width: 680,
+  format: 'webp',
+  quality: 75
+});
 ---
 
 <section class="hero-section" id="start" aria-label="Sekcja powitalna Ogrody Relaks">
-    <!-- 1. Zdjęcie w tle o wysokim priorytecie (LCP) -->
-    <Image 
-        src={main_photo} 
+    <!-- 1. Zdjęcie w tle o wysokim priorytecie (LCP) z responsywnym doborem rozdzielczości -->
+    <picture>
+      <source media="(max-width: 640px)" srcset={mobileHeroBg.src} type="image/webp" />
+      <img 
+        src={desktopHeroBg.src} 
         class="hero-bg" 
         alt="Zadbany, zielony ogród - tło sekcji" 
-        loading="eager"
-        fetchpriority="high"
-        format="webp"
-        quality={70}
-        width={1280}
-        height={960}
-    />
+        loading="eager" 
+        fetchpriority="high" 
+        decoding="async"
+        width={desktopHeroBg.attributes.width} 
+        height={desktopHeroBg.attributes.height} 
+      />
+    </picture>
     
     <!-- 2. Stonowane, ciepłe warstwy nasycenia, głębi i winiety (z-index 2 i 3) -->
     <div class="hero-overlay-dark" aria-hidden="true"></div>
@@ -134,17 +168,20 @@ const clientAvatars = [
                 <!-- Ciepła, stonowana poświata za sylwetką -->
                 <div class="stage-ambient-glow" aria-hidden="true"></div>
 
-                <!-- Zdjęcie Kamila -->
-                <Image 
-                    src={profile} 
+                <!-- Zdjęcie Kamila zoptymalizowane pod mobile i desktop -->
+                <picture>
+                  <source media="(max-width: 768px)" srcset={mobileProfile.src} type="image/webp" />
+                  <img 
+                    src={desktopProfile.src} 
                     class="profile-cutout" 
                     alt="Kamil Salmonowicz - Właściciel Ogrody Relaks"
                     loading="eager"
-                    format="webp"
-                    quality={80}
-                    width={720}
-                    height={965}
-                />
+                    fetchpriority="high"
+                    decoding="async"
+                    width={desktopProfile.attributes.width}
+                    height={desktopProfile.attributes.height}
+                  />
+                </picture>
 
                 <!-- Pływające odznaki - widoczne WYŁĄCZNIE na ekranach desktopowych -->
                 <div class="floating-badge badge-guarantee">
@@ -174,7 +211,7 @@ const clientAvatars = [
                             width={130}
                             height={130}
                             format="webp"
-                            quality={80}
+                            quality={68}
                             loading="lazy"
                         />
                     </div>

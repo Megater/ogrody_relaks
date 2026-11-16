@@ -66,12 +66,12 @@ function getImgSrc(img: any): string {
 }
 
 // 2. Dane zastępcze (działają dopóki nie wprowadzisz danych w Sanity /studio)
-const trawnikOpt = await getImage({ src: trawnikImg, width: 700, format: 'webp', quality: 78 });
-const porzadkowanieOpt = await getImage({ src: porzadkowanieImg, width: 700, format: 'webp', quality: 78 });
-const dzialkaPrzedPoOpt = await getImage({ src: dzialkaPrzedPoImg, width: 700, format: 'webp', quality: 78 });
-const kosiaraOpt = await getImage({ src: kosiaraImg, width: 700, format: 'webp', quality: 78 });
-const anthonyOpt = await getImage({ src: anthonyImg, width: 700, format: 'webp', quality: 78 });
-const claudeOpt = await getImage({ src: claudeImg, width: 700, format: 'webp', quality: 78 });
+const trawnikOpt = await getImage({ src: trawnikImg, width: 500, format: 'webp', quality: 70 });
+const porzadkowanieOpt = await getImage({ src: porzadkowanieImg, width: 500, format: 'webp', quality: 70 });
+const dzialkaPrzedPoOpt = await getImage({ src: dzialkaPrzedPoImg, width: 500, format: 'webp', quality: 70 });
+const kosiaraOpt = await getImage({ src: kosiaraImg, width: 500, format: 'webp', quality: 70 });
+const anthonyOpt = await getImage({ src: anthonyImg, width: 500, format: 'webp', quality: 70 });
+const claudeOpt = await getImage({ src: claudeImg, width: 500, format: 'webp', quality: 70 });
 
 const trawnikSrc = trawnikOpt.src;
 const porzadkowanieSrc = porzadkowanieOpt.src;
@@ -236,7 +236,7 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
                     <span class="service-badge">{service.badge}</span>
                     <span class="service-counter">0{index + 1}</span>
                   </div>
-                  <h3 class="service-name">{service.title}</h3>
+                  <span class="service-name">{service.title}</span>
                   <p class="service-short-desc">{service.shortDescription}</p>
                 </div>
               </div>
@@ -264,13 +264,13 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
                   <div class="details-text-col">
                     <div class="expanded-title-wrapper">
                       <span class="expanded-badge">{service.badge}</span>
-                      <h4 class="expanded-title">{service.title}</h4>
+                      <h3 class="expanded-title">{service.title}</h3>
                     </div>
 
                     <p class="expanded-text">{service.description}</p>
 
                     <div class="features-box">
-                      <h5 class="features-title">Co obejmuje zakres prac:</h5>
+                      <h4 class="features-title">Co obejmuje zakres prac:</h4>
                       <ul class="features-list">
                         {service.features.map((feature) => (
                           <li>
@@ -666,6 +666,7 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
   }
 
   .service-name {
+    display: block;
     font-size: clamp(1.15rem, 2.2vw, 1.45rem);
     font-weight: 700;
     color: #153c24;

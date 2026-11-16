@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Title from '../components/Main_page_parts/title.astro';
 import Uslugi from '../components/Main_page_parts/uslugi.astro';
@@ -7,9 +7,20 @@ import Realizacje from '../components/Main_page_parts/realizacje.astro';
 import Process from '../components/Main_page_parts/process.astro';
 import Testimonials from '../components/Main_page_parts/Testimonials.astro';
 import Booking from '../components/Main_page_parts/booking.astro';
+
+import main_photo from '../assets/images/Kamil_title_photo.jpg';
+
+// Preload mobilnego zdjęcia LCP w <head>
+const preloadHero = await getImage({
+  src: main_photo,
+  width: 640,
+  height: 480,
+  format: 'webp',
+  quality: 55
+});
 ---
 
-<Layout>
+<Layout preloadImage={preloadHero.src}>
 	<div id="page" class="page">
 			<Title/>
 			<Uslugi/>

@@ -6,11 +6,13 @@ import Footer from '../components/footer.astro';
 interface Props {
     title?: string;
     description?: string;
+    preloadImage?: string;
 }
 
 const {
     title = "Ogrody Relaks - Kompleksowa pielęgnacja i zakładanie ogrodów",
-    description = "Profesjonalne usługi ogrodnicze – Rejony pod Warszawą i okolice (Pniewy, Tarczyn, Grójec). Pielęgnacja trawników, porządkowanie działek, zakładanie ogrodów, instalacje nawadniania i całoroczna opieka nad zielenią."
+    description = "Profesjonalne usługi ogrodnicze – Rejony pod Warszawą i okolice (Pniewy, Tarczyn, Grójec). Pielęgnacja trawników, porządkowanie działek, zakładanie ogrodów, instalacje nawadniania i całoroczna opieka nad zielenią.",
+    preloadImage
 } = Astro.props;
 ---
 <!doctype html>
@@ -18,17 +20,22 @@ const {
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=5" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=5" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=5" />
+        <link rel="shortcut icon" href="/favicon.ico?v=5" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=5" />
         <meta name="generator" content={Astro.generator} />
         
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta name="robots" content="index, follow" />
         <meta name="theme-color" content="#0c2b20" />
         <link rel="canonical" href={Astro.url.href} />
+
+        {preloadImage && (
+            <link rel="preload" as="image" href={preloadImage} media="(max-width: 640px)" fetchpriority="high" type="image/webp" />
+        )}
 
         <!-- Open Graph / Social Media -->
         <meta property="og:title" content={title} />
@@ -36,14 +43,9 @@ const {
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="pl_PL" />
 
-        <!-- Preconnect Google Fonts for fast loading -->
+        <!-- Niezakłócające renderowania ładowanie czcionek Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link 
-            rel="preload" 
-            as="style" 
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" 
-        />
         <link 
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" 
             rel="stylesheet" 
@@ -192,9 +194,11 @@ const {
                 window.addEventListener('resize', onScrollOrResize, { passive: true });
                 window.addEventListener('hashchange', updateScrollSpy, { passive: true });
                 
-                // Natychmiastowe uruchomienie po starcie
+                // Uruchomienie po pierwszym wyrenderowaniu klatki (zapobiega forced reflow)
                 handleScroll();
-                updateScrollSpy();
+                window.requestAnimationFrame(() => {
+                    updateScrollSpy();
+                });
             };
 
             if (document.readyState === 'loading') {
