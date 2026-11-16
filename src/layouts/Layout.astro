@@ -19,12 +19,16 @@ const {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <meta name="generator" content={Astro.generator} />
         
         <title>{title}</title>
         <meta name="description" content={description} />
-        <meta name="theme-color" content="#0c3b2e" />
+        <meta name="theme-color" content="#0c2b20" />
+        <link rel="canonical" href={Astro.url.href} />
 
         <!-- Open Graph / Social Media -->
         <meta property="og:title" content={title} />
@@ -36,9 +40,22 @@ const {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link 
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&display=swap" 
-            rel="stylesheet" 
+            rel="preload" 
+            as="style" 
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" 
         />
+        <link 
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" 
+            rel="stylesheet" 
+            media="print" 
+            onload="this.media='all'" 
+        />
+        <noscript>
+            <link 
+                href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" 
+                rel="stylesheet" 
+            />
+        </noscript>
     </head>
     <body>
         <a href="#main-content" class="skip-link">Przejdź do treści głównej</a>
@@ -63,6 +80,89 @@ const {
                 const mobile = document.getElementById('Mobile');
                 let isScrolled = false;
                 
+                const sectionIds = ['start', 'uslugi', 'realizacje', 'proces', 'opinie', 'rezerwacja'];
+
+                const updateScrollSpy = () => {
+                    const sections = sectionIds
+                        .map(id => ({ id, el: document.getElementById(id) }))
+                        .filter((item): item is { id: string; el: HTMLElement } => item.el !== null);
+
+                    if (sections.length === 0) return;
+
+                    const scrollY = window.scrollY;
+                    const windowHeight = window.innerHeight;
+                    const documentHeight = document.documentElement.scrollHeight;
+                    
+                    let activeId = sections[0].id;
+
+                    // Jeżeli użytkownik zbliża się do dołu strony (ostatnie 140px)
+                    if (windowHeight + scrollY >= documentHeight - 140) {
+                        activeId = sections[sections.length - 1].id;
+                    } else if (scrollY < 120) {
+                        activeId = sections[0].id;
+                    } else {
+                        // Punkt pomiarowy tuż pod pływającym paskiem nawigacji
+                        const triggerOffset = 150;
+                        for (let i = 0; i < sections.length; i++) {
+                            const rect = sections[i].el.getBoundingClientRect();
+                            if (rect.top <= triggerOffset && rect.bottom > triggerOffset) {
+                                activeId = sections[i].id;
+                                break;
+                            } else if (rect.top <= triggerOffset) {
+                                activeId = sections[i].id;
+                            }
+                        }
+                    }
+
+                    // 1. Aktualizacja linków w nawigacji Desktop
+                    const desktopLinks = document.querySelectorAll('#Navlinks a');
+                    desktopLinks.forEach(link => {
+                        const href = link.getAttribute('href') || '';
+                        if (href.endsWith('#' + activeId)) {
+                            link.classList.add('is-active');
+                            link.setAttribute('aria-current', 'page');
+                        } else {
+                            link.classList.remove('is-active');
+                            link.removeAttribute('aria-current');
+                        }
+                    });
+
+                    const wycenaDesktop = document.getElementById('Wycena');
+                    if (wycenaDesktop) {
+                        if (activeId === 'rezerwacja') {
+                            wycenaDesktop.classList.add('is-active');
+                            wycenaDesktop.setAttribute('aria-current', 'page');
+                        } else {
+                            wycenaDesktop.classList.remove('is-active');
+                            wycenaDesktop.removeAttribute('aria-current');
+                        }
+                    }
+
+                    // 2. Aktualizacja linków w menu mobilnym
+                    const mobileLinks = document.querySelectorAll('.mobile-menu-nav .menu-item');
+                    mobileLinks.forEach(link => {
+                        const href = link.getAttribute('href') || '';
+                        if (href.endsWith('#' + activeId)) {
+                            link.classList.add('is-active');
+                            link.setAttribute('aria-current', 'page');
+                        } else {
+                            link.classList.remove('is-active');
+                            link.removeAttribute('aria-current');
+                        }
+                    });
+
+                    const wycenaMobile = document.querySelector('.mobile-menu-nav .menu-cta-primary');
+                    if (wycenaMobile) {
+                        if (activeId === 'rezerwacja') {
+                            wycenaMobile.classList.add('is-active');
+                            wycenaMobile.setAttribute('aria-current', 'page');
+                        } else {
+                            wycenaMobile.classList.remove('is-active');
+                            wycenaMobile.removeAttribute('aria-current');
+                        }
+                    }
+                };
+
                 const handleScroll = () => {
                     const scrollY = window.scrollY;
                     if (!isScrolled && scrollY > 35) {
@@ -76,9 +176,25 @@ const {
                     }
                 };
 
-                window.addEventListener('scroll', handleScroll, { passive: true });
-                window.addEventListener('resize', handleScroll, { passive: true });
-                handleScroll(); // Initial check on load
+                let ticking = false;
+                const onScrollOrResize = () => {
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            handleScroll();
+                            updateScrollSpy();
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                };
+
+                window.addEventListener('scroll', onScrollOrResize, { passive: true });
+                window.addEventListener('resize', onScrollOrResize, { passive: true });
+                window.addEventListener('hashchange', updateScrollSpy, { passive: true });
+                
+                // Natychmiastowe uruchomienie po starcie
+                handleScroll();
+                updateScrollSpy();
             };
 
             if (document.readyState === 'loading') {
@@ -86,15 +202,29 @@ const {
             } else {
                 setupNavbarScroll();
             }
+
+            // Obsługa Astro View Transitions (jeśli zostaną użyte)
+            document.addEventListener('astro:page-load', setupNavbarScroll);
         </script>
     </body>
 </html>
 
-<style>
-    :global(*),
-    :global(*::before),
-    :global(*::after) {
-        box-sizing: border-box;
+<style is:global>
+    :root {
+        --color-primary-dark: #0c2b20;
+        --color-forest: #153c24;
+        --color-forest-deep: #0f2c1a;
+        --color-accent: #86b942;
+        --color-accent-hover: #76a537;
+        --color-accent-light: #eef6e8;
+        --color-text-dark: #153c24;
+        --color-text-body: #374151;
+        --color-text-muted: #556960;
+        --color-bg-light: #f8faf8;
+        --color-bg-card: #ffffff;
+        --color-border: rgba(12, 43, 32, 0.08);
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-serif: 'Playfair Display', Georgia, serif;
     }
 
     *, *::before, *::after {
@@ -109,8 +239,8 @@ const {
     }
 
     body {
-        font-family: 'Inter', sans-serif;
-        background-color: #fafafa; 
+        font-family: var(--font-sans);
+        background-color: #f8faf8; 
         color: #1a1a1a;
         margin: 0;
         padding: 0;
@@ -127,7 +257,7 @@ const {
         position: absolute;
         top: -120px;
         left: 20px;
-        background: #0c3b2e;
+        background: #0c2b20;
         color: #ffffff;
         padding: 10px 18px;
         z-index: 100;
@@ -168,13 +298,13 @@ const {
         box-sizing: border-box;
     }
 
-    #Desktop :global(nav),
-    #Desktop :global(div),
-    #Desktop :global(a),
-    #Mobile :global(#main),
-    #Mobile :global(#main *),
-    #Mobile :global(.box.is-open),
-    #Mobile :global(.box.is-open *) {
+    #Desktop nav,
+    #Desktop div,
+    #Desktop a,
+    #Mobile #main,
+    #Mobile #main *,
+    #Mobile .box.is-open,
+    #Mobile .box.is-open * {
         pointer-events: auto;
     }
 

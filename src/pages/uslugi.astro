@@ -3,6 +3,7 @@
 import Layout from '../layouts/Layout.astro';
 import { sanityClient } from 'sanity:client';
 import imageUrlBuilder from '@sanity/image-url';
+import { getImage } from 'astro:assets';
 
 // Importy lokalnych zdjęć zapasowych (fallback)
 import trawnikImg from '../assets/images/Realizacje/trawnik.jpg';
@@ -63,13 +64,20 @@ function getImgSrc(img: any): string {
   return '';
 }
 
-// 2. Dane zapasowe (fallback)
-const trawnikSrc = typeof trawnikImg === 'string' ? trawnikImg : trawnikImg.src;
-const porzadkowanieSrc = typeof porzadkowanieImg === 'string' ? porzadkowanieImg : porzadkowanieImg.src;
-const dzialkaPrzedPoSrc = typeof dzialkaPrzedPoImg === 'string' ? dzialkaPrzedPoImg : dzialkaPrzedPoImg.src;
-const kosiaraSrc = typeof kosiaraImg === 'string' ? kosiaraImg : kosiaraImg.src;
-const anthonySrc = typeof anthonyImg === 'string' ? anthonyImg : anthonyImg.src;
-const claudeSrc = typeof claudeImg === 'string' ? claudeImg : claudeImg.src;
+// 2. Dane zapasowe (fallback zoptymalizowane pod WebP)
+const trawnikOpt = await getImage({ src: trawnikImg, width: 900, format: 'webp', quality: 78 });
+const porzadkowanieOpt = await getImage({ src: porzadkowanieImg, width: 900, format: 'webp', quality: 78 });
+const dzialkaPrzedPoOpt = await getImage({ src: dzialkaPrzedPoImg, width: 900, format: 'webp', quality: 78 });
+const kosiaraOpt = await getImage({ src: kosiaraImg, width: 900, format: 'webp', quality: 78 });
+const anthonyOpt = await getImage({ src: anthonyImg, width: 900, format: 'webp', quality: 78 });
+const claudeOpt = await getImage({ src: claudeImg, width: 900, format: 'webp', quality: 78 });
+
+const trawnikSrc = trawnikOpt.src;
+const porzadkowanieSrc = porzadkowanieOpt.src;
+const dzialkaPrzedPoSrc = dzialkaPrzedPoOpt.src;
+const kosiaraSrc = kosiaraOpt.src;
+const anthonySrc = anthonyOpt.src;
+const claudeSrc = claudeOpt.src;
 
 const fallbackUslugi: ServiceItem[] = [
   {
@@ -689,7 +697,7 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
     align-items: center;
     gap: 8px;
     background-color: #86b942;
-    color: #ffffff;
+    color: #0c2b20;
     font-weight: 700;
     font-size: 0.95rem;
     padding: 12px 24px;
@@ -700,7 +708,8 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
   }
 
   .btn-top-booking:hover {
-    background-color: #77a837;
+    background-color: #92c949;
+    color: #061711;
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(134, 185, 66, 0.4);
   }

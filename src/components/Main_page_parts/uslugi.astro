@@ -2,6 +2,7 @@
 // src/components/Main_page_parts/uslugi.astro
 import { sanityClient } from 'sanity:client';
 import imageUrlBuilder from '@sanity/image-url';
+import { getImage } from 'astro:assets';
 
 // Importy lokalnych zdjęć zapasowych (fallback)
 import trawnikImg from '../../assets/images/Realizacje/trawnik.jpg';
@@ -65,12 +66,19 @@ function getImgSrc(img: any): string {
 }
 
 // 2. Dane zastępcze (działają dopóki nie wprowadzisz danych w Sanity /studio)
-const trawnikSrc = typeof trawnikImg === 'string' ? trawnikImg : trawnikImg.src;
-const porzadkowanieSrc = typeof porzadkowanieImg === 'string' ? porzadkowanieImg : porzadkowanieImg.src;
-const dzialkaPrzedPoSrc = typeof dzialkaPrzedPoImg === 'string' ? dzialkaPrzedPoImg : dzialkaPrzedPoImg.src;
-const kosiaraSrc = typeof kosiaraImg === 'string' ? kosiaraImg : kosiaraImg.src;
-const anthonySrc = typeof anthonyImg === 'string' ? anthonyImg : anthonyImg.src;
-const claudeSrc = typeof claudeImg === 'string' ? claudeImg : claudeImg.src;
+const trawnikOpt = await getImage({ src: trawnikImg, width: 700, format: 'webp', quality: 78 });
+const porzadkowanieOpt = await getImage({ src: porzadkowanieImg, width: 700, format: 'webp', quality: 78 });
+const dzialkaPrzedPoOpt = await getImage({ src: dzialkaPrzedPoImg, width: 700, format: 'webp', quality: 78 });
+const kosiaraOpt = await getImage({ src: kosiaraImg, width: 700, format: 'webp', quality: 78 });
+const anthonyOpt = await getImage({ src: anthonyImg, width: 700, format: 'webp', quality: 78 });
+const claudeOpt = await getImage({ src: claudeImg, width: 700, format: 'webp', quality: 78 });
+
+const trawnikSrc = trawnikOpt.src;
+const porzadkowanieSrc = porzadkowanieOpt.src;
+const dzialkaPrzedPoSrc = dzialkaPrzedPoOpt.src;
+const kosiaraSrc = kosiaraOpt.src;
+const anthonySrc = anthonyOpt.src;
+const claudeSrc = claudeOpt.src;
 
 const fallbackUslugi: ServiceItem[] = [
   {
@@ -426,7 +434,7 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
      ========================================================================== */
   .services-section {
     padding: 100px 0;
-    background-color: #f4f9f6; /* Delikatne miętowe tło kontrastujące z bielą */
+    background-color: #f8faf8; /* Czyste, świeże tło spójne z całą stroną */
     font-family: 'Inter', sans-serif;
     width: 100%;
     box-sizing: border-box;
@@ -851,7 +859,7 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
     align-items: center;
     gap: 8px;
     background-color: #86b942;
-    color: #ffffff;
+    color: #0c2b20;
     font-weight: 700;
     font-size: 0.95rem;
     padding: 13px 22px;
@@ -862,7 +870,8 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
   }
 
   .btn-primary:hover {
-    background-color: #77a837;
+    background-color: #92c949;
+    color: #061711;
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(134, 185, 66, 0.4);
   }
@@ -1067,6 +1076,7 @@ const servicesList: ServiceItem[] = (sanityUslugi && sanityUslugi.length > 0)
 
   .btn-banner-link:hover {
     background: #86b942;
+    color: #0c2b20;
     transform: translateY(-2px);
   }
 

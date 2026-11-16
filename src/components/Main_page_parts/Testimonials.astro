@@ -28,7 +28,7 @@ const googleReviews = [
     id: "g-1",
     name: "Michał D.",
     role: "Właściciel firmy",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&auto=format&fit=crop",
+    avatar: "",
     rating: 5,
     ratingDisplay: "5.0",
     text: "Nasz trawnik przed firmą zawsze był traktowany po macoszemu przez poprzednie ekipy. Nowa firma dba o niego jak o własny — zieleń wygląda perfekcyjnie przez cały rok.",
@@ -39,7 +39,7 @@ const googleReviews = [
     id: "g-2",
     name: "Karolina L.",
     role: "Klient indywidualny",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop",
+    avatar: "",
     rating: 5,
     ratingDisplay: "5.0",
     text: "Świetna komunikacja i uczciwe ceny. Jedyny powód, dla którego to nie jest pełne 5+, to małe przesunięcie terminu w bardzo zajętym tygodniu wiosennym — ale uprzedzili nas o tym z wyprzedzeniem.",
@@ -50,7 +50,7 @@ const googleReviews = [
     id: "g-3",
     name: "Dariusz P.",
     role: "Zarządca obiektu",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop",
+    avatar: "",
     rating: 5,
     ratingDisplay: "5.0",
     text: "Zajmują się naszym komercyjnym placem przez całą zimę. Konsekwentne odśnieżanie za każdym razem, co naprawdę ma ogromne znaczenie, dopóki tego nie zabraknie.",
@@ -61,7 +61,7 @@ const googleReviews = [
     id: "g-4",
     name: "Anna W.",
     role: "Właścicielka domu",
-    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop",
+    avatar: "",
     rating: 5,
     ratingDisplay: "5.0",
     text: "Trawnik nigdy nie wyglądał tak zdrowo i gęsto. Profesjonalne doradztwo w zakresie nawożenia i nawadniania to strzał w dziesiątkę. Polecam każdemu z czystym sumieniem.",
@@ -361,7 +361,7 @@ const allReviews = mappedSanityReviews.length >= 4
 <style>
   .testimonials-section {
     padding: 100px 0;
-    background-color: #ffffff;
+    background-color: #f8faf8;
     font-family: 'Inter', sans-serif;
     overflow: hidden;
   }
@@ -369,7 +369,8 @@ const allReviews = mappedSanityReviews.length >= 4
   .container {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
+    box-sizing: border-box;
   }
 
   /* --- NAGŁÓWEK --- */
@@ -377,45 +378,50 @@ const allReviews = mappedSanityReviews.length >= 4
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 60px;
+    margin-bottom: 50px;
     gap: 40px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .header-left {
-    max-width: 500px;
+    max-width: 640px;
   }
 
   .kicker {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 16px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #86b942;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 14px;
   }
 
   .dot {
-    width: 10px;
-    height: 10px;
-    background-color: #3b5a38; 
+    width: 8px;
+    height: 8px;
+    background-color: #86b942; 
     border-radius: 50%;
     display: inline-block;
   }
 
   .header-left h2 {
-    font-size: 3.5rem;
-    line-height: 1.1;
-    color: #1a1a1a;
+    font-size: clamp(2.1rem, 4.5vw, 3.2rem);
+    line-height: 1.15;
+    color: #153c24;
+    font-weight: 800;
     margin: 0;
+    letter-spacing: -0.02em;
   }
 
   .italic-text {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-weight: 400;
+    font-weight: 600;
+    color: #86b942;
   }
 
   .header-right {
@@ -447,23 +453,24 @@ const allReviews = mappedSanityReviews.length >= 4
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background-color: #1f3318;
-    color: #ffffff;
+    background-color: #86b942;
+    color: #0c2b20;
     font-size: 0.92rem;
-    font-weight: 600;
+    font-weight: 700;
     padding: 11px 22px;
     border-radius: 9999px;
-    border: 1px solid #1f3318;
+    border: 1px solid #86b942;
     cursor: pointer;
     transition: all 0.25s ease;
-    box-shadow: 0 4px 14px rgba(31, 51, 24, 0.15);
+    box-shadow: 0 4px 14px rgba(134, 185, 66, 0.25);
     font-family: inherit;
   }
 
   .btn-add-review:hover {
-    background-color: #2d4a22;
+    background-color: #92c949;
+    color: #061711;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(31, 51, 24, 0.25);
+    box-shadow: 0 6px 20px rgba(134, 185, 66, 0.35);
   }
 
   .btn-add-review:active {
@@ -583,7 +590,7 @@ const allReviews = mappedSanityReviews.length >= 4
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #1f3318 0%, #3b5a38 100%);
+    background: linear-gradient(135deg, #153c24 0%, #86b942 100%);
     color: #ffffff;
     display: flex;
     align-items: center;
@@ -592,7 +599,7 @@ const allReviews = mappedSanityReviews.length >= 4
     font-size: 1.15rem;
     flex-shrink: 0;
     user-select: none;
-    box-shadow: 0 2px 8px rgba(31, 51, 24, 0.2);
+    box-shadow: 0 2px 8px rgba(12, 43, 32, 0.2);
   }
 
   .author-text {
@@ -659,9 +666,9 @@ const allReviews = mappedSanityReviews.length >= 4
     font-weight: 600;
     padding: 4px 10px;
     border-radius: 9999px;
-    background-color: #f0f7ee;
-    color: #23421d;
-    border: 1px solid #d3e8cf;
+    background-color: #eef6e8;
+    color: #153c24;
+    border: 1px solid rgba(134, 185, 66, 0.25);
     letter-spacing: 0.2px;
   }
 
@@ -943,10 +950,10 @@ const allReviews = mappedSanityReviews.length >= 4
   }
 
   .tag-toggle-btn.is-active {
-    background-color: #1f3318;
+    background-color: #153c24;
     color: #ffffff;
-    border-color: #1f3318;
-    box-shadow: 0 2px 8px rgba(31, 51, 24, 0.2);
+    border-color: #153c24;
+    box-shadow: 0 2px 8px rgba(21, 60, 36, 0.2);
   }
 
   .tag-toggle-btn.is-active .tag-check-icon {
@@ -960,10 +967,10 @@ const allReviews = mappedSanityReviews.length >= 4
     align-items: flex-start;
     gap: 10px;
     padding: 12px 14px;
-    background-color: #f0f7ee;
+    background-color: #eef6e8;
     border-radius: 12px;
-    border: 1px solid #d4e8cf;
-    color: #23421d;
+    border: 1px solid rgba(134, 185, 66, 0.25);
+    color: #153c24;
     font-size: 0.84rem;
     line-height: 1.45;
   }
@@ -971,6 +978,7 @@ const allReviews = mappedSanityReviews.length >= 4
   .moderation-info svg {
     flex-shrink: 0;
     margin-top: 1px;
+    stroke: #153c24;
   }
 
   /* Komunikaty powiadomień formularza */
@@ -1026,13 +1034,13 @@ const allReviews = mappedSanityReviews.length >= 4
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background-color: #1f3318;
-    color: #ffffff;
-    border: 1px solid #1f3318;
+    background-color: #86b942;
+    color: #0c2b20;
+    border: 1px solid #86b942;
     padding: 11px 24px;
     border-radius: 12px;
     font-size: 0.92rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
     min-width: 140px;
@@ -1040,7 +1048,8 @@ const allReviews = mappedSanityReviews.length >= 4
   }
 
   .btn-submit:hover:not(:disabled) {
-    background-color: #2d4a22;
+    background-color: #92c949;
+    color: #061711;
   }
 
   .btn-submit:disabled {

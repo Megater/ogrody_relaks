@@ -74,7 +74,8 @@
         border-radius: 12px;
         background: transparent;
         border-bottom: 1px solid rgba(20, 54, 35, 0.06);
-        transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+        border-left: 3px solid transparent;
+        transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, border-left 0.2s ease, padding-left 0.2s ease;
         -webkit-tap-highlight-color: transparent;
     }
 
@@ -85,7 +86,7 @@
     .menu-item .chevron {
         font-size: 18px;
         color: #86b942;
-        transition: transform 0.2s ease;
+        transition: transform 0.2s ease, color 0.2s ease;
     }
 
     .menu-item:hover,
@@ -98,6 +99,21 @@
     .menu-item:hover .chevron,
     .menu-item:active .chevron {
         transform: translateX(2px);
+    }
+
+    /* Aktywny komponent na widoku strony (Scrollspy - Mobile) */
+    .menu-item.is-active {
+        background: rgba(134, 185, 66, 0.16);
+        color: #0c2b17;
+        font-weight: 700;
+        border-left: 3px solid #86b942;
+        padding-left: 18px;
+    }
+
+    .menu-item.is-active .chevron {
+        color: #153c24;
+        font-weight: 700;
+        transform: translateX(3px);
     }
 
     /* Sekcja akcji w menu mobilnym */
@@ -113,7 +129,7 @@
 
     .menu-cta-primary {
         background-color: #86b942;
-        color: #ffffff;
+        color: #0c2b20;
         text-decoration: none;
         font-size: 15px;
         font-weight: 700;
@@ -132,8 +148,14 @@
 
     .menu-cta-primary:hover,
     .menu-cta-primary:active {
-        background-color: #76a537;
+        background-color: #92c949;
+        color: #061711;
         transform: translateY(-1px);
+    }
+
+    .menu-cta-primary.is-active {
+        background-color: #92c949;
+        box-shadow: 0 0 0 3px rgba(134, 185, 66, 0.4), 0 6px 18px rgba(134, 185, 66, 0.35);
     }
 
     .menu-cta-phone {

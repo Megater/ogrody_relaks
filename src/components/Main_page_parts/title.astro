@@ -4,12 +4,12 @@ import main_photo from '../../assets/images/Kamil_title_photo.jpg';
 import profile from '../../assets/images/Kamil_cut.png';
 import sprzet from '../../assets/images/kosiara.jpg';
 
-// Starannie dobrane portrety zadowolonych klientów
+// Starannie dobrane portrety zadowolonych klientów nawiązujące do opinii Google
 const clientAvatars = [
-  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=120&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=120&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=120&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=120&auto=format&fit=crop"
+  { initials: "MD", bg: "linear-gradient(135deg, #1e40af, #3b82f6)", name: "Michał D." },
+  { initials: "KL", bg: "linear-gradient(135deg, #166534, #22c55e)", name: "Karolina L." },
+  { initials: "DP", bg: "linear-gradient(135deg, #854d0e, #eab308)", name: "Dariusz P." },
+  { initials: "AW", bg: "linear-gradient(135deg, #9d174d, #ec4899)", name: "Anna W." }
 ];
 ---
 
@@ -21,6 +21,10 @@ const clientAvatars = [
         alt="Zadbany, zielony ogród - tło sekcji" 
         loading="eager"
         fetchpriority="high"
+        format="webp"
+        quality={70}
+        width={1280}
+        height={960}
     />
     
     <!-- 2. Stonowane, ciepłe warstwy nasycenia, głębi i winiety (z-index 2 i 3) -->
@@ -76,15 +80,14 @@ const clientAvatars = [
             <!-- Sekcja zadowolonych klientów i opinie -->
             <div class="happy-clients">
                 <div class="avatars-cluster" aria-hidden="true">
-                    {clientAvatars.map((src, i) => (
-                        <img 
-                            src={src} 
-                            alt={`Klient ${i + 1}`} 
-                            class="avatar-img" 
-                            width="44" 
-                            height="44" 
-                            loading="lazy" 
-                        />
+                    {clientAvatars.map((client) => (
+                        <div 
+                            class="avatar-img avatar-initials" 
+                            style={`background: ${client.bg};`}
+                            title={client.name}
+                        >
+                            <span>{client.initials}</span>
+                        </div>
                     ))}
                     <div class="avatar-badge">+120</div>
                 </div>
@@ -137,7 +140,10 @@ const clientAvatars = [
                     class="profile-cutout" 
                     alt="Kamil Salmonowicz - Właściciel Ogrody Relaks"
                     loading="eager"
-                    format="png" 
+                    format="webp"
+                    quality={80}
+                    width={720}
+                    height={965}
                 />
 
                 <!-- Pływające odznaki - widoczne WYŁĄCZNIE na ekranach desktopowych -->
@@ -167,6 +173,9 @@ const clientAvatars = [
                             alt="Profesjonalny sprzęt ogrodniczy"
                             width={130}
                             height={130}
+                            format="webp"
+                            quality={80}
+                            loading="lazy"
                         />
                     </div>
                     <div class="equip-text-box">
@@ -267,7 +276,7 @@ const clientAvatars = [
             to bottom,
             transparent 0%,
             rgba(12, 43, 32, 0.75) 65%,
-            #fafafa 100%
+            #f8faf8 100%
         );
     }
 
@@ -393,7 +402,7 @@ const clientAvatars = [
     .cta-button.primary {
         gap: 0.85rem;
         background-color: #86b942;
-        color: #ffffff;
+        color: #0c2b20;
         font-weight: 700;
         font-size: 1.05rem;
         padding: 1.05rem 2.25rem;
@@ -401,7 +410,8 @@ const clientAvatars = [
     }
 
     .cta-button.primary:hover {
-        background-color: #76a537;
+        background-color: #92c949;
+        color: #061711;
         transform: translateY(-2px);
         box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32);
     }
@@ -450,9 +460,9 @@ const clientAvatars = [
     }
 
     .phone-tag {
-        font-size: 0.72rem;
-        color: #b5c7bd;
-        font-weight: 500;
+        font-size: 0.78rem;
+        color: #c5ded1;
+        font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.04em;
     }
@@ -489,6 +499,17 @@ const clientAvatars = [
         background-color: #244b3c;
     }
 
+    .avatar-initials {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
     .avatar-img:first-child {
         margin-left: 0;
     }
@@ -500,7 +521,7 @@ const clientAvatars = [
         border: 2.5px solid #0c2b20;
         margin-left: -12px;
         background-color: #86b942;
-        color: #ffffff;
+        color: #0c2b20;
         font-size: 0.78rem;
         font-weight: 800;
         display: flex;

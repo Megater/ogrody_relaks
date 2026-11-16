@@ -47,8 +47,11 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
       
       <!-- LEWA KOLUMNA: Informacje -->
       <div class="booking-info">
-        <span class="kicker">ZACZNIJMY OD SPOTKANIA</span>
-        <h2>Twój ogród.<br>Ustalmy pierwszy krok.</h2>
+        <span class="kicker">
+          <span class="kicker-dot" aria-hidden="true"></span>
+          ZACZNIJMY OD SPOTKANIA
+        </span>
+        <h2>Twój ogród.<br><span class="italic-highlight">Ustalmy pierwszy krok.</span></h2>
         
         <div class="contact-details">
           <a href="tel:+48535262302" class="phone">+48 535 262 302 ↗</a>
@@ -615,9 +618,9 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
 <style>
   /* Zmienne i ogólny układ */
   .booking-section {
-    padding: 90px 0;
-    /* Delikatne, miętowo-zielone tło */
-    background-color: #eef6f1; 
+    padding: 100px 0;
+    /* Świeże, harmonijne tło */
+    background-color: #f4f8f5; 
     font-family: 'Inter', sans-serif;
     width: 100%;
     max-width: 100%;
@@ -629,7 +632,7 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
     width: 100%;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
     box-sizing: border-box;
   }
 
@@ -654,23 +657,41 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
   }
 
   .kicker {
-    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
     font-weight: 700;
-    color: #86b942; /* Nasz firmowy jasnozielony */
+    color: #86b942;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    display: block;
-    margin-bottom: 16px;
+    letter-spacing: 1.2px;
+    margin-bottom: 14px;
+  }
+
+  .kicker-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #86b942;
+    display: inline-block;
   }
 
   .booking-info h2 {
-    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-size: clamp(2.1rem, 4.5vw, 3.2rem);
     color: #153c24; /* Firmowy ciemnozielony */
     line-height: 1.15;
     margin: 0 0 32px 0;
     font-weight: 800;
     word-break: break-word;
     overflow-wrap: break-word;
+    letter-spacing: -0.02em;
+  }
+
+  .italic-highlight {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 600;
+    color: #86b942;
   }
 
   .contact-details {
@@ -1205,15 +1226,15 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
   }
 
   .submit-btn {
-    background-color: #153c24;
-    color: #ffffff;
+    background-color: #86b942;
+    color: #0c2b20;
     border: none;
     padding: 14px 24px;
     border-radius: 50px;
     font-size: 0.98rem;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.15s;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     box-sizing: border-box;
     max-width: 100%;
     white-space: normal;
@@ -1223,10 +1244,14 @@ const initialFooterDateText = defaultSelectedDay ? `${defaultSelectedDay} ${mont
     align-items: center;
     justify-content: center;
     gap: 8px;
+    box-shadow: 0 4px 14px rgba(134, 185, 66, 0.3);
   }
 
   .submit-btn:hover {
-    background-color: #2d6641;
+    background-color: #92c949;
+    color: #061711;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(134, 185, 66, 0.4);
   }
 
   .submit-btn:active {

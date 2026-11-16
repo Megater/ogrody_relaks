@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { sanityClient } from 'sanity:client';
 import imageUrlBuilder from '@sanity/image-url';
@@ -44,9 +44,13 @@ try {
   console.warn("Błąd pobierania z Sanity – używam danych zastępczych.");
 }
 
-const trawnikSrc = typeof trawnik === 'string' ? trawnik : trawnik.src;
-const dzialkaPrzedPoSrc = typeof dzialkaPrzedPo === 'string' ? dzialkaPrzedPo : dzialkaPrzedPo.src;
-const porzadkowanieSrc = typeof porzadkowanie === 'string' ? porzadkowanie : porzadkowanie.src;
+const trawnikOpt = await getImage({ src: trawnik, width: 1200, format: 'webp', quality: 80 });
+const dzialkaPrzedPoOpt = await getImage({ src: dzialkaPrzedPo, width: 1200, format: 'webp', quality: 80 });
+const porzadkowanieOpt = await getImage({ src: porzadkowanie, width: 1200, format: 'webp', quality: 80 });
+
+const trawnikSrc = trawnikOpt.src;
+const dzialkaPrzedPoSrc = dzialkaPrzedPoOpt.src;
+const porzadkowanieSrc = porzadkowanieOpt.src;
 
 // 2. Dane zastępcze (jeśli w Sanity jeszcze nic nie ma)
 const fallbackRealizacje: RealizacjaItem[] = [
@@ -192,7 +196,15 @@ const realizacje: RealizacjaItem[] = mappedSanity.length > 0 ? mappedSanity : fa
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nasze Realizacje | Portfolio Ogrodnicze</title>
+  <title>Nasze Realizacje | Portfolio Ogrodnicze - Ogrody Relaks</title>
+  <meta name="description" content="Zobacz portfolio i efekty prac pielęgnacji ogrodów, koszenia trawników i karczowania działek w rejonach pod Warszawą." />
+  <meta name="theme-color" content="#0c2b20" />
+  <link rel="canonical" href={Astro.url.href} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" rel="stylesheet" />
 </head>
 <body>
 

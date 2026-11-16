@@ -134,12 +134,32 @@ import logo from '../../assets/images/shorter_logo.png';
         transition: all 0.2s ease;
         display: flex;
         align-items: center;
+        position: relative;
     }
 
     /* Spokojny, naturalny hover bez skakania układu */
     #Navlinks a:hover {
         background: rgba(134, 185, 66, 0.14); 
         color: #0c2b17;
+    }
+
+    /* Aktywny komponent na widoku strony (Scrollspy) */
+    #Navlinks a.is-active {
+        background: rgba(134, 185, 66, 0.18);
+        color: #0c2b17;
+        font-weight: 700;
+    }
+
+    #Navlinks a.is-active::after {
+        content: '';
+        position: absolute;
+        bottom: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 18px;
+        height: 2.5px;
+        border-radius: 3px;
+        background-color: #86b942;
     }
 
     .dot {
@@ -161,7 +181,7 @@ import logo from '../../assets/images/shorter_logo.png';
 
     #Wycena {
         background: #86b942; /* Ciepła zieleń firmowa, jak w sekcji hero */
-        color: #ffffff;                
+        color: #0c2b20;                
         font-weight: 700;
         font-size: 14px;
         text-decoration: none;
@@ -175,9 +195,16 @@ import logo from '../../assets/images/shorter_logo.png';
     }
 
     #Wycena:hover {
-        background: #75a337;           
+        background: #92c949;           
+        color: #061711;
         transform: translateY(-2px);   
         box-shadow: 0 6px 18px rgba(134, 185, 66, 0.35);
+    }
+
+    #Wycena.is-active {
+        background: #92c949;
+        box-shadow: 0 0 0 3px rgba(134, 185, 66, 0.35), 0 6px 20px rgba(134, 185, 66, 0.4);
+        transform: translateY(-1px);
     }
 
     #Wycena:active {
