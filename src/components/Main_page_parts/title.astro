@@ -15,10 +15,9 @@ const clientAvatars = [
 // Responsywne warianty tła sekcji hero dla błyskawicznego LCP na mobile i desktopie
 const mobileHeroBg = await getImage({
   src: main_photo,
-  width: 640,
-  height: 480,
+  width: 1200,
   format: 'webp',
-  quality: 55
+  quality: 85
 });
 
 const desktopHeroBg = await getImage({
@@ -32,9 +31,9 @@ const desktopHeroBg = await getImage({
 // Zoptymalizowane warianty postaci Kamila
 const mobileProfile = await getImage({
   src: profile,
-  width: 420,
+  width: 640,
   format: 'webp',
-  quality: 72
+  quality: 85
 });
 
 const desktopProfile = await getImage({
@@ -48,7 +47,7 @@ const desktopProfile = await getImage({
 <section class="hero-section" id="start" aria-label="Sekcja powitalna Ogrody Relaks">
     <!-- 1. Zdjęcie w tle o wysokim priorytecie (LCP) z responsywnym doborem rozdzielczości -->
     <picture>
-      <source media="(max-width: 640px)" srcset={mobileHeroBg.src} type="image/webp" />
+      <source media="(max-width: 768px)" srcset={mobileHeroBg.src} type="image/webp" />
       <img 
         src={desktopHeroBg.src} 
         class="hero-bg" 
@@ -881,6 +880,10 @@ const desktopProfile = await getImage({
             display: none;
         }
 
+        .hero-bg {
+            transform: none;
+        }
+
         .hero-section {
             height: auto;
             min-height: auto; /* Wyłączenie 100dvh/100vh eliminuje skakanie w mobilnym Firefoxie i Chrome przy chowaniu paska adresu */
@@ -919,11 +922,11 @@ const desktopProfile = await getImage({
             background: linear-gradient(
                 to bottom,
                 transparent 0px,
-                transparent 170px,
-                rgba(12, 43, 32, 0.22) 240px,
-                rgba(12, 43, 32, 0.65) 300px,
-                rgba(12, 43, 32, 0.92) 360px,
-                #0c2b20 400px,
+                transparent 150px,
+                rgba(12, 43, 32, 0.22) 210px,
+                rgba(12, 43, 32, 0.65) 270px,
+                rgba(12, 43, 32, 0.92) 330px,
+                #0c2b20 370px,
                 #0c2b20 100%
             );
         }
@@ -940,14 +943,14 @@ const desktopProfile = await getImage({
             align-items: flex-start;
             align-self: center;
             padding-top: 0.25rem;
-            margin-bottom: -45px;
+            margin-bottom: -35px;
             overflow: visible;
         }
 
         .profile-stage {
             width: 100%;
-            max-width: 440px;
-            height: 340px;
+            max-width: 360px;
+            height: 280px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -1094,44 +1097,51 @@ const desktopProfile = await getImage({
             background: linear-gradient(
                 to bottom,
                 transparent 0px,
-                transparent 160px,
-                rgba(12, 43, 32, 0.2) 220px,
-                rgba(12, 43, 32, 0.6) 280px,
-                rgba(12, 43, 32, 0.9) 330px,
-                #0c2b20 370px,
+                transparent 130px,
+                rgba(12, 43, 32, 0.2) 180px,
+                rgba(12, 43, 32, 0.6) 230px,
+                rgba(12, 43, 32, 0.92) 280px,
+                #0c2b20 320px,
                 #0c2b20 100%
             );
         }
 
         .hero-visual-column {
-            margin-bottom: -55px;
+            margin-bottom: -30px;
             overflow: visible;
         }
 
         .profile-stage {
-            max-width: 380px;
-            height: 310px;
+            max-width: 300px;
+            height: 240px;
         }
 
         .profile-cutout {
-            transform: scale(1.18);
+            transform: scale(0.92);
             transform-origin: top center;
             mask-image: linear-gradient(
                 to bottom,
                 rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 1) 64%,
-                rgba(0, 0, 0, 0.85) 76%,
-                rgba(0, 0, 0, 0.35) 90%,
+                rgba(0, 0, 0, 1) 62%,
+                rgba(0, 0, 0, 0.8) 75%,
+                rgba(0, 0, 0, 0.3) 88%,
                 rgba(0, 0, 0, 0) 100%
             );
             -webkit-mask-image: linear-gradient(
                 to bottom,
                 rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 1) 64%,
-                rgba(0, 0, 0, 0.85) 76%,
-                rgba(0, 0, 0, 0.35) 90%,
+                rgba(0, 0, 1) 62%,
+                rgba(0, 0, 0, 0.8) 75%,
+                rgba(0, 0, 0, 0.3) 88%,
                 rgba(0, 0, 0, 0) 100%
             );
+        }
+
+        .stage-ambient-glow {
+            width: 230px;
+            height: 230px;
+            top: 5%;
+            filter: blur(38px);
         }
 
         .hero-text-box {
